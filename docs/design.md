@@ -126,6 +126,14 @@ I'm out of my league here, need a stats person.
 
 Some options:
 
+## Let a user pick the state they want to swap
+
+When pledging to vote a certain way, let the user pick a state to swap with.
+Show which states are tight and where a vote swap will make a difference for
+achieving the outcome they desire. Can still delay pairing until election day,
+or can greedily choose a pair that matches the user's self-reported likelihood
+of fulfilling the swap pledge.
+
 ## Election day pairing
 
 Maybe pledges shouldn't be matched until election day. On that day people
