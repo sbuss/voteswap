@@ -91,6 +91,11 @@ participating.
     [Candidate #1] has a [NN] percent chance of winning.
 
     [I pledge to swap my vote] [Cancel]
+9. After pledging the user can agree to sign up for a mailing list. Their email
+will not be linked to their vote swap pledge and it will only be used for
+updates. The user may click a checkbox that says "Delete my email address after
+the election". Emails will not be stored in an encrypted state, except for
+disk encryption used on the database server.
 
 # Uncertainty
 
