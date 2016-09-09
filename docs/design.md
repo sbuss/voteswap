@@ -1,3 +1,17 @@
+# Landing page
+
+Users who visit the site will be shown a current estimate of the likelihood of
+each candidate winning (a la 538's election prediction bar) with the vote pledges
+and, below that, the probabilities of wins without pledges (just 538's bar).
+
+Below that, probabilities broken down by swing states will be shown (top 10 states?)
+Include a link to the full state list (totals both with and without swaps)
+
+If a user has allowed geolocation, the stats from their state will be shown, eg:
+4321 people pledged to vote for Candidate X in exchange for Candidate Y in State Z
+
+At the bottom have a big action button saying "Swap my vote!"
+
 # User sign up
 
 ## Fake Users
