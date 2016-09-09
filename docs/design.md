@@ -116,7 +116,11 @@ network of smart people to figure this out.
 
 # Calculating chance of winning given pledge swaps
 
-I'm probably out of my league here, need a stats person.
+We should display live likelihood of each candidate winning in each state with
+and without the swaps, along with the distribution given all users' likelihood
+to follow through with their vote pledge.
+
+I'm out of my league here, need a stats person.
 
 # Matching a pledge
 
