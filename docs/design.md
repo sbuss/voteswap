@@ -105,6 +105,12 @@ they are to vote like they pledge, and how likely they think others are, we
 can get a feeling for the likelihood of users defecting in this prisoner's
 dilemma.
 
+When users are paired we need to tell each user how likely the paired user is
+to vote like they pledged. If my paired user rated themselves 5/5 likely to vote
+for their pledge, it would increase my own chances of voting like I pledged.
+Defection is always an attractive strategy in the prisoner's dilemma, but
+*maybe* this will help reduce the incidence.
+
 TODO: Talk to a statistician and a pollster. Try to contact Eliezer to use his
 network of smart people to figure this out.
 
