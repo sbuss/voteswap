@@ -147,13 +147,18 @@ class BuildFile(object):
         # Remove '.py' suffix
         if os.name == 'nt':
             # Preserve '.\' prefix on Windows to respect gettext behavior
-            old = '#: ' + self.work_path
-            new = '#: ' + self.path
+            old_path = self.work_path
+            new_path = self.path
         else:
-            old = '#: ' + self.work_path[2:]
-            new = '#: ' + self.path[2:]
+            old_path = self.work_path[2:]
+            new_path = self.path[2:]
 
-        return msgs.replace(old, new)
+        return re.sub(
+            r'^(#: .*)(' + re.escape(old_path) + r')',
+            lambda match: match.group().replace(old_path, new_path),
+            msgs,
+            flags=re.MULTILINE
+        )
 
     def cleanup(self):
         """
@@ -506,7 +511,7 @@ class Command(BaseCommand):
 
         input_files = [bf.work_path for bf in build_files]
         with NamedTemporaryFile(mode='w+') as input_files_list:
-            input_files_list.write('\n'.join(input_files))
+            input_files_list.write(force_str('\n'.join(input_files), encoding=DEFAULT_LOCALE_ENCODING))
             input_files_list.flush()
             args.extend(['--files-from', input_files_list.name])
             args.extend(self.xgettext_options)

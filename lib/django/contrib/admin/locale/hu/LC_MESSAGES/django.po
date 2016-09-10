@@ -1,6 +1,8 @@
 # This file is distributed under the same license as the Django package.
 #
 # Translators:
+# Ádám Krizsány <krizsany1302@gmail.com>, 2015
+# András Veres-Szentkirályi, 2016
 # Jannis Leidel <jannis@leidel.info>, 2011
 # János Péter Ronkay <transifex2@hangya.net>, 2014
 # Kristóf Gruber <>, 2012
@@ -11,8 +13,8 @@ msgstr ""
 "Project-Id-Version: django\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-11-15 11:06+0100\n"
-"PO-Revision-Date: 2015-11-16 08:16+0000\n"
-"Last-Translator: Jannis Leidel <jannis@leidel.info>\n"
+"PO-Revision-Date: 2016-04-13 09:12+0000\n"
+"Last-Translator: András Veres-Szentkirályi\n"
 "Language-Team: Hungarian (http://www.transifex.com/django/django/language/"
 "hu/)\n"
 "MIME-Version: 1.0\n"
@@ -81,10 +83,10 @@ msgid "action time"
 msgstr "művelet időpontja"
 
 msgid "user"
-msgstr ""
+msgstr "felhasználó"
 
 msgid "content type"
-msgstr ""
+msgstr "tartalom típusa"
 
 msgid "object id"
 msgstr "objektum id"
@@ -125,9 +127,11 @@ msgstr "Egyik sem"
 msgid ""
 "Hold down \"Control\", or \"Command\" on a Mac, to select more than one."
 msgstr ""
+"Tartsa lenyomva a \"Control\"-t, vagy Mac-en a \"Command\"-ot több elem "
+"kiválasztásához."
 
 msgid "Added."
-msgstr ""
+msgstr "Hozzáadva."
 
 #, python-format
 msgid "Changed %s."
@@ -245,6 +249,8 @@ msgid ""
 "Deleting %(class_name)s %(instance)s would require deleting the following "
 "protected related objects: %(related_objects)s"
 msgstr ""
+"%(instance)s %(class_name)s törlése az alábbi kapcsolódó védett objektumok "
+"törlését is magával vonná: %(related_objects)s"
 
 msgid "Django site admin"
 msgstr "Django honlapadminisztráció"
@@ -260,7 +266,7 @@ msgstr "Bejelentkezés"
 
 #, python-format
 msgid "%(app)s administration"
-msgstr ""
+msgstr "%(app)s adminisztráció"
 
 msgid "Page not found"
 msgstr "Nincs ilyen oldal"
@@ -320,7 +326,7 @@ msgid "Please correct the error below."
 msgstr "Kérem, javítsa az alábbi hibákat."
 
 msgid "Please correct the errors below."
-msgstr ""
+msgstr "Kérem javítsa ki a lenti hibákat."
 
 #, python-format
 msgid "Enter a new password for the user <strong>%(username)s</strong>."
@@ -331,7 +337,7 @@ msgid "Welcome,"
 msgstr "Üdvözlöm,"
 
 msgid "View site"
-msgstr ""
+msgstr "Honlap megtekintése"
 
 msgid "Documentation"
 msgstr "Dokumentáció"
@@ -395,13 +401,13 @@ msgstr ""
 "%(object_name)s)? A összes további kapcsolódó elem is törlődik:"
 
 msgid "Objects"
-msgstr ""
+msgstr "Objektumok"
 
 msgid "Yes, I'm sure"
 msgstr "Igen, biztos vagyok benne"
 
 msgid "No, take me back"
-msgstr ""
+msgstr "Nem, forduljunk vissza"
 
 msgid "Delete multiple objects"
 msgstr "Több elem törlése"
@@ -450,7 +456,7 @@ msgid " By %(filter_title)s "
 msgstr " %(filter_title)s szerint "
 
 msgid "Summary"
-msgstr ""
+msgstr "Összegzés"
 
 #, python-format
 msgid "Models in the %(name)s application"
@@ -485,6 +491,8 @@ msgid ""
 "You are authenticated as %(username)s, but are not authorized to access this "
 "page. Would you like to login to a different account?"
 msgstr ""
+"Jelenleg be vagy lépve mint %(username)s, de nincs jogod elérni ezt az "
+"oldalt. Szeretnél belépni egy másik fiókkal?"
 
 msgid "Forgotten your password or username?"
 msgstr "Elfelejtette jelszavát vagy felhasználónevét?"
@@ -510,19 +518,19 @@ msgid "Save"
 msgstr "Mentés"
 
 msgid "Popup closing..."
-msgstr ""
+msgstr "A popup bezáródik..."
 
 #, python-format
 msgid "Change selected %(model)s"
-msgstr ""
+msgstr "Kiválasztott %(model)s szerkesztése"
 
 #, python-format
 msgid "Add another %(model)s"
-msgstr ""
+msgstr "Újabb %(model)s hozzáadása"
 
 #, python-format
 msgid "Delete selected %(model)s"
-msgstr ""
+msgstr "Kiválasztott %(model)s törlése"
 
 msgid "Search"
 msgstr "Keresés"
@@ -601,6 +609,8 @@ msgid ""
 "We've emailed you instructions for setting your password, if an account "
 "exists with the email you entered. You should receive them shortly."
 msgstr ""
+"A jelszavad beállításához szükséges információkat elküldtük e-mailben a "
+"fiókhoz tartozó címre, ha létezik ilyen fiók. Hamarosan meg kell érkeznie."
 
 msgid ""
 "If you don't receive an email, please make sure you've entered the address "

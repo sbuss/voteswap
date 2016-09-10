@@ -8,6 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.mail import mail_managers
 from django.utils.cache import get_conditional_response, set_response_etag
 from django.utils.encoding import force_text
+from django.utils.http import unquote_etag
 from django.utils.six.moves.urllib.parse import urlparse
 
 logger = logging.getLogger('django.request')
@@ -53,18 +54,19 @@ class CommonMiddleware(object):
 
         # Check for a redirect based on settings.PREPEND_WWW
         host = request.get_host()
+        must_prepend = settings.PREPEND_WWW and host and not host.startswith('www.')
+        redirect_url = ('%s://www.%s' % (request.scheme, host)) if must_prepend else ''
 
-        if settings.PREPEND_WWW and host and not host.startswith('www.'):
-            host = 'www.' + host
+        # Check if a slash should be appended
+        if self.should_redirect_with_slash(request):
+            path = self.get_full_path_with_slash(request)
+        else:
+            path = request.get_full_path()
 
-            # Check if we also need to append a slash so we can do it all
-            # with a single redirect.
-            if self.should_redirect_with_slash(request):
-                path = self.get_full_path_with_slash(request)
-            else:
-                path = request.get_full_path()
-
-            return self.response_redirect_class('%s://%s%s' % (request.scheme, host, path))
+        # Return a redirect if necessary
+        if redirect_url or path != request.get_full_path():
+            redirect_url += path
+            return self.response_redirect_class(redirect_url)
 
     def should_redirect_with_slash(self, request):
         """
@@ -84,7 +86,7 @@ class CommonMiddleware(object):
         Return the full path of the request with a trailing slash appended.
 
         Raise a RuntimeError if settings.DEBUG is True and request.method is
-        GET, PUT, or PATCH.
+        POST, PUT, or PATCH.
         """
         new_path = request.get_full_path(force_append_slash=True)
         if settings.DEBUG and request.method in ('POST', 'PUT', 'PATCH'):
@@ -120,7 +122,7 @@ class CommonMiddleware(object):
             if response.has_header('ETag'):
                 return get_conditional_response(
                     request,
-                    etag=response['ETag'],
+                    etag=unquote_etag(response['ETag']),
                     response=response,
                 )
 

@@ -8,6 +8,7 @@ from django.apps import apps
 from django.core import checks, exceptions
 from django.db import connection, router
 from django.db.backends import utils
+from django.db.models import Q
 from django.db.models.deletion import CASCADE, SET_DEFAULT, SET_NULL
 from django.db.models.query_utils import PathInfo
 from django.db.models.utils import make_model_tuple
@@ -30,7 +31,7 @@ from .related_descriptors import (
 )
 from .related_lookups import (
     RelatedExact, RelatedGreaterThan, RelatedGreaterThanOrEqual, RelatedIn,
-    RelatedLessThan, RelatedLessThanOrEqual,
+    RelatedIsNull, RelatedLessThan, RelatedLessThanOrEqual,
 )
 from .reverse_related import (
     ForeignObjectRel, ManyToManyRel, ManyToOneRel, OneToOneRel,
@@ -197,12 +198,6 @@ class RelatedField(Field):
         if not isinstance(self.remote_field.model, ModelBase):
             return []
 
-        # If the field doesn't install backward relation on the target model (so
-        # `is_hidden` returns True), then there are no clashes to check and we
-        # can skip these fields.
-        if self.remote_field.is_hidden():
-            return []
-
         # Consider that we are checking field `Model.foreign` and the models
         # are:
         #
@@ -214,12 +209,15 @@ class RelatedField(Field):
         #         foreign = models.ForeignKey(Target)
         #         m2m = models.ManyToManyField(Target)
 
-        rel_opts = self.remote_field.model._meta
         # rel_opts.object_name == "Target"
+        rel_opts = self.remote_field.model._meta
+        # If the field doesn't install a backward relation on the target model
+        # (so `is_hidden` returns True), then there are no clashes to check
+        # and we can skip these fields.
+        rel_is_hidden = self.remote_field.is_hidden()
         rel_name = self.remote_field.get_accessor_name()  # i. e. "model_set"
         rel_query_name = self.related_query_name()  # i. e. "model"
-        field_name = "%s.%s" % (opts.object_name,
-            self.name)  # i. e. "Model.field"
+        field_name = "%s.%s" % (opts.object_name, self.name)  # i. e. "Model.field"
 
         # Check clashes between accessor or reverse query name of `field`
         # and any other field name -- i.e. accessor for Model.foreign is
@@ -228,7 +226,7 @@ class RelatedField(Field):
         for clash_field in potential_clashes:
             clash_name = "%s.%s" % (rel_opts.object_name,
                 clash_field.name)  # i. e. "Target.model_set"
-            if clash_field.name == rel_name:
+            if not rel_is_hidden and clash_field.name == rel_name:
                 errors.append(
                     checks.Error(
                         "Reverse accessor for '%s' clashes with field name '%s'." % (field_name, clash_name),
@@ -258,7 +256,7 @@ class RelatedField(Field):
             clash_name = "%s.%s" % (  # i. e. "Model.m2m"
                 clash_field.related_model._meta.object_name,
                 clash_field.field.name)
-            if clash_field.get_accessor_name() == rel_name:
+            if not rel_is_hidden and clash_field.get_accessor_name() == rel_name:
                 errors.append(
                     checks.Error(
                         "Reverse accessor for '%s' clashes with reverse accessor for '%s'." % (field_name, clash_name),
@@ -331,8 +329,13 @@ class RelatedField(Field):
             rh_field.attname: getattr(obj, lh_field.attname)
             for lh_field, rh_field in self.related_fields
         }
-        base_filter.update(self.get_extra_descriptor_filter(obj) or {})
-        return base_filter
+        descriptor_filter = self.get_extra_descriptor_filter(obj)
+        base_q = Q(**base_filter)
+        if isinstance(descriptor_filter, dict):
+            return base_q & Q(**descriptor_filter)
+        elif descriptor_filter:
+            return base_q & descriptor_filter
+        return base_q
 
     @property
     def swappable_setting(self):
@@ -684,9 +687,10 @@ class ForeignObject(RelatedField):
             return RelatedLessThan
         elif lookup_name == 'lte':
             return RelatedLessThanOrEqual
-        elif lookup_name != 'isnull':
+        elif lookup_name == 'isnull':
+            return RelatedIsNull
+        else:
             raise TypeError('Related Field got invalid lookup: %s' % lookup_name)
-        return super(ForeignObject, self).get_lookup(lookup_name)
 
     def get_transform(self, *args, **kwargs):
         raise NotImplementedError('Relational fields do not support transforms.')
@@ -758,8 +762,9 @@ class ForeignKey(ForeignObject):
 
         if on_delete is None:
             warnings.warn(
-                "on_delete will be a required arg for %s in Django 2.0. "
-                "Set it to models.CASCADE if you want to maintain the current default behavior. "
+                "on_delete will be a required arg for %s in Django 2.0. Set "
+                "it to models.CASCADE on models and in existing migrations "
+                "if you want to maintain the current default behavior. "
                 "See https://docs.djangoproject.com/en/%s/ref/models/fields/"
                 "#django.db.models.ForeignKey.on_delete" % (
                     self.__class__.__name__,
@@ -1000,8 +1005,9 @@ class OneToOneField(ForeignKey):
 
         if on_delete is None:
             warnings.warn(
-                "on_delete will be a required arg for %s in Django 2.0. "
-                "Set it to models.CASCADE if you want to maintain the current default behavior. "
+                "on_delete will be a required arg for %s in Django 2.0. Set "
+                "it to models.CASCADE on models and in existing migrations "
+                "if you want to maintain the current default behavior. "
                 "See https://docs.djangoproject.com/en/%s/ref/models/fields/"
                 "#django.db.models.ForeignKey.on_delete" % (
                     self.__class__.__name__,
