@@ -1,0 +1,3 @@
+static/
+venv/
+.mysql_data/
