@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import datetime
+import functools
 import re
 from itertools import chain
 
@@ -38,7 +39,7 @@ class MigrationAutodetector(object):
 
     def changes(self, graph, trim_to_apps=None, convert_apps=None, migration_name=None):
         """
-        Main entry point to produce a list of appliable changes.
+        Main entry point to produce a list of applicable changes.
         Takes a graph to base names on and an optional set of apps
         to try and restrict to (restriction is not guaranteed)
         """
@@ -63,6 +64,8 @@ class MigrationAutodetector(object):
                 key: self.deep_deconstruct(value)
                 for key, value in obj.items()
             }
+        elif isinstance(obj, functools.partial):
+            return (obj.func, self.deep_deconstruct(obj.args), self.deep_deconstruct(obj.keywords))
         elif isinstance(obj, COMPILED_REGEX_TYPE):
             return RegexObject(obj)
         elif isinstance(obj, type):

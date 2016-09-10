@@ -631,13 +631,13 @@ TECHNICAL_500_TEMPLATE = ("""
       var s = link.getElementsByTagName('span')[0];
       var uarr = String.fromCharCode(0x25b6);
       var darr = String.fromCharCode(0x25bc);
-      s.innerHTML = s.innerHTML == uarr ? darr : uarr;
+      s.textContent = s.textContent == uarr ? darr : uarr;
       return false;
     }
     function switchPastebinFriendly(link) {
       s1 = "Switch to copy-and-paste view";
       s2 = "Switch back to interactive view";
-      link.innerHTML = link.innerHTML.trim() == s1 ? s2: s1;
+      link.textContent = link.textContent.trim() == s1 ? s2: s1;
       toggle('browserTraceback', 'pastebinTraceback');
       return false;
     }
@@ -721,7 +721,6 @@ TECHNICAL_500_TEMPLATE = ("""
                     {% for attempt in entry.tried %}
                         <li><code>{{ attempt.0.loader_name }}</code>: {{ attempt.0.name }} ({{ attempt.1 }})</li>
                     {% endfor %}
-                    </ul>
                 {% else %}
                     <li>This engine did not provide a list of tried templates.</li>
                 {% endif %}
@@ -882,7 +881,7 @@ Exception Type: {{ exception_type|escape }}{% if request %} at {{ request.path_i
 Exception Value: {{ exception_value|force_escape }}
 </textarea>
   <br><br>
-  <input type="submit" value="Share this traceback on a public Web site">
+  <input type="submit" value="Share this traceback on a public website">
   </div>
 </form>
 </div>

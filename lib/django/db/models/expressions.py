@@ -210,7 +210,7 @@ class BaseExpression(object):
         ])
         return c
 
-    def _prepare(self):
+    def _prepare(self, field):
         """
         Hook used by Field.get_prep_lookup() to do custom preparation.
         """
@@ -309,7 +309,7 @@ class BaseExpression(object):
         Does this expression contain a reference to some of the
         existing aggregates? If so, returns the aggregate and also
         the lookup parts that *weren't* found. So, if
-            exsiting_aggregates = {'max_id': Max('id')}
+            existing_aggregates = {'max_id': Max('id')}
             self.name = 'max_id'
             queryset.filter(max_id__range=[10,100])
         then this method will return Max('id') and those parts of the
@@ -477,7 +477,7 @@ class F(Combinable):
 
 class Func(Expression):
     """
-    A SQL function call.
+    An SQL function call.
     """
     function = None
     template = '%(function)s(%(expressions)s)'
@@ -748,7 +748,8 @@ class When(Expression):
     def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
         c = self.copy()
         c.is_summary = summarize
-        c.condition = c.condition.resolve_expression(query, allow_joins, reuse, summarize, False)
+        if hasattr(c.condition, 'resolve_expression'):
+            c.condition = c.condition.resolve_expression(query, allow_joins, reuse, summarize, False)
         c.result = c.result.resolve_expression(query, allow_joins, reuse, summarize, for_save)
         return c
 

@@ -35,6 +35,8 @@ class SessionBase(object):
     TEST_COOKIE_NAME = 'testcookie'
     TEST_COOKIE_VALUE = 'worked'
 
+    __not_given = object()
+
     def __init__(self, session_key=None):
         self._session_key = session_key
         self.accessed = False
@@ -58,9 +60,10 @@ class SessionBase(object):
     def get(self, key, default=None):
         return self._session.get(key, default)
 
-    def pop(self, key, default=None):
+    def pop(self, key, default=__not_given):
         self.modified = self.modified or key in self._session
-        return self._session.pop(key, default)
+        args = () if default is self.__not_given else (default,)
+        return self._session.pop(key, *args)
 
     def setdefault(self, key, value):
         if key in self._session:
@@ -295,7 +298,7 @@ class SessionBase(object):
 
     def cycle_key(self):
         """
-        Creates a new session key, whilst retaining the current session data.
+        Creates a new session key, while retaining the current session data.
         """
         data = self._session_cache
         key = self.session_key
