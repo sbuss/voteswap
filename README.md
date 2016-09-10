@@ -18,5 +18,8 @@ make setup
 # Install docker via, eg:
 # OSX: brew install docker
 # or Linux: https://docs.docker.com/engine/installation/linux/ubuntulinux/ (ugh)
-make deps  # this runs mysql
+# If this is your first time, run
+make setupdb
+# Otherwise, just run
+make deps
 ```
