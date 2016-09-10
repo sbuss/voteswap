@@ -1,0 +1,5 @@
+database_engine: django.db.backends.mysql
+database_host: mysql
+database_name: voteswap
+database_user: voteswap
+database_password: password
