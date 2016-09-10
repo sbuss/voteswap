@@ -3,6 +3,10 @@
 Vote Swapping is the only way to make third-party candidates viable given the
 current US election process.
 
+# Contributing
+
+We'd love to get your help on this project. All pull requests and issues will
+be considered in a timely manner.
 
 # Development
 
