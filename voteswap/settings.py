@@ -30,6 +30,8 @@ LOGIN_REDIRECT_URL = '/'
 
 ALLOWED_HOSTS = []
 
+ROOT_DIR = os.path.join(os.path.dirname(__file__), '..')
+APPS_DIR = os.path.join(ROOT_DIR, 'voteswap')
 
 # Application definition
 
@@ -68,7 +70,9 @@ ROOT_URLCONF = 'voteswap.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            str(os.path.join(APPS_DIR, 'templates')),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
