@@ -53,6 +53,9 @@ MIDDLEWARE_CLASSES = [
     'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
 ]
 
+# See http://psa.matiasaguirre.net/docs/configuration/django.html#django-admin
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
+
 AUTHENTICATION_BACKENDS = [
     'social.backends.facebook.Facebook2OAuth2',  # FaceBook OAuth2 Graph2.0
     'django.contrib.auth.backends.ModelBackend',
