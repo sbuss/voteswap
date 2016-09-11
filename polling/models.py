@@ -41,13 +41,15 @@ CANDIDATE_TO_PARTY = {
 
 class State(models.Model):
     """All states (and districts) that can vote in federal elections."""
-    name = models.CharField()
+    name = models.CharField(max_length=255)
     updated = models.DateField()
-    abbv = models.CharField()
+    abbv = models.CharField(max_length=255)
     tipping_point_rank = models.IntegerField()
-    safe_for = models.CharField(choices=CANDIDATES, default=CANDIDATE_NONE)
+    safe_for = models.CharField(
+        max_length=255, choices=CANDIDATES, default=CANDIDATE_NONE)
     safe_rank = models.IntegerField(default=-1)
-    leans = models.CharField(choices=CANDIDATES, default=CANDIDATE_NONE)
+    leans = models.CharField(
+        max_length=255, choices=CANDIDATES, default=CANDIDATE_NONE)
     lean_rank = models.IntegerField(default=-1)
 
     class Meta:
