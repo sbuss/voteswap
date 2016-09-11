@@ -8,7 +8,9 @@
    {% if user and not user.is_anonymous %}
      Hello {{ user.get_full_name|default:user.username }}!
    {% else %}
-    <a class='button' href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
+    <a class='btn btn-primary'
+       href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}"
+       role="button">Login with Facebook</a>
    {% endif %}
  </p>
  </div>
