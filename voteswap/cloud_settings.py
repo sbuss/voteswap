@@ -2,6 +2,8 @@
 
 When running the site locally, this will read from local_settings.yaml. When
 run in production it will read from Google Datastore
+
+Inspired by http://stackoverflow.com/a/35261091
 """
 
 import os
