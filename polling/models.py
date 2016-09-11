@@ -55,6 +55,37 @@ class State(models.Model):
     class Meta:
         unique_together = ('name', 'updated')
 
+    @property
+    def likely_winner(self):
+        if self.safe_for:
+            return "Safe %s" % self.safe_for
+        elif self.tipping_point_rank != -1:
+            return "Leans %s" % self.leans
+        else:
+            return "Toss Up"
+
+    def __unicode__(self):
+        return u"{name}: {likely_winner} ({updated})".format(
+            name=self.name,
+            likely_winner=self.likely_winner,
+            updated=self.updated)
+
+    def __repr__(self):
+        if self.tipping_point_rank == -1:
+            return (
+                "<State(updated:{updated}, name:{name}, likely_winner:{likely_winner})>"  # NOQA
+                .format(updated=self.updated,
+                        name=self.name,
+                        tpr=self.tipping_point_rank,
+                        likely_winner=self.likely_winner))
+        else:
+            return (
+                "<State(updated:{updated}, name:{name}, tipping_point_rank:{tpr}, likely_winner:{likely_winner})>"  # NOQA
+                .format(updated=self.updated,
+                        name=self.name,
+                        tpr=self.tipping_point_rank,
+                        likely_winner=self.likely_winner))
+
 
 """VOTER_TYPE_REGISTERED = 'registered'
 VOTER_TYPE_LIKELY = 'likely'
