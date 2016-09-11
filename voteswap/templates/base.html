@@ -12,7 +12,13 @@
    <link href="/static/css/fbposter.css" rel="stylesheet">
  </head>
  <body>
+   {% include "_fb.js" %}
    {% block main %}{% endblock %}
+   <div class="fb-like"
+        data-share="true"
+        data-width="450"
+        data-show-faces="true">
+   </div>
    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
    <!-- Include all compiled plugins (below), or include individual files as needed -->
