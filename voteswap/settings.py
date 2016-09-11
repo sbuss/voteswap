@@ -26,8 +26,20 @@ SECRET_KEY = CloudSettings.get('secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = CloudSettings.get('debug') == "True"
 
+SOCIAL_AUTH_FACEBOOK_KEY = CloudSettings.get('facebook_key')
+SOCIAL_AUTH_FACEBOOK_SECRET = CloudSettings.get('facebook_secret')
+SOCIAL_AUTH_FACEBOOK_SCOPE = [
+    "email",
+    "user_location",  # requires facebook app review
+    "user_friends",
+]
+
+LOGIN_REDIRECT_URL = '/'
+
 ALLOWED_HOSTS = []
 
+ROOT_DIR = os.path.join(os.path.dirname(__file__), '..')
+APPS_DIR = os.path.join(ROOT_DIR, 'voteswap')
 
 # Application definition
 
@@ -38,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social.apps.django_app.default',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -49,6 +62,15 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
+]
+
+# See http://psa.matiasaguirre.net/docs/configuration/django.html#django-admin
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
+
+AUTHENTICATION_BACKENDS = [
+    'social.backends.facebook.Facebook2OAuth2',  # FaceBook OAuth2 Graph2.0
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 ROOT_URLCONF = 'voteswap.urls'
@@ -56,7 +78,9 @@ ROOT_URLCONF = 'voteswap.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            str(os.path.join(APPS_DIR, 'templates')),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -64,6 +88,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social.apps.django_app.context_processors.backends',
+                'social.apps.django_app.context_processors.login_redirect',
             ],
         },
     },

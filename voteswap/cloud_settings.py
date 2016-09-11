@@ -13,12 +13,18 @@ local = (
     else True)
 
 
-local_settings = None
-
-if local:
+def load_local_settings():
     import yaml
     with open('local_settings.yaml', 'r') as f:
         local_settings = yaml.load(f)
+    if os.path.isfile('local_secrets.yaml'):
+        with open('local_secrets.yaml', 'r') as f:
+            secrets = yaml.load(f)
+        local_settings.update(secrets)
+    return local_settings
+
+
+local_settings = load_local_settings() if local else {}
 
 
 class CloudSettings(object):
