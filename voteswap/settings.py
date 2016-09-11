@@ -26,6 +26,9 @@ SECRET_KEY = CloudSettings.get('secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = CloudSettings.get('debug') == "True"
 
+SOCIAL_AUTH_FACEBOOK_KEY = CloudSettings.get('facebook_key')
+SOCIAL_AUTH_FACEBOOK_SECRET = CloudSettings.get('facebook_secret')
+
 LOGIN_REDIRECT_URL = '/'
 
 ALLOWED_HOSTS = []
