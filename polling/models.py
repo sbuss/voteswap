@@ -54,3 +54,21 @@ class State(models.Model):
 
     class Meta:
         unique_together = ('name', 'updated')
+
+
+"""VOTER_TYPE_REGISTERED = 'registered'
+VOTER_TYPE_LIKELY = 'likely'
+VOTER_TYPES = (
+    (VOTER_TYPE_REGISTERED, VOTER_TYPE_REGISTERED.title()),
+    (VOTER_TYPE_LIKELY, VOTER_TYPE_LIKELY.title()),
+)
+
+
+class Polls(models.Model):
+    candidate = models.CharField(choices=CANDIDATES)
+    state = models.ForeignKey(State, null=True)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    sample_size = models.IntegerField()
+    likelihood = models.DecimalField()
+    voter_type = models.CharField(choices=VOTER_TYPES)"""
