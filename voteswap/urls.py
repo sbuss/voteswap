@@ -17,7 +17,11 @@ from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
 
+from voteswap.views import index
+
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url('', include('social.apps.django_app.urls', namespace='social'))
+    url('', include('social.apps.django_app.urls', namespace='social')),
+    url('^$', index, name='index'),
 ]

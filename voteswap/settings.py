@@ -26,6 +26,8 @@ SECRET_KEY = CloudSettings.get('secret_key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = CloudSettings.get('debug') == "True"
 
+LOGIN_REDIRECT_URL = '/'
+
 ALLOWED_HOSTS = []
 
 
