@@ -1,6 +1,7 @@
 PYTHONPATH=PYTHONPATH=$(PWD)/lib
 
 lib: requirements-vendor.txt
+	rm -rf $@
 	mkdir -p $@
 	pip install -t $@ -r requirements-vendor.txt
 
