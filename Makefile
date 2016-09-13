@@ -9,6 +9,7 @@ lib: requirements-vendor.txt
 .PHONY: setup
 setup: lib
 	pip install -r requirements-local.txt
+	pip install -r requirements-test.txt
 
 .PHONY: setupdb
 setupdb: deps
@@ -27,3 +28,6 @@ deps: startcontainer
 stop:
 	-docker stop voteswap-mysql
 	-docker rm voteswap-mysql
+
+test: deps
+	$(PYTHONPATH) python manage.py test
