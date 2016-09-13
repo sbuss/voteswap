@@ -18,6 +18,9 @@ class TestProfile(TestCase):
         user0.profile.paired_with = user1.profile
         self.assertEqual(user0.profile.paired_with, user1.profile)
         self.assertEqual(user1.profile.paired_with, user0.profile)
+        # Ensure it saved
+        user0 = get_user_model().objects.get(id=user0.id)
+        self.assertEqual(user0.profile.paired_with, user1.profile)
 
     def test_profile_candidate_validation(self):
         profile = ProfileFactory.build()
