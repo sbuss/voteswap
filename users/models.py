@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db import transaction
 import us
@@ -30,5 +31,9 @@ class Profile(models.Model):
         value._paired_with = self
         value.save()
         self.save()
+
+    def clean(self):
+        if self.preferred_candidate == self.second_candidate:
+            raise ValidationError("Your candidate choices cannot be the same.")
 
     paired_with = property(get_pair, set_pair)

@@ -1,7 +1,9 @@
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from users.models import Profile
 from users.tests.factories import UserFactory
+from users.tests.factories import ProfileFactory
 
 
 class TestProfile(TestCase):
@@ -16,3 +18,8 @@ class TestProfile(TestCase):
         user0.profile.paired_with = user1.profile
         self.assertEqual(user0.profile.paired_with, user1.profile)
         self.assertEqual(user1.profile.paired_with, user0.profile)
+
+    def test_profile_candidate_validation(self):
+        profile = ProfileFactory.build()
+        profile.preferred_candidate = profile.second_candidate
+        self.assertRaises(ValidationError, profile.clean)
