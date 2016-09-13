@@ -33,6 +33,9 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = [
     "user_location",  # requires facebook app review
     "user_friends",
 ]
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': 'id,name,email',
+}
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -52,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
     'polling',
+    'users',
 ]
 
 MIDDLEWARE_CLASSES = [

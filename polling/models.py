@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+import us
 
 # Create your models here.
 
@@ -38,12 +39,15 @@ CANDIDATE_TO_PARTY = {
     CANDIDATE_TRUMP: PARTY_REPUBLICAN,
 }
 
+STATES = [(state.name, state.name) for state in us.STATES]
+ABBVS = [(state.abbr, state.abbr) for state in us.STATES]
+
 
 class State(models.Model):
     """All states (and districts) that can vote in federal elections."""
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, choices=STATES)
     updated = models.DateField()
-    abbv = models.CharField(max_length=255)
+    abbv = models.CharField(max_length=255, choices=ABBVS)
     tipping_point_rank = models.IntegerField()
     safe_for = models.CharField(
         max_length=255, choices=CANDIDATES, default=CANDIDATE_NONE)
