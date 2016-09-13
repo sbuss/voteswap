@@ -7,7 +7,7 @@ lib: requirements-vendor.txt
 
 
 .PHONY: setup
-setup: lib
+setup: lib requirements-test.txt requirements-local.txt
 	pip install -r requirements-local.txt
 	pip install -r requirements-test.txt
 
@@ -29,5 +29,5 @@ stop:
 	-docker stop voteswap-mysql
 	-docker rm voteswap-mysql
 
-test: deps
+test: deps setup
 	$(PYTHONPATH) python manage.py test
