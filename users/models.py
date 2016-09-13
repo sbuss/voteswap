@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 from django.db import transaction
 import us
@@ -11,7 +11,7 @@ STATES = [(state.name, state.name) for state in us.STATES]
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
     state = models.CharField(max_length=255, choices=STATES)
     preferred_candidate = models.CharField(max_length=255, choices=CANDIDATES)
     second_candidate = models.CharField(max_length=255, choices=CANDIDATES)
