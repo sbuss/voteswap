@@ -1,15 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.db.models import F
 
-from users.tests.factories import UserFactory
+from users.models import Profile
+from users.tests import BaseUsersTest
 from users.tests.factories import ProfileFactory
 
 
-class TestProfile(TestCase):
-    def setUp(self):
-        self.users = [UserFactory.create() for x in range(10)]
-
+class TestProfile(BaseUsersTest):
     def test_paired_with_property(self):
         user0 = self.users[0]
         user1 = self.users[1]
@@ -26,3 +24,13 @@ class TestProfile(TestCase):
         profile = ProfileFactory.build()
         profile.preferred_candidate = profile.second_candidate
         self.assertRaises(ValidationError, profile.clean)
+
+    def test_empty_preferred(self):
+        self.assertFalse(Profile.objects.filter(preferred_candidate=""))
+
+    def test_empty_second(self):
+        self.assertFalse(Profile.objects.filter(second_candidate=""))
+
+    def test_equal_candidates(self):
+        self.assertFalse(Profile.objects.filter(
+            preferred_candidate=F('second_candidate')))

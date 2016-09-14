@@ -19,10 +19,13 @@ class ProfileFactory(factory.DjangoModelFactory):
 
     @factory.lazy_attribute
     def second_candidate(self):
-        choice = random.choice(CANDIDATES)[0]
-        while choice == self.preferred_candidate:
-            choice = random.choice(CANDIDATES)[0]
-        return choice
+        return random.choice(CANDIDATES)[0]
+
+    @classmethod
+    def _adjust_kwargs(cls, **kwargs):
+        while kwargs['preferred_candidate'] == kwargs['second_candidate']:
+            kwargs['second_candidate'] = random.choice(CANDIDATES)[0]
+        return kwargs
 
 
 class UserFactory(factory.DjangoModelFactory):

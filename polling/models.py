@@ -29,8 +29,8 @@ CANDIDATES = (
     (CANDIDATE_JOHNSON, CANDIDATE_JOHNSON.title()),
     (CANDIDATE_STEIN, CANDIDATE_STEIN.title()),
     (CANDIDATE_TRUMP, CANDIDATE_TRUMP.title()),
-    (CANDIDATE_NONE, "No One"),
 )
+CANDIDATES_OR_NONE = CANDIDATES + ((CANDIDATE_NONE, "No One"),)
 
 CANDIDATE_TO_PARTY = {
     CANDIDATE_CLINTON: PARTY_DEMOCRATIC,
@@ -50,10 +50,10 @@ class State(models.Model):
     abbv = models.CharField(max_length=255, choices=ABBVS)
     tipping_point_rank = models.IntegerField()
     safe_for = models.CharField(
-        max_length=255, choices=CANDIDATES, default=CANDIDATE_NONE)
+        max_length=255, choices=CANDIDATES_OR_NONE, default=CANDIDATE_NONE)
     safe_rank = models.IntegerField(default=-1)
     leans = models.CharField(
-        max_length=255, choices=CANDIDATES, default=CANDIDATE_NONE)
+        max_length=255, choices=CANDIDATES_OR_NONE, default=CANDIDATE_NONE)
     lean_rank = models.IntegerField(default=-1)
 
     class Meta:

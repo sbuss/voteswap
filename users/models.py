@@ -11,6 +11,12 @@ from polling.models import CANDIDATES
 STATES = [(state.name, state.name) for state in us.STATES]
 
 
+class ProfileManager(models.Manager):
+    def get_queryset(self):
+        return super(ProfileManager, self).get_queryset().select_related(
+            'user', '_paired_with__user')
+
+
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     state = models.CharField(max_length=255, choices=STATES)
@@ -21,6 +27,8 @@ class Profile(models.Model):
     # user's information we actually care about
     _paired_with = models.ForeignKey(
         'self', null=True, on_delete=models.SET_NULL)
+
+    objects = ProfileManager()
 
     def get_pair(self):
         return self._paired_with
@@ -37,3 +45,11 @@ class Profile(models.Model):
             raise ValidationError("Your candidate choices cannot be the same.")
 
     paired_with = property(get_pair, set_pair)
+
+    def __repr__(self):
+        return "<Profile: user:{user}, state:{state}, pc:{pc}, sc:{sc}, pair:{pair}>".format(  # NOQA
+                user=self.user,
+                state=self.state,
+                pc=self.preferred_candidate,
+                sc=self.second_candidate,
+                pair=self._paired_with.user if self._paired_with else 'None')

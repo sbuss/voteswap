@@ -14,8 +14,9 @@ setup: lib requirements-test.txt requirements-local.txt
 .PHONY: setupdb
 setupdb: deps
 	$(PYTHONPATH) python manage.py migrate
-	$(PYTHONPATH) python manage.py createsuperuser
-	$(PYTHONPATH) python manage.py dumpdata
+	@#$(PYTHONPATH) python manage.py createsuperuser
+	@#$(PYTHONPATH) python manage.py dumpdata
+	$(PYTHONPATH) python manage.py loaddata fixtures/*.json
 
 .PHONY: startcontainer
 startcontainer:
