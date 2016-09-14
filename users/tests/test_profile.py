@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.db.models import F
 from django.test import TestCase
 
+from users.models import Profile
 from users.tests.factories import UserFactory
 from users.tests.factories import ProfileFactory
 
@@ -26,3 +28,13 @@ class TestProfile(TestCase):
         profile = ProfileFactory.build()
         profile.preferred_candidate = profile.second_candidate
         self.assertRaises(ValidationError, profile.clean)
+
+    def test_empty_preferred(self):
+        self.assertFalse(Profile.objects.filter(preferred_candidate=""))
+
+    def test_empty_second(self):
+        self.assertFalse(Profile.objects.filter(second_candidate=""))
+
+    def test_equal_candidates(self):
+        self.assertFalse(Profile.objects.filter(
+            preferred_candidate=F('second_candidate')))
