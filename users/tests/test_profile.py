@@ -1,17 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import F
-from django.test import TestCase
 
 from users.models import Profile
-from users.tests.factories import UserFactory
+from users.tests import BaseUsersTest
 from users.tests.factories import ProfileFactory
 
 
-class TestProfile(TestCase):
-    def setUp(self):
-        self.users = [UserFactory.create() for x in range(10)]
-
+class TestProfile(BaseUsersTest):
     def test_paired_with_property(self):
         user0 = self.users[0]
         user1 = self.users[1]

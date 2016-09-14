@@ -27,9 +27,10 @@ class MockSocialNetwork(object):
         self.user_ids = (get_user_model().objects.all().order_by('id')
                          .values_list('id', flat=True))
         self.num_users = len(self.user_ids)
+        num_cliques = 10
         self.social_network = relaxed_caveman_graph(
-            self.num_users,  # size of group
-            10,  # num of cliques
+            self.num_users / num_cliques,  # size of group
+            num_cliques,  # num of cliques
             0.05,  # probability of rewiring intra-group to inter-group edge
             RANDOM_SEED)
 
@@ -48,12 +49,12 @@ class MockSocialNetwork(object):
         return Profile.objects.filter(id__in=friends).select_related('user')
 
     def get_friends_of_friends(self, user_id, exclude_friends=False):
-        exclude = set()
+        exclude = set([user_id])  # exclude self
         all_friends = set()
         for neighbor in self.social_network.neighbors(
                 self._user_id_to_index(user_id)):
             if exclude_friends:
-                exclude.add(neighbor)
+                exclude.add(self._index_to_user_id(neighbor))
             all_friends.add(self._index_to_user_id(neighbor))
             for foaf in self.social_network.neighbors(neighbor):
                 all_friends.add(self._index_to_user_id(foaf))
