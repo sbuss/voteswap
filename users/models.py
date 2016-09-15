@@ -27,6 +27,7 @@ class Profile(models.Model):
     # user's information we actually care about
     _paired_with = models.ForeignKey(
         'self', null=True, on_delete=models.SET_NULL)
+    friends = models.ManyToManyField('self', null=True)
 
     objects = ProfileManager()
 
