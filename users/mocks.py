@@ -24,7 +24,9 @@ class MockSocialNetwork(object):
 
     It is a randomly generated social network."""
     def __init__(self):
-        self.user_ids = (get_user_model().objects.all().order_by('id')
+        self.user_ids = (get_user_model().objects.all()
+                         .exclude(username='admin')
+                         .order_by('id')
                          .values_list('id', flat=True))
         self.num_users = len(self.user_ids)
         num_cliques = 10
