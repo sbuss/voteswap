@@ -44,3 +44,7 @@ stop:
 
 test: deps setup
 	$(PYTHONPATH) python manage.py test
+
+.PHONY: runserver
+runserver: deps
+	$(PYTHONPATH) python manage.py runserver
