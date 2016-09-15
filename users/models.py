@@ -54,7 +54,7 @@ class Profile(models.Model):
     # user's information we actually care about
     _paired_with = models.ManyToManyField(
         'self', symmetrical=True)
-    friends = models.ManyToManyField('self', null=True)
+    friends = models.ManyToManyField('self', symmetrical=True)
 
     objects = ProfileManager()
 
