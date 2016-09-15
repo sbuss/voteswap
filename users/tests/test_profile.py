@@ -13,6 +13,7 @@ class TestProfile(BaseUsersTest):
     def test_paired_with_property(self):
         user0 = self.users[0]
         user1 = self.users[1]
+        user2 = self.users[2]
         self.assertFalse(user0.profile.paired_with)
         self.assertFalse(user1.profile.paired_with)
         user0.profile.paired_with = user1.profile
@@ -21,6 +22,8 @@ class TestProfile(BaseUsersTest):
         # Ensure it saved
         user0 = get_user_model().objects.get(id=user0.id)
         self.assertEqual(user0.profile.paired_with, user1.profile)
+        user0.profile.paired_with = user2.profile
+        self.assertEqual(user0.profile.paired_with, user2.profile)
 
     def test_profile_candidate_validation(self):
         profile = ProfileFactory.build()
