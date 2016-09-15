@@ -39,8 +39,9 @@ class PairProposal(models.Model):
 
 class ProfileManager(models.Manager):
     def get_queryset(self):
-        return super(ProfileManager, self).get_queryset().select_related(
-            'user', '_paired_with__user')
+        return (super(ProfileManager, self).get_queryset()
+                .select_related('user')
+                .prefetch_related('_paired_with__user'))
 
 
 class Profile(models.Model):
@@ -51,27 +52,29 @@ class Profile(models.Model):
     # Pairing with a User might be more technically correct, but then that
     # requires us to JOIN against the users table when trying to get the
     # user's information we actually care about
-    _paired_with = models.ForeignKey(
-        'self', null=True, on_delete=models.SET_NULL)
+    _paired_with = models.ManyToManyField(
+        'self', null=True, symmetrical=True)
     friends = models.ManyToManyField('self', null=True)
 
     objects = ProfileManager()
 
-    def get_pair(self):
-        return self._paired_with
-
     @transaction.atomic
-    def set_pair(self, value):
-        self._paired_with = value
-        value._paired_with = self
-        value.save()
-        self.save()
+    def set_pair(self, other):
+        if self._paired_with.all():
+            self._paired_with.clear()
+        self._paired_with.add(other)
+
+    def get_pair(self):
+        pair = self._paired_with.all()
+        if pair:
+            return pair[0]
+        return None
+
+    paired_with = property(get_pair, set_pair)
 
     def clean(self):
         if self.preferred_candidate == self.second_candidate:
             raise ValidationError("Your candidate choices cannot be the same.")
-
-    paired_with = property(get_pair, set_pair)
 
     def __repr__(self):
         return "<Profile: user:{user}, state:{state}, pc:{pc}, sc:{sc}, pair:{pair}>".format(  # NOQA
@@ -79,4 +82,4 @@ class Profile(models.Model):
                 state=self.state,
                 pc=self.preferred_candidate,
                 sc=self.second_candidate,
-                pair=self._paired_with.user if self._paired_with else 'None')
+                pair=repr(getattr(self.paired_with, 'user', None)))
