@@ -1,7 +1,9 @@
+from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import F
 
+from users.models import PairProposal
 from users.models import Profile
 from users.tests import BaseUsersTest
 from users.tests.factories import ProfileFactory
@@ -34,3 +36,22 @@ class TestProfile(BaseUsersTest):
     def test_equal_candidates(self):
         self.assertFalse(Profile.objects.filter(
             preferred_candidate=F('second_candidate')))
+
+
+class TestPairProposal(BaseUsersTest):
+    def test_confirmed_qs(self):
+        user0 = self.users[0]
+        user1 = self.users[1]
+        pair = PairProposal.objects.create(
+            from_profile=user0.profile,
+            to_profile=user1.profile)
+        self.assertFalse(PairProposal.objects.confirmed())
+        pair.date_confirmed = datetime.now()
+        pair.save()
+        self.assertEqual(list(PairProposal.objects.confirmed()), [pair])
+        self.assertEqual(list(PairProposal.objects.rejected()), [])
+        pair.date_confirmed = None
+        pair.date_rejected = datetime.now()
+        pair.save()
+        self.assertEqual(list(PairProposal.objects.confirmed()), [])
+        self.assertEqual(list(PairProposal.objects.rejected()), [pair])

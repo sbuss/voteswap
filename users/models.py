@@ -11,6 +11,32 @@ from polling.models import CANDIDATES
 STATES = [(state.name, state.name) for state in us.STATES]
 
 
+class PairProposalManager(models.Manager):
+    def confirmed(self):
+        return self.get_queryset().filter(date_confirmed__isnull=False)
+
+    def rejected(self):
+        return self.get_queryset().filter(date_rejected__isnull=False)
+
+
+class PairProposal(models.Model):
+    from_profile = models.ForeignKey(
+        'Profile',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='first_pair')
+    to_profile = models.ForeignKey(
+        'Profile',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='second_pair')
+    date_proposed = models.DateTimeField(auto_now_add=True)
+    date_confirmed = models.DateTimeField(null=True)
+    date_rejected = models.DateTimeField(null=True)
+    reason_rejected = models.TextField(null=True, blank=True)
+    objects = PairProposalManager()
+
+
 class ProfileManager(models.Manager):
     def get_queryset(self):
         return super(ProfileManager, self).get_queryset().select_related(
