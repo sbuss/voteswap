@@ -48,7 +48,8 @@ class MockSocialNetwork(object):
         friends = [self._index_to_user_id(neighbor)
                    for neighbor in self.social_network.neighbors(
                        self._user_id_to_index(user_id))]
-        return Profile.objects.filter(id__in=friends).select_related('user')
+        return Profile.objects.filter(
+            user__id__in=friends).select_related('user')
 
     def get_friends_of_friends(self, user_id, exclude_friends=False):
         exclude = set([user_id])  # exclude self
@@ -61,4 +62,5 @@ class MockSocialNetwork(object):
             for foaf in self.social_network.neighbors(neighbor):
                 all_friends.add(self._index_to_user_id(foaf))
         friends = all_friends - exclude
-        return Profile.objects.filter(id__in=friends).select_related('user')
+        return Profile.objects.filter(
+            user__id__in=friends).select_related('user')
