@@ -155,7 +155,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'vendor_static')
+    os.path.join(BASE_DIR, 'vendor_static'),
+    os.path.join(BASE_DIR, 'voteswap', 'static')
 ]
 
 STATIC_ROOT = 'static'
