@@ -18,11 +18,13 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from voteswap.views import index
+from voteswap.views import landing_page
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('', include('social.apps.django_app.urls', namespace='social')),
-    url('^$', index, name='index'),
+    url('^home/$', index, name='index'),
+    url('^$', landing_page, name='landing_page'),
     url('^logout/$', 'django.contrib.auth.views.logout', name='logout'),
 ]
