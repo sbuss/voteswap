@@ -33,7 +33,7 @@ class UserFactory(factory.DjangoModelFactory):
         model = get_user_model()
     first_name = factory.Faker('first_name')
     last_name = factory.Faker('last_name')
-    username = factory.LazyAttribute(
-        lambda o: ("%s.%s" % (o.first_name, o.last_name)).lower())
+    username = factory.LazyAttributeSequence(
+        lambda o, n: ("%s.%s.%s" % (o.first_name, o.last_name, n)).lower())
     email = factory.LazyAttribute(lambda o: "%s@gmail.com" % o.username)
     profile = factory.RelatedFactory(ProfileFactory, 'user')
