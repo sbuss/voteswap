@@ -1,4 +1,4 @@
 /static/*
-venv/
-.mysql_data/
-local_secrets.yaml
+/venv/
+/.mysql_data/
+/local_secrets.yaml
