@@ -41,6 +41,12 @@ class PairProposal(models.Model):
     reason_rejected = models.TextField(null=True, blank=True)
     objects = PairProposalManager()
 
+    def __repr__(self):
+        return "<PairProposal: from:{from_p} to:{to_p} at:{when}>".format(
+            from_p=repr(self.from_profile),
+            to_p=repr(self.to_profile),
+            when=self.date_proposed.isoformat())
+
 
 class ProfileManager(models.Manager):
     def get_queryset(self):
