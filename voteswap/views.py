@@ -20,3 +20,10 @@ def landing_page(request):
     context = RequestContext(request, {'form': form})
     return render_to_response('landing_page.html',
                               context_instance=context)
+
+
+def signup(request):
+    if request.method == "POST":
+        pass
+    else:
+        pass
