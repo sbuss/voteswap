@@ -47,7 +47,8 @@ class TestPairProposal(BaseUsersTest):
         user1 = self.users[1]
         pair = PairProposal.objects.create(
             from_profile=user0.profile,
-            to_profile=user1.profile)
+            to_profile=user1.profile,
+        )
         self.assertFalse(PairProposal.objects.confirmed())
         pair.date_confirmed = datetime.now()
         pair.save()
