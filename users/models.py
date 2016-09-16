@@ -60,6 +60,7 @@ class Profile(models.Model):
     state = models.CharField(max_length=255, choices=STATES)
     preferred_candidate = models.CharField(max_length=255, choices=CANDIDATES)
     second_candidate = models.CharField(max_length=255, choices=CANDIDATES)
+    reason = models.TextField(null=True, blank=True)  # Why a user is swapping
     # Pairing with a User might be more technically correct, but then that
     # requires us to JOIN against the users table when trying to get the
     # user's information we actually care about
