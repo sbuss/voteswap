@@ -12,6 +12,11 @@ STATES = [(state.name, state.name) for state in us.STATES]
 
 
 class PairProposalManager(models.Manager):
+    def pending(self):
+        return self.get_queryset().filter(
+            date_confirmed__isnull=True,
+            date_rejected__isnull=True)
+
     def confirmed(self):
         return self.get_queryset().filter(date_confirmed__isnull=False)
 
