@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load bootstrap %}
 
 {% block main %}
 <p>
@@ -6,7 +7,11 @@ This is the landing page. This is the form:
 </p>
 
 <form>
-  {{ form.as_p }}
+  {% csrf_token %}
+  {{ form|bootstrap }}
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
 </form>
 
 {% endblock %}
