@@ -1,3 +1,5 @@
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 
@@ -12,6 +14,8 @@ def index(request):
 
 
 def landing_page(request):
+    if hasattr(request, 'user') and request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('users:user_profile'))
     form = LandingPageForm()
     context = RequestContext(request, {'form': form})
     return render_to_response('landing_page.html',
