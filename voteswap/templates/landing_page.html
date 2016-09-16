@@ -2,9 +2,8 @@
 {% load bootstrap %}
 
 {% block main %}
-<p>
-This is the landing page. This is the form:
-</p>
+
+{% include "_leader.html" %}
 
 <form>
   {% csrf_token %}
