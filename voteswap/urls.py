@@ -27,4 +27,5 @@ urlpatterns = [
     url('^home/$', index, name='index'),
     url('^$', landing_page, name='landing_page'),
     url('^logout/$', 'django.contrib.auth.views.logout', name='logout'),
+    url('^user/', include('users.urls', namespace='users')),
 ]
