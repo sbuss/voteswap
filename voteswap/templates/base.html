@@ -14,41 +14,41 @@
   </head>
   <body>
 
-    <div class="container ">
+    <nav class="navbar">
+      <div class="container-fluid">
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a class="navbar-brand" href="#">
+              <div class="circle">VS</div> VoteSwap
+              </a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Press</a></li>
+            <!--<li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>-->
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div><!--/.container-fluid -->
+    </nav>
+    <div class="container-fluid">
 <!-- Static navbar -->
-      <nav class="navbar">
-        <div class="container-fluid">
-          <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-              <li><a class="navbar-brand" href="#">
-                <div class="circle">VS</div> VoteSwap
-                </a></li>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Press</a></li>
-              <!--<li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li class="dropdown-header">Nav header</li>
-                  <li><a href="#">Separated link</a></li>
-                  <li><a href="#">One more separated link</a></li>
-                </ul>
-              </li>-->
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div><!--/.container-fluid -->
-      </nav>
 
       {% include "_fb.js" %}
       {% block main %}{% endblock %}
-    <div class="fb-like"
+    <!--<div class="fb-like"
          data-share="true"
          data-width="450"
          data-show-faces="true">
-    </div>
+         </div>-->
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="{% static 'jquery.slim.min.js' %}"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
