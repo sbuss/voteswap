@@ -29,12 +29,12 @@ class PairProposal(models.Model):
         'Profile',
         on_delete=models.SET_NULL,
         null=True,
-        related_name='first_pair')
+        related_name='proposals_made')
     to_profile = models.ForeignKey(
         'Profile',
         on_delete=models.SET_NULL,
         null=True,
-        related_name='second_pair')
+        related_name='proposals_received')
     date_proposed = models.DateTimeField(auto_now_add=True)
     date_confirmed = models.DateTimeField(null=True)
     date_rejected = models.DateTimeField(null=True)
