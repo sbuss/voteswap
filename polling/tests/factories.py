@@ -1,4 +1,5 @@
 from datetime import datetime
+import us
 
 import factory
 
@@ -10,9 +11,10 @@ class StateFactory(factory.DjangoModelFactory):
     class Meta:
         model = State
 
-    name = factory.Sequence(lambda n: "state-%d" % n)
+    name = factory.Sequence(lambda n: us.STATES[n])
     updated = factory.LazyFunction(datetime.now)
-    abbv = factory.LazyAttribute(lambda obj: obj.name[-2:])
+    abbv = factory.LazyAttribute(
+        lambda obj: us.states.lookup(unicode(obj.name)).abbr)
     tipping_point_rank = factory.Sequence(lambda n: int(n))
     safe_for = CANDIDATE_NONE
     safe_rank = -1
