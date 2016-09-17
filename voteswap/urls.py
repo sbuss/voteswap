@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.auth.views import logout
 
 from voteswap.views import index
 from voteswap.views import landing_page
@@ -27,7 +28,7 @@ urlpatterns = [
     url('', include('social.apps.django_app.urls', namespace='social')),
     url('^home/$', index, name='index'),
     url('^$', landing_page, name='landing_page'),
-    url('^logout/$', 'django.contrib.auth.views.logout', name='logout'),
+    url('^logout/$', logout, name='logout'),
     url('^user/', include('users.urls', namespace='users')),
     url('^signup/$', signup, name='signup'),
 ]
