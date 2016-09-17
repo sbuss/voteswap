@@ -15,7 +15,7 @@ class StateFactory(factory.DjangoModelFactory):
     updated = factory.LazyFunction(datetime.now)
     abbv = factory.LazyAttribute(
         lambda obj: us.states.lookup(unicode(obj.name)).abbr)
-    tipping_point_rank = factory.Sequence(lambda n: int(n))
+    tipping_point_rank = -1
     safe_for = CANDIDATE_NONE
     safe_rank = -1
     leans = CANDIDATE_NONE
