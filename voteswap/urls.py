@@ -20,7 +20,6 @@ from django.contrib.auth.views import logout
 
 from voteswap.views import index
 from voteswap.views import landing_page
-from voteswap.views import signup
 
 
 urlpatterns = [
@@ -30,5 +29,5 @@ urlpatterns = [
     url('^$', landing_page, name='landing_page'),
     url('^logout/$', logout, name='logout'),
     url('^user/', include('users.urls', namespace='users')),
-    url('^signup/$', signup, name='signup'),
+    url('^signup/$', landing_page, name='signup'),
 ]
