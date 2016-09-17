@@ -8,5 +8,7 @@ from polling.models import STATES
 class LandingPageForm(forms.Form):
     state = forms.ChoiceField(choices=STATES)
     preferred_candidate = forms.ChoiceField(choices=CANDIDATES)
-    second_candidate = forms.ChoiceField(choices=CANDIDATES_THIRD_PARTY)
+    second_candidate = forms.ChoiceField(
+        choices=CANDIDATES_THIRD_PARTY,
+        required=False)
     reason = forms.Textarea()
