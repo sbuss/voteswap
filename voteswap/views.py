@@ -15,7 +15,7 @@ def index(request):
 
 def landing_page(request):
     if hasattr(request, 'user') and request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('users:user_profile'))
+        return HttpResponseRedirect(reverse('users:profile'))
     form = LandingPageForm()
     context = RequestContext(request, {'form': form})
     return render_to_response('landing_page.html',
