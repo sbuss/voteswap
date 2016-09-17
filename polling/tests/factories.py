@@ -6,7 +6,7 @@ from polling.models import State
 from polling.models import CANDIDATE_NONE
 
 
-class StateFactory(factory.Factory):
+class StateFactory(factory.DjangoModelFactory):
     class Meta:
         model = State
 
