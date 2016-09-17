@@ -18,6 +18,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth.views import logout
 
+from voteswap.views import confirm_signup
 from voteswap.views import index
 from voteswap.views import landing_page
 
@@ -29,5 +30,6 @@ urlpatterns = [
     url('^$', landing_page, name='landing_page'),
     url('^logout/$', logout, name='logout'),
     url('^user/', include('users.urls', namespace='users')),
+    url('^signup/confirm$', confirm_signup, name='confirm_signup'),
     url('^signup/$', landing_page, name='signup'),
 ]

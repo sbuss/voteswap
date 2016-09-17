@@ -1,9 +1,15 @@
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.http import HttpResponseServerError
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 
 from voteswap.forms import LandingPageForm
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def index(request):
@@ -22,8 +28,15 @@ def landing_page(request):
                               context_instance=context)
 
 
-def signup(request):
-    if request.method == "POST":
-        pass
-    else:
-        pass
+@login_required
+def confirm_signup(request):
+    data = request.session.get('landing_page_form', None)
+    if not data:
+        return HttpResponseRedirect(reverse('signup'))
+    logger.info("Data in confirm_signup is %s" % data)
+
+    form = LandingPageForm(data=data)
+    if form.is_valid():
+        form.save(request.user)
+        return HttpResponseRedirect(reverse('users:profile'))
+    return HttpResponseServerError("Signup failed")
