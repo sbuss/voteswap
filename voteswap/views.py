@@ -22,7 +22,21 @@ def index(request):
 def landing_page(request):
     if hasattr(request, 'user') and request.user.is_authenticated():
         return HttpResponseRedirect(reverse('users:profile'))
-    form = LandingPageForm()
+
+    if request.method == "POST":
+        form = LandingPageForm(data=request.POST)
+        if form.is_valid():
+            # Save the data to session
+            data = form.cleaned_data
+            request.session['landing_page_form'] = data
+            # redirect to FB login, with '?next' set to send the user to
+            # confirm_signup
+            fb_login_url = "{base}?next={next}".format(
+                base=reverse('social:begin', args=['facebook']),
+                next=reverse(confirm_signup))
+            return HttpResponseRedirect(fb_login_url)
+    else:
+        form = LandingPageForm()
     context = RequestContext(request, {'form': form})
     return render_to_response('landing_page.html',
                               context_instance=context)
