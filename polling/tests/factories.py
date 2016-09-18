@@ -1,4 +1,4 @@
-from datetime import date
+from django.utils import timezone
 import us
 
 import factory
@@ -12,7 +12,7 @@ class StateFactory(factory.DjangoModelFactory):
         model = State
 
     name = factory.Sequence(lambda n: us.STATES[n])
-    updated = factory.LazyFunction(date.today)
+    updated = factory.LazyFunction(timezone.now)
     abbv = factory.LazyAttribute(
         lambda obj: us.states.lookup(unicode(obj.name)).abbr)
     tipping_point_rank = -1

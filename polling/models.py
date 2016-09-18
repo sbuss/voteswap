@@ -68,7 +68,7 @@ class StateManager(models.Manager):
 class State(models.Model):
     """All states (and districts) that can vote in federal elections."""
     name = models.CharField(max_length=255, choices=STATES)
-    updated = models.DateField()
+    updated = models.DateTimeField()
     abbv = models.CharField(max_length=255, choices=ABBVS)
     tipping_point_rank = models.IntegerField()
     safe_for = models.CharField(

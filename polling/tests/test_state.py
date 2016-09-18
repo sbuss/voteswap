@@ -1,4 +1,5 @@
 import datetime
+from django.utils import timezone
 from django.test import TestCase
 
 from polling.models import State
@@ -7,7 +8,7 @@ from polling.tests.factories import StateFactory
 
 class TestStateManager(TestCase):
     def test_latest(self):
-        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        yesterday = timezone.now() - datetime.timedelta(days=1)
         StateFactory.create(name='California', updated=yesterday)
         state2 = StateFactory.create(name='California')
         self.assertEqual(len(State.objects.all()), 1)
@@ -15,7 +16,7 @@ class TestStateManager(TestCase):
         self.assertEqual(list(State.objects.all()), [state2])
 
     def test_latest_multiple_states(self):
-        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        yesterday = timezone.now() - datetime.timedelta(days=1)
         StateFactory.create(name='California', updated=yesterday)
         ca = StateFactory.create(name='California')
         StateFactory.create(name='Florida', updated=yesterday)
