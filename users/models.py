@@ -56,10 +56,14 @@ class ProfileManager(models.Manager):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
-    state = models.CharField(max_length=255, choices=STATES)
-    preferred_candidate = models.CharField(max_length=255, choices=CANDIDATES)
-    second_candidate = models.CharField(max_length=255, choices=CANDIDATES)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)
+    fb_id = models.CharField(max_length=255, null=True)
+    active = models.BooleanField(default=False)
+    state = models.CharField(max_length=255, choices=STATES, null=True)
+    preferred_candidate = models.CharField(
+        max_length=255, choices=CANDIDATES, null=True)
+    second_candidate = models.CharField(
+        max_length=255, choices=CANDIDATES, null=True)
     reason = models.TextField(null=True, blank=True)  # Why a user is swapping
     # Pairing with a User might be more technically correct, but then that
     # requires us to JOIN against the users table when trying to get the

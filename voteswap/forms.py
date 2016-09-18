@@ -40,10 +40,16 @@ class LandingPageForm(forms.Form):
             user: The django User object to associate with the profile
         Returns the created Profile object
         """
-        profile = Profile.objects.create(
-            user=user,
-            state=self.cleaned_data['state'],
-            preferred_candidate=self.cleaned_data['preferred_candidate'],
-            second_candidate=self.cleaned_data.get('second_candidate', ''),
-            reason=self.cleaned_data.get('reason', ''))
+        profile, created = Profile.objects.get_or_create(
+            fb_id=user.social_auth.get().uid)
+
+        profile.user = user
+        profile.state = self.cleaned_data['state']
+        profile.preferred_candidate = self.cleaned_data['preferred_candidate']
+        profile.second_candidate = self.cleaned_data.get(
+            'second_candidate', '')
+        profile.reason = self.cleaned_data.get('reason', '')
+        profile.active = True
+        # TODO: Fetch friends from facbeook
+        profile.save()
         return profile
