@@ -16,30 +16,39 @@ def _order_friends_by_state_rank(friends, ordered_states):
 
 def _friends_for_swing_state_user(user):
     """Find the suitable friends for a swing state user"""
+    def _get_friends(profile):
+        return set(
+            profile.friends.unpaired()
+            .filter(state__in=potential_states,
+                    preferred_candidate=user.profile.second_candidate))
     potential_states = list(
         State.objects
         .order_by('safe_rank')
         .values_list('name', flat=True)
     )
-    friends = (
-        user.profile.friends.unpaired()
-        .filter(state__in=potential_states,
-                preferred_candidate=user.profile.second_candidate))
+    friends = _get_friends(user.profile)
+    for friend in user.profile.friends.all():
+        friends = friends.union(_get_friends(friend))
     return _order_friends_by_state_rank(friends, potential_states)
 
 
 def _friends_for_safe_state_user(user):
     """Find the suitable friends for a safe state user"""
+    def _get_friends(profile):
+        return set(
+            profile.friends.unpaired()
+            .filter(state__in=potential_states,
+                    second_candidate=user.profile.preferred_candidate))
+
     potential_states = list(
         State.objects
         .filter(safe_for=CANDIDATE_NONE)
         .order_by('tipping_point_rank')
         .values_list('name', flat=True)
     )
-    friends = (
-        user.profile.friends.unpaired()
-        .filter(state__in=potential_states,
-                second_candidate=user.profile.preferred_candidate))
+    friends = _get_friends(user.profile)
+    for friend in user.profile.friends.all():
+        friends = friends.union(_get_friends(friend))
     return _order_friends_by_state_rank(friends, potential_states)
 
 
