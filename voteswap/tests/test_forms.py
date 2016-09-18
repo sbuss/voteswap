@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from users.tests.factories import UserFactory
-from polling.models import State
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
 from polling.tests.factories import StateFactory
