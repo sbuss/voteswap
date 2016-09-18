@@ -1,7 +1,7 @@
-from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import F
+from django.utils import timezone
 
 from users.models import PairProposal
 from users.models import Profile
@@ -50,12 +50,12 @@ class TestPairProposal(BaseUsersTest):
             to_profile=user1.profile,
         )
         self.assertFalse(PairProposal.objects.confirmed())
-        pair.date_confirmed = datetime.now()
+        pair.date_confirmed = timezone.now()
         pair.save()
         self.assertEqual(list(PairProposal.objects.confirmed()), [pair])
         self.assertEqual(list(PairProposal.objects.rejected()), [])
         pair.date_confirmed = None
-        pair.date_rejected = datetime.now()
+        pair.date_rejected = timezone.now()
         pair.save()
         self.assertEqual(list(PairProposal.objects.confirmed()), [])
         self.assertEqual(list(PairProposal.objects.rejected()), [pair])
@@ -82,7 +82,7 @@ class TestPairProposal(BaseUsersTest):
         self.assertFalse(user1.profile.proposals_received.confirmed())
         self.assertFalse(user1.profile.proposals_received.rejected())
         self.assertTrue(user1.profile.proposals_received.pending())
-        pair.date_confirmed = datetime.now()
+        pair.date_confirmed = timezone.now()
         pair.save()
         self.assertEqual(list(PairProposal.objects.confirmed()), [pair])
         self.assertTrue(user1.profile.proposals_received.confirmed())
