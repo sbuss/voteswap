@@ -54,6 +54,7 @@ ABBVS = [(state.abbr, state.abbr) for state in us.STATES]
 
 class StateManager(models.Manager):
     def get_queryset(self):
+        # This is gross, but I can't use .distinct() in mysql
         keyfunc = lambda item: item[1]
         states_and_ids = (
             super(StateManager, self).get_queryset()
