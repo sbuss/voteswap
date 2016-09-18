@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from users.tests.factories import UserFactory
@@ -16,7 +17,8 @@ class TestLandingPageForm(TestCase):
     def _data(self, **kwargs):
         data = {'preferred_candidate': CANDIDATE_CLINTON,
                 'second_candidate': '',
-                'state': 'California'}
+                'state': 'California',
+                'reason': ''}
         data.update(**kwargs)
         return data
 
@@ -48,3 +50,23 @@ class TestLandingPageForm(TestCase):
                 second_candidate=CANDIDATE_CLINTON,
             ))
         self.assertTrue(form.is_valid())
+
+    def test_save(self):
+        """Ensure saving the form creates a profile for a user."""
+        user = UserFactory(profile=None)
+        reason = 'because'
+        data = self._data(
+            preferred_candidate=CANDIDATE_JOHNSON,
+            second_candidate=CANDIDATE_CLINTON,
+            reason=reason)
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
+        user = get_user_model().objects.get(id=user.id)
+        self.assertEqual(user.profile.state, data['state'])
+        self.assertEqual(user.profile.preferred_candidate,
+                         data['preferred_candidate'])
+        self.assertEqual(user.profile.second_candidate,
+                         data['second_candidate'])
+        self.assertEqual(user.profile.reason,
+                         data['reason'])

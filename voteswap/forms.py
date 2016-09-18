@@ -13,7 +13,7 @@ class LandingPageForm(forms.Form):
     second_candidate = forms.ChoiceField(
         choices=CANDIDATES_MAIN,
         required=False)
-    reason = forms.Textarea()
+    reason = forms.CharField(widget=forms.Textarea(), required=False)
 
     def clean(self):
         """Validate that second_candidate is supplied if swing state."""
