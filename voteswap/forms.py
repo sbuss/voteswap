@@ -40,8 +40,22 @@ class LandingPageForm(forms.Form):
             user: The django User object to associate with the profile
         Returns the created Profile object
         """
-        profile, created = Profile.objects.get_or_create(
-            fb_id=user.social_auth.get().uid)
+        user_profile = Profile.objects.filter(user=user)
+        fb_id = user.social_auth.get().uid
+        fb_profile = Profile.objects.filter(fb_id=fb_id)
+
+        if user_profile and fb_profile:
+            profile = user_profile.get()
+            profile.fb_id = fb_id
+            fb_profile.delete()
+        elif user_profile:
+            profile = user_profile.get()
+            profile.fb_id = fb_id
+        elif fb_profile:
+            profile = fb_profile.get()
+            profile.user = user
+        else:
+            profile = Profile.objects.create(user=user, fb_id=fb_id)
 
         profile.user = user
         profile.state = self.cleaned_data['state']

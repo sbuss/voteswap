@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.http import HttpResponseServerError
 from django.shortcuts import render_to_response
@@ -55,6 +54,6 @@ def confirm_signup(request):
         if form.is_valid():
             form.save(request.user)
             return HttpResponseRedirect(reverse('users:profile'))
-    except IntegrityError:
-        return HttpResponseServerError("Signup failed")
+    except Exception as e:
+        return HttpResponseServerError("Signup failed: %s" % e)
     return HttpResponseServerError("Unknown server error")
