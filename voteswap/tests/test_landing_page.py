@@ -17,7 +17,7 @@ HTTP_REDIRECT = 302
 
 class TestLandingPageView(TestCase):
     def setUp(self):
-        self.user = UserFactory()
+        self.user = UserFactory(profile=None)
         self.request = RequestFactory()
 
     def test_login_redirect(self):
