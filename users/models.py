@@ -95,6 +95,10 @@ class Profile(models.Model):
     paired_with = property(get_pair, set_pair)
 
     def clean(self):
+        if self.active and not self.user:
+            raise ValidationError(
+                "Cannot create an active profile for a user who has not "
+                "authorized Facebook login.")
         if self.preferred_candidate == self.second_candidate:
             raise ValidationError("Your candidate choices cannot be the same.")
 

@@ -49,6 +49,10 @@ class TestProfile(BaseUsersTest):
         ProfileFactory.create(user=None)
         self.assertEqual(1, len(Profile.objects.inactive()))
 
+    def test_invalid_active(self):
+        profile = Profile(user=None, active=True)
+        self.assertRaises(ValidationError, profile.full_clean)
+
 
 class TestPairProposal(BaseUsersTest):
     def test_confirmed_qs(self):

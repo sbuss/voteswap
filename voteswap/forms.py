@@ -50,6 +50,7 @@ class LandingPageForm(forms.Form):
             'second_candidate', '')
         profile.reason = self.cleaned_data.get('reason', '')
         profile.active = True
+        profile.full_clean()
         # TODO: Fetch friends from facbeook
         profile.save()
         return profile
