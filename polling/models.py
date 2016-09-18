@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from itertools import groupby
 
 from django.db import models
 import us
@@ -51,6 +52,19 @@ STATES = [(state.name, state.name) for state in us.STATES]
 ABBVS = [(state.abbr, state.abbr) for state in us.STATES]
 
 
+class StateManager(models.Manager):
+    def get_queryset(self):
+        keyfunc = lambda item: item[1]
+        states_and_ids = (
+            super(StateManager, self).get_queryset()
+            .values_list('id', 'name', 'updated')
+            .order_by('name', '-updated'))
+        ids = []
+        for k, g in groupby(states_and_ids, keyfunc):
+            ids.append(list(g)[0][0])
+        return super(StateManager, self).get_queryset().filter(id__in=ids)
+
+
 class State(models.Model):
     """All states (and districts) that can vote in federal elections."""
     name = models.CharField(max_length=255, choices=STATES)
@@ -63,6 +77,9 @@ class State(models.Model):
     leans = models.CharField(
         max_length=255, choices=CANDIDATES_OR_NONE, default=CANDIDATE_NONE)
     lean_rank = models.IntegerField(default=-1)
+
+    objects = StateManager()
+    all_objects = models.Manager()
 
     class Meta:
         unique_together = ('name', 'updated')
