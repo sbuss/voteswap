@@ -31,14 +31,30 @@ class TestProfile(BaseUsersTest):
         self.assertRaises(ValidationError, profile.clean)
 
     def test_empty_preferred(self):
+        """No Profiles created in BaseUsersTest w/o preferred candidate."""
         self.assertFalse(Profile.objects.filter(preferred_candidate=""))
 
     def test_empty_second(self):
+        """No Profiles created in BaseUsersTest w/o second candidate."""
         self.assertFalse(Profile.objects.filter(second_candidate=""))
 
     def test_equal_candidates(self):
+        """No Profiles created in BaseUsersTest where preferred==second."""
         self.assertFalse(Profile.objects.filter(
             preferred_candidate=F('second_candidate')))
+
+    def test_active(self):
+        self.assertEqual(len(Profile.objects.all()),
+                         len(Profile.objects.active()))
+
+    def test_inactive(self):
+        self.assertEqual(0, len(Profile.objects.inactive()))
+        ProfileFactory.create(user=None)
+        self.assertEqual(1, len(Profile.objects.inactive()))
+
+    def test_invalid_active(self):
+        profile = Profile(user=None, active=True)
+        self.assertRaises(ValidationError, profile.full_clean)
 
 
 class TestPairProposal(BaseUsersTest):

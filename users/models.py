@@ -54,12 +54,22 @@ class ProfileManager(models.Manager):
                 .select_related('user')
                 .prefetch_related('_paired_with__user'))
 
+    def active(self):
+        return self.get_queryset().filter(active=True)
+
+    def inactive(self):
+        return self.get_queryset().filter(active=False)
+
 
 class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
-    state = models.CharField(max_length=255, choices=STATES)
-    preferred_candidate = models.CharField(max_length=255, choices=CANDIDATES)
-    second_candidate = models.CharField(max_length=255, choices=CANDIDATES)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)
+    fb_id = models.CharField(max_length=255, null=True)
+    active = models.BooleanField(default=False)
+    state = models.CharField(max_length=255, choices=STATES, null=True)
+    preferred_candidate = models.CharField(
+        max_length=255, choices=CANDIDATES, null=True)
+    second_candidate = models.CharField(
+        max_length=255, choices=CANDIDATES, null=True, blank=True)
     reason = models.TextField(null=True, blank=True)  # Why a user is swapping
     # Pairing with a User might be more technically correct, but then that
     # requires us to JOIN against the users table when trying to get the
@@ -85,6 +95,10 @@ class Profile(models.Model):
     paired_with = property(get_pair, set_pair)
 
     def clean(self):
+        if self.active and not self.user:
+            raise ValidationError(
+                "Cannot create an active profile for a user who has not "
+                "authorized Facebook login.")
         if self.preferred_candidate == self.second_candidate:
             raise ValidationError("Your candidate choices cannot be the same.")
 

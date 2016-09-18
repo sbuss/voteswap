@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from users.models import Profile
+from users.tests.factories import ProfileFactory
 from users.tests.factories import UserFactory
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
@@ -50,9 +52,9 @@ class TestLandingPageForm(TestCase):
             ))
         self.assertTrue(form.is_valid())
 
-    def test_save(self):
+    def test_save_no_profile(self):
         """Ensure saving the form creates a profile for a user."""
-        user = UserFactory(profile=None)
+        user = UserFactory.create(profile=None)
         reason = 'because'
         data = self._data(
             preferred_candidate=CANDIDATE_JOHNSON,
@@ -69,3 +71,21 @@ class TestLandingPageForm(TestCase):
                          data['second_candidate'])
         self.assertEqual(user.profile.reason,
                          data['reason'])
+        self.assertTrue(user.profile.active)
+        self.assertNotEqual(user.profile.fb_id, '')
+        self.assertEqual(user.profile.fb_id, user.social_auth.get().uid)
+
+    def test_save_profile(self):
+        """A profile may exist for a FB user, without a db User."""
+        user = UserFactory.create(profile=None)
+        profile = ProfileFactory.create(fb_id=user.social_auth.get().uid)
+        self.assertFalse(profile.active)
+        data = self._data()
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
+        user = get_user_model().objects.get(id=user.id)
+        profile = Profile.objects.get(id=profile.id)
+        self.assertEqual(user.profile, profile)
+        self.assertTrue(user.profile.active)
+        self.assertEqual(user.profile.fb_id, user.social_auth.get().uid)

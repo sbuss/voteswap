@@ -5,6 +5,8 @@ from django.test import TestCase
 
 from polling.models import CANDIDATE_CLINTON
 from polling.tests.factories import StateFactory
+from users.models import Profile
+from users.tests.factories import ProfileFactory
 from users.tests.factories import UserFactory
 from voteswap.views import confirm_signup
 
@@ -48,9 +50,18 @@ class TestConfirmSignup(TestCase):
         self.assertTrue(response.has_header('Location'))
         self.assertEqual(response.get('Location'), reverse('users:profile'))
 
-    def test_failure(self):
+    def test_existing_profile(self):
+        # This flow shouldn't happen, but in case it does, just merge the
+        # profiles
+        self.assertEqual(len(Profile.objects.all()), 0)
         request = self.request.get(reverse(confirm_signup))
-        request.user = UserFactory()  # user gets a profile, so form save fails
+        request.user = UserFactory()
+        ProfileFactory.create(
+            fb_id=request.user.social_auth.get().uid)
+        self.assertEqual(len(Profile.objects.all()), 2)
         request.session = self.session
         response = confirm_signup(request)
-        self.assertEqual(response.status_code, HTTP_SERVER_ERROR)
+        self.assertEqual(len(Profile.objects.all()), 1)
+        self.assertEqual(response.status_code, HTTP_REDIRECT)
+        self.assertTrue(response.has_header('Location'))
+        self.assertEqual(response.get('Location'), reverse('users:profile'))
