@@ -86,6 +86,10 @@ class State(models.Model):
         unique_together = ('name', 'updated')
 
     @property
+    def is_swing(self):
+        return self.tipping_point_rank > -1
+
+    @property
     def likely_winner(self):
         if self.safe_for:
             return "Safe %s" % self.safe_for

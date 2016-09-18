@@ -60,6 +60,9 @@ class ProfileManager(models.Manager):
     def inactive(self):
         return self.get_queryset().filter(active=False)
 
+    def unpaired(self):
+        return self.get_queryset().filter(active=True, _paired_with=None)
+
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)
