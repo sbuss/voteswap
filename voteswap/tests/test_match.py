@@ -71,12 +71,27 @@ class TestSafeStateMatch(TestCase):
 
     def test_paired_not_included(self):
         # pick two friends and pair them
-        friends = get_friend_matches(self.user)
+        friends = _friends_for_safe_state_user(self.user)
         self.assertEqual(len(friends), 2)
         friend1 = friends[0]
         friend2 = self.user.profile.friends.exclude(id=friend1.id)[0]
         friend1.paired_with = friend2
-        friends = get_friend_matches(self.user)
+        friends = _friends_for_safe_state_user(self.user)
+        self.assertEqual(len(friends), 1)
+        self.assertNotIn(friend1, friends)
+
+    def test_all_active(self):
+        friends = _friends_for_safe_state_user(self.user)
+        self.assertTrue(all(friend.active for friend in friends))
+
+    def test_no_inactive(self):
+        """No inactive profiles should be returned."""
+        friends = _friends_for_safe_state_user(self.user)
+        self.assertEqual(len(friends), 2)
+        friend1 = friends[0]
+        friend1.active = False
+        friend1.save()
+        friends = _friends_for_safe_state_user(self.user)
         self.assertEqual(len(friends), 1)
         self.assertNotIn(friend1, friends)
 
@@ -151,12 +166,27 @@ class TestSwingStateMatch(TestCase):
 
     def test_paired_not_included(self):
         # pick two friends and pair them
-        friends = get_friend_matches(self.user)
+        friends = _friends_for_swing_state_user(self.user)
         self.assertEqual(len(friends), 4)
         friend1 = friends[0]
         friend2 = self.user.profile.friends.exclude(
             id__in=[friend.id for friend in friends])[0]
         friend1.paired_with = friend2
-        friends = get_friend_matches(self.user)
+        friends = _friends_for_swing_state_user(self.user)
+        self.assertEqual(len(friends), 3)
+        self.assertNotIn(friend1, friends)
+
+    def test_all_active(self):
+        friends = _friends_for_swing_state_user(self.user)
+        self.assertTrue(all(friend.active for friend in friends))
+
+    def test_no_inactive(self):
+        """No inactive profiles should be returned."""
+        friends = _friends_for_swing_state_user(self.user)
+        self.assertEqual(len(friends), 4)
+        friend1 = friends[0]
+        friend1.active = False
+        friend1.save()
+        friends = _friends_for_swing_state_user(self.user)
         self.assertEqual(len(friends), 3)
         self.assertNotIn(friend1, friends)
