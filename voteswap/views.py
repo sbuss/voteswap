@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.http import HttpResponseServerError
 from django.shortcuts import render_to_response
@@ -50,7 +51,10 @@ def confirm_signup(request):
     logger.info("Data in confirm_signup is %s" % data)
 
     form = LandingPageForm(data=data)
-    if form.is_valid():
-        form.save(request.user)
-        return HttpResponseRedirect(reverse('users:profile'))
-    return HttpResponseServerError("Signup failed")
+    try:
+        if form.is_valid():
+            form.save(request.user)
+            return HttpResponseRedirect(reverse('users:profile'))
+    except IntegrityError:
+        return HttpResponseServerError("Signup failed")
+    return HttpResponseServerError("Unknown server error")
