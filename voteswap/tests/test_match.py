@@ -47,6 +47,7 @@ class TestSafeStateMatch(TestCase):
             profile__state=swing_state_3.name,
             profile__preferred_candidate=candidate)
         self.user.profile.friends.add(swing_user_3.profile)
+        # The ordering of expected_matches matters, it's ordered by state rank
         self.expected_matches = [swing_user_1.profile, swing_user_2.profile]
 
     def test_safe_state_major_candidate(self):
@@ -108,6 +109,7 @@ class TestSwingStateMatch(TestCase):
             profile__second_candidate=CANDIDATE_CLINTON
         )
         # Make two friends for each candidate in a safe state for each
+        # The ordering of expected matches is by state safe_rank
         self.expected_matches = []
         safe_rank = 1
         for (preferred_candidate, safe_for) in [
