@@ -56,6 +56,9 @@ class TestSafeStateMatch(TestCase):
         self.assertEqual(len(friends), 2)
         self.assertEqual(friends, self.expected_matches)
         self.assertEqual(get_friend_matches(self.user), self.expected_matches)
+        # And I should be in my friend's potential matches
+        self.assertIn(self.user.profile,
+                      _friends_for_swing_state_user(friends[0].user))
 
     def test_no_match_minor_in_safe_state(self):
         state_safe = StateFactory.create(
@@ -154,6 +157,9 @@ class TestSwingStateMatch(TestCase):
         self.assertEqual(len(friends), 4)
         self.assertEqual(friends, self.expected_matches)
         self.assertEqual(get_friend_matches(self.user), self.expected_matches)
+        # And I should be in my friend's potential matches
+        self.assertIn(self.user.profile,
+                      _friends_for_safe_state_user(friends[0].user))
 
     def test_no_match_major_in_swing_state(self):
         state_safe = StateFactory.create(
