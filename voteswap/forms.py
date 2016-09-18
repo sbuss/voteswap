@@ -15,6 +15,11 @@ class LandingPageForm(forms.Form):
         required=False)
     reason = forms.CharField(widget=forms.Textarea(), required=False)
 
+    _error_messages = {
+        'swing_state': ("You're in a swing state and selected a third party "
+                        "candidate. You must also select a second choice."),
+    }
+
     def clean(self):
         """Validate that second_candidate is supplied if swing state."""
         cleaned_data = super(LandingPageForm, self).clean()
@@ -26,8 +31,7 @@ class LandingPageForm(forms.Form):
             if preferred_candidate not in dict(CANDIDATES_MAIN):
                 if second_candidate == "":
                     raise forms.ValidationError(
-                        "You're in a swing state and selected a third party "
-                        "candidate. You must also select a second choice.")
+                        self._error_messages['swing_state'])
 
     def save(self, user):
         """Create a Profile for the given user
