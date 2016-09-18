@@ -54,6 +54,12 @@ class ProfileManager(models.Manager):
                 .select_related('user')
                 .prefetch_related('_paired_with__user'))
 
+    def active(self):
+        return self.get_queryset().filter(active=True)
+
+    def inactive(self):
+        return self.get_queryset().filter(active=False)
+
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)

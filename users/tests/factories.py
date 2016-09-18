@@ -44,5 +44,7 @@ class UserFactory(factory.DjangoModelFactory):
     username = factory.LazyAttributeSequence(
         lambda o, n: ("%s.%s.%s" % (o.first_name, o.last_name, n)).lower())
     email = factory.LazyAttribute(lambda o: "%s@gmail.com" % o.username)
-    profile = factory.RelatedFactory(ProfileFactory, 'user')
+    profile = factory.RelatedFactory(
+        ProfileFactory, 'user',
+        active=True)
     social_auth = factory.RelatedFactory(SocialAuthFactory, 'user')

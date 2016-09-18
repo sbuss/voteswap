@@ -40,6 +40,15 @@ class TestProfile(BaseUsersTest):
         self.assertFalse(Profile.objects.filter(
             preferred_candidate=F('second_candidate')))
 
+    def test_active(self):
+        self.assertEqual(len(Profile.objects.all()),
+                         len(Profile.objects.active()))
+
+    def test_inactive(self):
+        self.assertEqual(0, len(Profile.objects.inactive()))
+        ProfileFactory.create(user=None)
+        self.assertEqual(1, len(Profile.objects.inactive()))
+
 
 class TestPairProposal(BaseUsersTest):
     def test_confirmed_qs(self):
