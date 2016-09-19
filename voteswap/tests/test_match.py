@@ -4,6 +4,7 @@ from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
 from polling.models import CANDIDATE_TRUMP
 from polling.tests.factories import StateFactory
+from users.tests.factories import ProfileFactory
 from users.tests.factories import UserFactory
 from voteswap.match import _friends_for_safe_state_user
 from voteswap.match import _friends_for_swing_state_user
@@ -214,12 +215,8 @@ class TestSafeStateFriendsOfFriendsMatch(TestCase):
         self.foaf_expected_matches = []
         # Create friends that haven't activated to ensure we follow those links
         for i in range(2):
-            friend = UserFactory.create(profile__active=False)
-            StateFactory.create(
-                name=friend.profile.state,
-                safe_for=self.user.profile.preferred_candidate,
-                safe_rank=i+2)  # +2 because state_safe is rank 1
-            self.user.profile.friends.add(friend.profile)
+            friend_profile = ProfileFactory.create(state='', active=False)
+            self.user.profile.friends.add(friend_profile)
             # And create friends of these friends in swing states
             for i in range(2):
                 foaf = UserFactory.create(
@@ -229,7 +226,7 @@ class TestSafeStateFriendsOfFriendsMatch(TestCase):
                     name=foaf.profile.state,
                     tipping_point_rank=tipping_point_rank)
                 tipping_point_rank += 1
-                friend.profile.friends.add(foaf.profile)
+                friend_profile.friends.add(foaf.profile)
                 self.foaf_expected_matches.append(foaf.profile)
         self.direct_expected_matches = []
         # Create friends in swing states
