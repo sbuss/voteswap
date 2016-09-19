@@ -254,3 +254,15 @@ class TestSafeStateFriendsOfFriendsMatch(TestCase):
         self.assertEqual(len(friends), 6)
         self.assertEqual(friends, self.expected_matches)
         self.assertEqual(get_friend_matches(self.user), self.expected_matches)
+
+    def test_direct(self):
+        friends = _friends_for_safe_state_user(
+            self.user, direct=True, foaf=False)
+        self.assertEqual(len(friends), 2)
+        self.assertEqual(friends, self.direct_expected_matches)
+
+    def test_foaf(self):
+        friends = _friends_for_safe_state_user(
+            self.user, direct=False, foaf=True)
+        self.assertEqual(len(friends), 4)
+        self.assertEqual(friends, self.foaf_expected_matches)
