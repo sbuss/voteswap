@@ -198,3 +198,55 @@ class TestSwingStateMatch(TestCase):
         friends = _friends_for_swing_state_user(self.user)
         self.assertEqual(len(friends), 3)
         self.assertNotIn(friend1, friends)
+
+
+class TestSafeStateFriendsOfFriendsMatch(TestCase):
+    def setUp(self):
+        candidate = CANDIDATE_CLINTON
+        self.state_safe = StateFactory.create(
+            safe_for=candidate,
+            safe_rank=1
+        )
+        self.user = UserFactory.create(
+            profile__state=self.state_safe.name,
+            profile__preferred_candidate=candidate)
+        tipping_point_rank = 1
+        self.expected_matches = []
+        # Create friends in safe states
+        for i in range(2):
+            friend = UserFactory.create()
+            StateFactory.create(
+                name=friend.profile.state,
+                safe_for=self.user.profile.preferred_candidate,
+                safe_rank=i+2)  # +2 because state_safe is rank 1
+            self.user.profile.friends.add(friend.profile)
+            # And create friends of these friends in swing states
+            for i in range(2):
+                foaf = UserFactory.create(
+                    profile__preferred_candidate=CANDIDATE_JOHNSON,
+                    profile__second_candidate=CANDIDATE_CLINTON)
+                StateFactory.create(
+                    name=foaf.profile.state,
+                    tipping_point_rank=tipping_point_rank)
+                tipping_point_rank += 1
+                friend.profile.friends.add(foaf.profile)
+                self.expected_matches.append(foaf.profile)
+        # Create friends in swing states
+        for i in range(2):
+            friend = UserFactory.create(
+                profile__preferred_candidate=CANDIDATE_JOHNSON,
+                profile__second_candidate=CANDIDATE_CLINTON)
+            StateFactory.create(
+                name=friend.profile.state,
+                tipping_point_rank=tipping_point_rank)
+            tipping_point_rank += 1
+            self.user.profile.friends.add(friend.profile)
+            self.expected_matches.append(friend.profile)
+        # At this point there are two direct friends and four indirect friends
+        # to match
+
+    def test_matches(self):
+        friends = _friends_for_safe_state_user(self.user)
+        self.assertEqual(len(friends), 6)
+        self.assertEqual(friends, self.expected_matches)
+        self.assertEqual(get_friend_matches(self.user), self.expected_matches)
