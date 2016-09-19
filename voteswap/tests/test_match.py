@@ -211,10 +211,10 @@ class TestSafeStateFriendsOfFriendsMatch(TestCase):
             profile__state=self.state_safe.name,
             profile__preferred_candidate=candidate)
         tipping_point_rank = 1
-        self.expected_matches = []
-        # Create friends in safe states
+        self.foaf_expected_matches = []
+        # Create friends that haven't activated to ensure we follow those links
         for i in range(2):
-            friend = UserFactory.create()
+            friend = UserFactory.create(profile__active=False)
             StateFactory.create(
                 name=friend.profile.state,
                 safe_for=self.user.profile.preferred_candidate,
@@ -230,7 +230,8 @@ class TestSafeStateFriendsOfFriendsMatch(TestCase):
                     tipping_point_rank=tipping_point_rank)
                 tipping_point_rank += 1
                 friend.profile.friends.add(foaf.profile)
-                self.expected_matches.append(foaf.profile)
+                self.foaf_expected_matches.append(foaf.profile)
+        self.direct_expected_matches = []
         # Create friends in swing states
         for i in range(2):
             friend = UserFactory.create(
@@ -241,7 +242,10 @@ class TestSafeStateFriendsOfFriendsMatch(TestCase):
                 tipping_point_rank=tipping_point_rank)
             tipping_point_rank += 1
             self.user.profile.friends.add(friend.profile)
-            self.expected_matches.append(friend.profile)
+            self.direct_expected_matches.append(friend.profile)
+        # Direct friends are always preferred, so prepend them to expected
+        self.expected_matches = (
+            self.direct_expected_matches + self.foaf_expected_matches)
         # At this point there are two direct friends and four indirect friends
         # to match
 
