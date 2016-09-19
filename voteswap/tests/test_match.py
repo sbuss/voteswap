@@ -24,11 +24,10 @@ class TestSafeStateMatch(TestCase):
             profile__preferred_candidate=candidate)
         # Create friends in safe states
         for i in range(10):
-            friend = UserFactory.create()
-            StateFactory.create(
-                name=friend.profile.state,
+            state = StateFactory.create(
                 safe_for=self.user.profile.preferred_candidate,
                 safe_rank=i+2)  # +2 because state_safe is rank 1
+            friend = UserFactory.create(profile__state=state.name)
             self.user.profile.friends.add(friend.profile)
         # Create friends in swing states
         swing_state_1 = StateFactory.create(tipping_point_rank=1)
@@ -122,12 +121,12 @@ class TestSwingStateMatch(TestCase):
                 (CANDIDATE_CLINTON, CANDIDATE_TRUMP),
                 (CANDIDATE_TRUMP, CANDIDATE_TRUMP)]:
             for i in range(2):
-                friend = UserFactory.create(
-                    profile__preferred_candidate=preferred_candidate)
-                StateFactory.create(
-                    name=friend.profile.state,
+                state = StateFactory.create(
                     safe_for=safe_for,
                     safe_rank=safe_rank)
+                friend = UserFactory.create(
+                    profile__state=state.name,
+                    profile__preferred_candidate=preferred_candidate)
                 self.user.profile.friends.add(friend.profile)
                 if preferred_candidate == self.user.profile.second_candidate:
                     self.expected_matches.append(friend.profile)
@@ -219,24 +218,24 @@ class TestSafeStateFriendsOfFriendsMatch(TestCase):
             self.user.profile.friends.add(friend_profile)
             # And create friends of these friends in swing states
             for i in range(2):
+                state = StateFactory.create(
+                    tipping_point_rank=tipping_point_rank)
                 foaf = UserFactory.create(
+                    profile__state=state.name,
                     profile__preferred_candidate=CANDIDATE_JOHNSON,
                     profile__second_candidate=CANDIDATE_CLINTON)
-                StateFactory.create(
-                    name=foaf.profile.state,
-                    tipping_point_rank=tipping_point_rank)
                 tipping_point_rank += 1
                 friend_profile.friends.add(foaf.profile)
                 self.foaf_expected_matches.append(foaf.profile)
         self.direct_expected_matches = []
         # Create friends in swing states
         for i in range(2):
+            state = StateFactory.create(
+                tipping_point_rank=tipping_point_rank)
             friend = UserFactory.create(
+                profile__state=state.name,
                 profile__preferred_candidate=CANDIDATE_JOHNSON,
                 profile__second_candidate=CANDIDATE_CLINTON)
-            StateFactory.create(
-                name=friend.profile.state,
-                tipping_point_rank=tipping_point_rank)
             tipping_point_rank += 1
             self.user.profile.friends.add(friend.profile)
             self.direct_expected_matches.append(friend.profile)
