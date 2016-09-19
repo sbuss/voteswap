@@ -19,6 +19,7 @@ def _friends_for_swing_state_user(user, direct=True, foaf=True):
     def _get_friends(profile):
         return set(
             profile.friends.unpaired()
+            .exclude(id=user.profile.id)
             .filter(state__in=potential_states,
                     preferred_candidate=user.profile.second_candidate))
     potential_states = list(
@@ -45,6 +46,7 @@ def _friends_for_safe_state_user(user, direct=True, foaf=True):
     def _get_friends(profile):
         return set(
             profile.friends.unpaired()
+            .exclude(id=user.profile.id)
             .filter(state__in=potential_states,
                     second_candidate=user.profile.preferred_candidate))
 
