@@ -2,3 +2,5 @@
 /venv/
 /.mysql_data/
 /local_secrets.yaml
+
+*.pyc

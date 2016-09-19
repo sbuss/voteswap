@@ -41,6 +41,10 @@ def landing_page(request):
     return render_to_response('landing_page.html',
                               context_instance=context)
 
+def splash_page(request):
+    return render_to_response('splash.html')
+
+
 
 @login_required
 def confirm_signup(request):

@@ -1,0 +1,52 @@
+body.splash {
+  background: #1A2980;
+  background: -webkit-linear-gradient(to left, #1A2980 , #26D0CE);
+  background: linear-gradient(to left, #1A2980 , #26D0CE);
+
+  color: #fff;
+  font-family: 'Raleway', sans-serif;
+  text-align: center;
+  min-height: 100vh;
+}
+
+.splash__ballot {
+  width: 450px;
+  height: 450px;
+  padding: 25px;
+  border: 2px solid #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -250px;
+  margin-left: -250px;
+}
+
+.splash__ballot__header {
+  background-color: rgba(25,25,25,0.1);
+  margin: 150px 25px 0;
+  border-radius: 12px;
+  padding: 5px;
+  border: 2px solid #fff;
+  font-size: 55px;
+}
+
+.splash__form {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+}
+
+.splash__footer {
+  position: absolute;
+  bottom: -25px;
+}
+
+.splash__footer__link {
+  color: #fff;
+  cursor: pointer;
+}
+
+.splash__modal {
+  color: #333;
+}
