@@ -14,7 +14,7 @@ def _order_friends_by_state_rank(friends, ordered_states):
     return sorted(friends, key=keyfunc)
 
 
-def _friends_for_swing_state_user(user):
+def _friends_for_swing_state_user(user, direct=True, foaf=True):
     """Find the suitable friends for a swing state user"""
     def _get_friends(profile):
         return set(
@@ -27,13 +27,20 @@ def _friends_for_swing_state_user(user):
         .order_by('safe_rank')
         .values_list('name', flat=True)
     )
-    friends = _get_friends(user.profile)
-    for friend in user.profile.friends.all():
-        friends = friends.union(_get_friends(friend))
-    return _order_friends_by_state_rank(friends, potential_states)
+    friends = list()
+    if direct:
+        friends.extend(_order_friends_by_state_rank(
+            _get_friends(user.profile), potential_states))
+    if foaf:
+        foaf_friends = set()
+        for friend in user.profile.friends.all():
+            foaf_friends = foaf_friends.union(_get_friends(friend))
+        friends.extend(_order_friends_by_state_rank(
+            foaf_friends, potential_states))
+    return friends
 
 
-def _friends_for_safe_state_user(user):
+def _friends_for_safe_state_user(user, direct=True, foaf=True):
     """Find the suitable friends for a safe state user"""
     def _get_friends(profile):
         return set(
@@ -48,10 +55,17 @@ def _friends_for_safe_state_user(user):
         .order_by('tipping_point_rank')
         .values_list('name', flat=True)
     )
-    friends = _get_friends(user.profile)
-    for friend in user.profile.friends.all():
-        friends = friends.union(_get_friends(friend))
-    return _order_friends_by_state_rank(friends, potential_states)
+    friends = list()
+    if direct:
+        friends.extend(_order_friends_by_state_rank(
+            _get_friends(user.profile), potential_states))
+    if foaf:
+        foaf_friends = set()
+        for friend in user.profile.friends.all():
+            foaf_friends = foaf_friends.union(_get_friends(friend))
+        friends.extend(_order_friends_by_state_rank(
+            foaf_friends, potential_states))
+    return friends
 
 
 def get_friend_matches(user):
