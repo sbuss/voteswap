@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.test import TestCase
 
 from polling.models import State
+from polling.models import STATES
 from polling.tests.factories import StateFactory
 
 
@@ -25,3 +26,12 @@ class TestStateManager(TestCase):
         self.assertEqual(len(states), 2)
         self.assertEqual(len(State.all_objects.all()), 4)
         self.assertEqual(set(State.objects.all()), set([ca, fl]))
+
+    def test_latest_states(self):
+        sorted_states = sorted([state[0] for state in STATES])
+        for i in range(5):
+            for i in range(127):
+                StateFactory.create()
+            self.assertEqual(
+                sorted(list(State.objects.values_list('name', flat=True))),
+                sorted_states)
