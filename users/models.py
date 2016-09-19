@@ -61,7 +61,7 @@ class ProfileManager(models.Manager):
         return self.get_queryset().filter(active=False)
 
     def unpaired(self):
-        return self.get_queryset().filter(active=True, _paired_with=None)
+        return self.active().filter(_paired_with=None)
 
 
 class Profile(models.Model):
