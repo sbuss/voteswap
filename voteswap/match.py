@@ -23,6 +23,7 @@ def _friends_for_swing_state_user(user):
                     preferred_candidate=user.profile.second_candidate))
     potential_states = list(
         State.objects
+        .exclude(safe_rank=-1)
         .order_by('safe_rank')
         .values_list('name', flat=True)
     )
@@ -43,6 +44,7 @@ def _friends_for_safe_state_user(user):
     potential_states = list(
         State.objects
         .filter(safe_for=CANDIDATE_NONE)
+        .exclude(tipping_point_rank=-1)
         .order_by('tipping_point_rank')
         .values_list('name', flat=True)
     )
