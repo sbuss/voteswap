@@ -18,15 +18,15 @@ class NoMatchNecessary(object):
     pass
 
 
-def _order_friends_by_state_rank(friends, ordered_states):
-    """Order the list of friends by state rank."""
+def _order_matches_by_state_rank(matches, ordered_states):
+    """Order the list of matches by state rank."""
     keyfunc = lambda friend_match: ordered_states.index(
         friend_match.profile.state)
-    return sorted(friends, key=keyfunc)
+    return sorted(matches, key=keyfunc)
 
 
-def _friends_for_swing_state_user(user, direct=True, foaf=True):
-    """Find the suitable friends for a swing state user"""
+def _matches_for_swing_state_user(user, direct=True, foaf=True):
+    """Find the suitable matches for a swing state user"""
     def _get_friends(profile):
         through = None if profile.user == user else profile
         return set(
@@ -42,21 +42,21 @@ def _friends_for_swing_state_user(user, direct=True, foaf=True):
         .order_by('safe_rank')
         .values_list('name', flat=True)
     )
-    friends = list()
+    matches = list()
     if direct:
-        friends.extend(_order_friends_by_state_rank(
+        matches.extend(_order_matches_by_state_rank(
             _get_friends(user.profile), potential_states))
     if foaf:
         foaf_friends = set()
         for friend in user.profile.friends.all():
             foaf_friends = foaf_friends.union(_get_friends(friend))
-        friends.extend(_order_friends_by_state_rank(
+        matches.extend(_order_matches_by_state_rank(
             foaf_friends, potential_states))
-    return friends
+    return matches
 
 
-def _friends_for_safe_state_user(user, direct=True, foaf=True):
-    """Find the suitable friends for a safe state user"""
+def _matches_for_safe_state_user(user, direct=True, foaf=True):
+    """Find the suitable matches for a safe state user"""
     def _get_friends(profile):
         through = None if profile.user == user else profile
         return set(
@@ -73,17 +73,17 @@ def _friends_for_safe_state_user(user, direct=True, foaf=True):
         .order_by('tipping_point_rank')
         .values_list('name', flat=True)
     )
-    friends = list()
+    matches = list()
     if direct:
-        friends.extend(_order_friends_by_state_rank(
+        matches.extend(_order_matches_by_state_rank(
             _get_friends(user.profile), potential_states))
     if foaf:
         foaf_friends = set()
         for friend in user.profile.friends.all():
             foaf_friends = foaf_friends.union(_get_friends(friend))
-        friends.extend(_order_friends_by_state_rank(
+        matches.extend(_order_matches_by_state_rank(
             foaf_friends, potential_states))
-    return friends
+    return matches
 
 
 def get_friend_matches(user):
@@ -98,10 +98,10 @@ def get_friend_matches(user):
         if user.profile.preferred_candidate in dict(CANDIDATES_MAIN):
             # The user shouldn't change their vote
             return NoMatchNecessary()
-        return _friends_for_swing_state_user(user)
+        return _matches_for_swing_state_user(user)
     else:
         # In a safe state
         if user.profile.preferred_candidate in dict(CANDIDATES_THIRD_PARTY):
             # The user shouldn't change their vote
             return NoMatchNecessary()
-        return _friends_for_safe_state_user(user)
+        return _matches_for_safe_state_user(user)
