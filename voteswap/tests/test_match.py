@@ -132,19 +132,19 @@ class TestSwingStateMatch(TestCase):
                     self.expected_matches.append(friend.profile)
                 safe_rank += 1
         # Create friends in swing states
-        swing_state_1 = StateFactory.create(tipping_point_rank=1)
+        swing_state_1 = StateFactory.create(tipping_point_rank=2)
         swing_user_1 = UserFactory.create(
             profile__state=swing_state_1.name,
             profile__preferred_candidate=CANDIDATE_JOHNSON,
             profile__second_candidate=candidate)
         self.user.profile.friends.add(swing_user_1.profile)
-        swing_state_2 = StateFactory.create(tipping_point_rank=2)
+        swing_state_2 = StateFactory.create(tipping_point_rank=3)
         swing_user_2 = UserFactory.create(
             profile__state=swing_state_2.name,
             profile__preferred_candidate=CANDIDATE_JOHNSON,
             profile__second_candidate=candidate)
         self.user.profile.friends.add(swing_user_2.profile)
-        swing_state_3 = StateFactory.create(tipping_point_rank=3)
+        swing_state_3 = StateFactory.create(tipping_point_rank=4)
         swing_user_3 = UserFactory.create(
             profile__state=swing_state_3.name,
             profile__preferred_candidate=candidate)
