@@ -4,24 +4,38 @@ from polling.models import CANDIDATES_MAIN
 from polling.models import CANDIDATES_THIRD_PARTY
 
 
+class FriendMatch(object):
+    def __init__(self, profile, through=None):
+        self.profile = profile
+        self.through = through
+
+    @property
+    def is_direct(self):
+        return self.through is None
+
+
 class NoMatchNecessary(object):
     pass
 
 
 def _order_friends_by_state_rank(friends, ordered_states):
     """Order the list of friends by state rank."""
-    keyfunc = lambda profile: ordered_states.index(profile.state)
+    keyfunc = lambda friend_match: ordered_states.index(
+        friend_match.profile.state)
     return sorted(friends, key=keyfunc)
 
 
 def _friends_for_swing_state_user(user, direct=True, foaf=True):
     """Find the suitable friends for a swing state user"""
     def _get_friends(profile):
+        through = None if profile.user == user else profile
         return set(
+            FriendMatch(profile, through) for profile in
             profile.friends.unpaired()
             .exclude(id=user.profile.id)
             .filter(state__in=potential_states,
                     preferred_candidate=user.profile.second_candidate))
+
     potential_states = list(
         State.objects
         .exclude(safe_rank=-1)
@@ -44,7 +58,9 @@ def _friends_for_swing_state_user(user, direct=True, foaf=True):
 def _friends_for_safe_state_user(user, direct=True, foaf=True):
     """Find the suitable friends for a safe state user"""
     def _get_friends(profile):
+        through = None if profile.user == user else profile
         return set(
+            FriendMatch(profile, through) for profile in
             profile.friends.unpaired()
             .exclude(id=user.profile.id)
             .filter(state__in=potential_states,
