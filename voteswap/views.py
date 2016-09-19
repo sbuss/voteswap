@@ -5,6 +5,8 @@ from django.http import HttpResponseServerError
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 
+from voteswap.match import get_friend_matches
+# from voteswap.match import NoMatchNecessary
 from voteswap.forms import LandingPageForm
 
 import logging
@@ -57,3 +59,13 @@ def confirm_signup(request):
     except Exception as e:
         return HttpResponseServerError("Signup failed: %s" % e)
     return HttpResponseServerError("Unknown server error")
+
+
+@login_required
+def match(request):
+    matches = get_friend_matches(request.user)
+    context = RequestContext(
+        request,
+        {'request': request, 'user': request.user, 'matches': matches})
+    return render_to_response('match.html',
+                              context_instance=context)

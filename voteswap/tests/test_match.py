@@ -16,8 +16,9 @@ def _profiles(matches):
     return [match.profile for match in matches]
 
 
-class TestSafeStateMatch(TestCase):
+class _TestSafeStateMatchBase(TestCase):
     def setUp(self):
+        super(_TestSafeStateMatchBase, self).setUp()
         candidate = CANDIDATE_CLINTON
         self.state_safe = StateFactory.create(
             safe_for=candidate,
@@ -54,6 +55,8 @@ class TestSafeStateMatch(TestCase):
         # The ordering of expected_matches matters, it's ordered by state rank
         self.expected_matches = [swing_user_1.profile, swing_user_2.profile]
 
+
+class TestSafeStateMatch(_TestSafeStateMatchBase):
     def test_safe_state_major_candidate(self):
         # Now we should have two matches that show up
         matches = _matches_for_safe_state_user(self.user)
@@ -106,8 +109,9 @@ class TestSafeStateMatch(TestCase):
         self.assertNotIn(friend1, _profiles(matches))
 
 
-class TestSwingStateMatch(TestCase):
+class _TestSwingStateMatchBase(TestCase):
     def setUp(self):
+        super(_TestSwingStateMatchBase, self).setUp()
         candidate = CANDIDATE_JOHNSON
         self.state_safe = StateFactory.create(
             tipping_point_rank=1,
@@ -156,6 +160,8 @@ class TestSwingStateMatch(TestCase):
             profile__preferred_candidate=candidate)
         self.user.profile.friends.add(swing_user_3.profile)
 
+
+class TestSwingStateMatch(_TestSwingStateMatchBase):
     def test_swing_state_minor_candidate(self):
         # Now we should have eight friends in safe states, but only 4 of them
         # would vote for my second choice
@@ -208,8 +214,9 @@ class TestSwingStateMatch(TestCase):
         self.assertNotIn(friend1, _profiles(matches))
 
 
-class TestSafeStateFriendsOfFriendsMatch(TestCase):
+class _TestSafeStateFriendsOfFriendsMatchBase(TestCase):
     def setUp(self):
+        super(_TestSafeStateFriendsOfFriendsMatchBase, self).setUp()
         candidate = CANDIDATE_CLINTON
         self.state_safe = StateFactory.create(
             safe_for=candidate,
@@ -253,6 +260,9 @@ class TestSafeStateFriendsOfFriendsMatch(TestCase):
         # At this point there are two direct friends and four indirect friends
         # to match
 
+
+class TestSafeStateFriendsOfFriendsMatch(
+        _TestSafeStateFriendsOfFriendsMatchBase):
     def test_matches(self):
         matches = _matches_for_safe_state_user(self.user)
         self.assertEqual(len(matches), 6)

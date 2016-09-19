@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+<div class="row">
+  {% for match in matches %}
+  <div class="col-md-6">
+    {{ match.profile.user.get_full_name }}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
