@@ -12,7 +12,7 @@ from users.models import Profile
 class ProfileFactory(factory.DjangoModelFactory):
     class Meta:
         model = Profile
-    state = factory.LazyAttribute(lambda o: random.choice(STATES)[0])
+    state = factory.Sequence(lambda n: STATES[n % 51][0])
 
     @factory.lazy_attribute
     def preferred_candidate(self):

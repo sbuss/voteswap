@@ -11,7 +11,7 @@ class StateFactory(factory.DjangoModelFactory):
     class Meta:
         model = State
 
-    name = factory.Sequence(lambda n: us.STATES[n].name)
+    name = factory.Sequence(lambda n: us.STATES[n % 51].name)
     updated = factory.LazyFunction(timezone.now)
     abbv = factory.LazyAttribute(
         lambda obj: us.states.lookup(unicode(obj.name)).abbr)
