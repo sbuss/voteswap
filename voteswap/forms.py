@@ -47,15 +47,19 @@ class LandingPageForm(forms.Form):
         if user_profile and fb_profile:
             profile = user_profile.get()
             profile.fb_id = fb_id
+            profile.fb_name = fb_profile.get().fb_name or user.get_full_name()
             fb_profile.delete()
         elif user_profile:
             profile = user_profile.get()
             profile.fb_id = fb_id
+            if not profile.fb_name:
+                profile.fb_name = user.get_full_name()
         elif fb_profile:
             profile = fb_profile.get()
             profile.user = user
         else:
-            profile = Profile.objects.create(user=user, fb_id=fb_id)
+            profile = Profile.objects.create(
+                user=user, fb_id=fb_id, fb_name=user.get_full_name())
 
         profile.user = user
         profile.state = self.cleaned_data['state']

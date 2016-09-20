@@ -89,3 +89,35 @@ class TestLandingPageForm(TestCase):
         self.assertEqual(user.profile, profile)
         self.assertTrue(user.profile.active)
         self.assertEqual(user.profile.fb_id, user.social_auth.get().uid)
+
+    def test_save_update_name_user_only(self):
+        user = UserFactory.create(profile=None)
+        data = self._data()
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
+        user = get_user_model().objects.get(id=user.id)
+        self.assertEqual(user.get_full_name(), user.profile.fb_name)
+
+    def test_save_update_name_user_and_profile(self):
+        profile_fb_name = "foobar"
+        user = UserFactory.create(profile__fb_name=profile_fb_name)
+        data = self._data()
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
+        user = get_user_model().objects.get(id=user.id)
+        self.assertNotEqual(user.get_full_name(), user.profile.fb_name)
+        self.assertEqual(user.profile.fb_name, profile_fb_name)
+
+    def test_save_update_name_user_and_profile_unlinked(self):
+        fb_id = 1234
+        user = UserFactory.create(profile=None, social_auth__uid=fb_id)
+        profile = ProfileFactory.create(fb_id=fb_id)
+        data = self._data()
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
+        user = get_user_model().objects.get(id=user.id)
+        self.assertNotEqual(user.get_full_name(), user.profile.fb_name)
+        self.assertEqual(user.profile, profile)
