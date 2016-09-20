@@ -13,6 +13,7 @@ class ProfileFactory(factory.DjangoModelFactory):
     class Meta:
         model = Profile
     state = factory.Sequence(lambda n: STATES[n % 51][0])
+    fb_name = factory.Faker('name')
 
     @factory.lazy_attribute
     def preferred_candidate(self):
@@ -55,6 +56,8 @@ class UserFactory(factory.DjangoModelFactory):
     email = factory.LazyAttribute(lambda o: "%s@gmail.com" % o.username)
     profile = factory.RelatedFactory(
         ProfileFactory, 'user',
+        fb_name=factory.LazyAttribute(
+            lambda profile: profile.user.get_full_name()),
         fb_id=factory.LazyAttribute(_lazy_uid),
         active=True)
     social_auth = factory.RelatedFactory(SocialAuthFactory, 'user')

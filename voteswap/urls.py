@@ -21,6 +21,7 @@ from django.contrib.auth.views import logout
 from voteswap.views import confirm_signup
 from voteswap.views import index
 from voteswap.views import landing_page
+from voteswap.views import match
 
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     url('^$', landing_page, name='landing_page'),
     url('^logout/$', logout, name='logout'),
     url('^user/', include('users.urls', namespace='users')),
+    url('^swap/', match, name='swap'),
     url('^signup/confirm$', confirm_signup, name='confirm_signup'),
     url('^signup/$', landing_page, name='signup'),
 ]

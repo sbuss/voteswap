@@ -66,6 +66,8 @@ class ProfileManager(models.Manager):
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)
+    # TODO: populate fb_name with facebook name
+    fb_name = models.CharField(max_length=255, null=True)
     fb_id = models.CharField(max_length=255, null=True)
     active = models.BooleanField(default=False)
     state = models.CharField(max_length=255, choices=STATES, null=True)
