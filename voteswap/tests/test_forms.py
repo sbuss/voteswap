@@ -23,6 +23,13 @@ class TestLandingPageForm(TestCase):
         data.update(**kwargs)
         return data
 
+    def test_invalid_same_candidate(self):
+        form = LandingPageForm(
+            data=self._data(
+                preferred_candidate=CANDIDATE_CLINTON,
+                second_candidate=CANDIDATE_CLINTON))
+        self.assertFalse(form.is_valid())
+
     def test_preferred_candidate_major_party(self):
         form = LandingPageForm(
             data=self._data(preferred_candidate=CANDIDATE_CLINTON))
