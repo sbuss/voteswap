@@ -11,10 +11,10 @@ from voteswap.views import match as match_view
 HTTP_OK = 200
 
 
-class CommonTestMixins(object):
+class Common(object):
     class Base(TestCase):
         def setUp(self):
-            super(CommonTestMixins.Base, self).setUp()
+            super(Common.Base, self).setUp()
             self.request = RequestFactory()
 
         def test_has_matches(self):
@@ -28,14 +28,14 @@ class CommonTestMixins(object):
                     response, match.profile.user.get_full_name())
 
 
-class TestSafeStateMatch(_TestSafeStateMatchBase, CommonTestMixins.Base):
+class TestSafeStateMatch(_TestSafeStateMatchBase, Common.Base):
     pass
 
 
-class TestSwingStateMatch(_TestSwingStateMatchBase, CommonTestMixins.Base):
+class TestSwingStateMatch(_TestSwingStateMatchBase, Common.Base):
     pass
 
 
 class TestSafeStateFriendsOfFriendsMatch(
-        _TestSafeStateFriendsOfFriendsMatchBase, CommonTestMixins.Base):
+        _TestSafeStateFriendsOfFriendsMatchBase, Common.Base):
     pass
