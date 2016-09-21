@@ -35,6 +35,7 @@ class SocialAuthFactory(factory.DjangoModelFactory):
         model = UserSocialAuth
     provider = 'Facebook'
     uid = factory.Sequence(lambda n: str(n))
+    extra_data = '{"access_token":"1234"}'
 
 
 def _lazy_uid(profile):

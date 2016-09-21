@@ -46,26 +46,36 @@ def landing_page(request):
                               context_instance=context)
 
 
-def _get_friends_for_user(user):
-    """Get the user's facebook friends and get or create their Profiles."""
+def _add_facebook_friends_for_user(user, next_url=""):
+    """Get the user's facebook friends and get or create their Profiles.
+
+    Args:
+        user: The User object
+        next_url: Given when iterating through pages of a response. If not set
+            then the first page will be fetched.
+    """
     social_user = user.social_auth.get()
-    url = ('https://graph.facebook.com/{uid}/'
-           'friends?fields=id,name,email',
-           '&access_token={token}'.format(
-               uid=social_user.uid,
-               token=social_user.extra_data['access_token'],
-           ))
+    if not next_url:
+        url = ('https://graph.facebook.com/{uid}/'
+               'friends?fields=id,name,email'
+               '&access_token={token}').format(
+                   uid=social_user.uid,
+                   token=social_user.extra_data['access_token'])
+    else:
+        url = next_url
     response = requests.get(url)
     try:
-        data = response.json()["data"]
+        data = response.json()
     except Exception:
         data = []
     friend_profiles = []
-    for friend in data:
+    for friend in data['data']:
         profile, created = Profile.objects.get_or_create(
             fb_id=friend['id'], fb_name=friend['name'])
         friend_profiles.append(profile)
     user.profile.friends.add(*friend_profiles)
+    if 'next' in data.get('paging', {}):
+        _add_facebook_friends_for_user(user, data['paging']['next'])
 
 
 @login_required
@@ -80,7 +90,7 @@ def confirm_signup(request):
     try:
         if form.is_valid():
             form.save(request.user)
-            _get_friends_for_user(request.user)
+            _add_facebook_friends_for_user(request.user)
             return HttpResponseRedirect(reverse('users:profile'))
     except Exception as e:
         return HttpResponseServerError("Signup failed: %s" % e)
