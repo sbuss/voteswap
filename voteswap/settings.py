@@ -29,6 +29,7 @@ DEBUG = CloudSettings.get('debug') == "True"
 SOCIAL_AUTH_FACEBOOK_KEY = CloudSettings.get('facebook_key')
 SOCIAL_AUTH_FACEBOOK_SECRET = CloudSettings.get('facebook_secret')
 SOCIAL_AUTH_FACEBOOK_SCOPE = [
+    "public_profile",
     "email",
     "user_friends",
 ]
