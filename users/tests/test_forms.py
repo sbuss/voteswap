@@ -27,6 +27,21 @@ class TestPairProposalForm(TestCase):
                 id__in=[friend.id for friend in friends])))
         self.assertTrue(form.is_valid())
 
+    def test_no_paired_friends(self):
+        profile = ProfileFactory.create(active=True)
+        friend = ProfileFactory.create(active=True)
+        profile.friends.add(friend)
+        paired_friend = ProfileFactory.create(active=True)
+        paired_friend.paired_with = ProfileFactory.create(active=True)
+        profile.friends.add(paired_friend)
+        form = PairProposalForm(profile, data={'to_profile': friend.id})
+        self.assertEqual(
+            form.fields['from_profile'].queryset.get(), profile)
+        self.assertEqual(
+            set(form.fields['to_profile'].queryset),
+            set(Profile.objects.filter(id=friend.id)))
+        self.assertTrue(form.is_valid())
+
     def test_valid(self):
         profile = ProfileFactory.create(active=True)
         friend = ProfileFactory.create(active=True)
