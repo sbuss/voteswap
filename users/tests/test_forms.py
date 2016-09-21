@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from users.forms import PairProposalForm
+from users.models import PairProposal
 from users.models import Profile
 from users.tests.factories import ProfileFactory
 
@@ -25,3 +26,16 @@ class TestPairProposalForm(TestCase):
             set(Profile.objects.filter(
                 id__in=[friend.id for friend in friends])))
         self.assertTrue(form.is_valid())
+
+    def test_valid(self):
+        profile = ProfileFactory.create(active=True)
+        friend = ProfileFactory.create(active=True)
+        profile.friends.add(friend)
+        form = PairProposalForm(profile, data={'to_profile': friend.id})
+        self.assertEqual(len(PairProposal.objects.all()), 0)
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertEqual(len(PairProposal.objects.all()), 1)
+        proposal = PairProposal.objects.get()
+        self.assertEqual(proposal.from_profile, profile)
+        self.assertEqual(proposal.to_profile, friend)
