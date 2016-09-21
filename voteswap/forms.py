@@ -18,6 +18,7 @@ class LandingPageForm(forms.Form):
     _error_messages = {
         'swing_state': ("You're in a swing state and selected a third party "
                         "candidate. You must also select a second choice."),
+        'same_candidate': "Your candidates must be different.",
     }
 
     def clean(self):
@@ -26,6 +27,11 @@ class LandingPageForm(forms.Form):
         state = cleaned_data.get('state')
         preferred_candidate = cleaned_data.get('preferred_candidate')
         second_candidate = cleaned_data.get('second_candidate')
+        if (cleaned_data['preferred_candidate'] ==
+                cleaned_data['second_candidate']):
+            raise forms.ValidationError(
+                self._error_messages['same_candidate'])
+
         if state and State.objects.get(name=state).tipping_point_rank > -1:
             # Convert CANDIDATES_MAIN to a dict because it's a list of tuples
             if preferred_candidate not in dict(CANDIDATES_MAIN):

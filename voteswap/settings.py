@@ -29,12 +29,12 @@ DEBUG = CloudSettings.get('debug') == "True"
 SOCIAL_AUTH_FACEBOOK_KEY = CloudSettings.get('facebook_key')
 SOCIAL_AUTH_FACEBOOK_SECRET = CloudSettings.get('facebook_secret')
 SOCIAL_AUTH_FACEBOOK_SCOPE = [
+    "public_profile",
     "email",
-    "user_location",  # requires facebook app review
     "user_friends",
 ]
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-    'fields': 'id,name,email',
+    'fields': 'id,name,email,friends',
 }
 
 LOGIN_REDIRECT_URL = '/'

@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory
 from django.test import TestCase
+from mock import patch
 
 from polling.models import CANDIDATE_CLINTON
 from polling.tests.factories import StateFactory
@@ -9,12 +10,16 @@ from users.models import Profile
 from users.tests.factories import ProfileFactory
 from users.tests.factories import UserFactory
 from voteswap.views import confirm_signup
+from voteswap.tests.test_load_facebook_friends import \
+    _load_mock_request_response
 
 HTTP_OK = 200
 HTTP_REDIRECT = 302
 HTTP_SERVER_ERROR = 500
 
 
+@patch('voteswap.views.requests.get',
+       side_effect=_load_mock_request_response())
 class TestConfirmSignup(TestCase):
     def setUp(self):
         self.user = UserFactory(profile=None)
@@ -28,8 +33,8 @@ class TestConfirmSignup(TestCase):
             }
         }
 
-    def test_no_session_data(self):
-        """For some reason, session data is missin, redirect."""
+    def test_no_session_data(self, mock_request):
+        """For some reason, session data is missing, redirect."""
         request = self.request.get(reverse(confirm_signup))
         request.user = self.user
         request.session = {}
@@ -38,7 +43,7 @@ class TestConfirmSignup(TestCase):
         self.assertTrue(response.has_header('Location'))
         self.assertEqual(response.get('Location'), reverse('signup'))
 
-    def test_success(self):
+    def test_success(self, mock_request):
         request = self.request.get(reverse(confirm_signup))
         request.user = self.user
         request.session = self.session
@@ -50,7 +55,7 @@ class TestConfirmSignup(TestCase):
         self.assertTrue(response.has_header('Location'))
         self.assertEqual(response.get('Location'), reverse('users:profile'))
 
-    def test_existing_profile(self):
+    def test_existing_profile(self, mock_request):
         # This flow shouldn't happen, but in case it does, just merge the
         # profiles
         self.assertEqual(len(Profile.objects.all()), 0)
@@ -61,7 +66,9 @@ class TestConfirmSignup(TestCase):
         self.assertEqual(len(Profile.objects.all()), 2)
         request.session = self.session
         response = confirm_signup(request)
-        self.assertEqual(len(Profile.objects.all()), 1)
+        # And a new profile will be created from the response, but the existing
+        # profile got deleted, so the total number hasn't changed
+        self.assertEqual(len(Profile.objects.all()), 2)
         self.assertEqual(response.status_code, HTTP_REDIRECT)
         self.assertTrue(response.has_header('Location'))
         self.assertEqual(response.get('Location'), reverse('users:profile'))

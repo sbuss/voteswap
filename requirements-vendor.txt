@@ -4,3 +4,4 @@ python-social-auth==0.2.21
 us==0.9.1
 networkx==1.11
 django-bootstrap-form==3.2.1
+requests==2.11.1
