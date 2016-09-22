@@ -35,7 +35,7 @@ class FriendMatchContext(object):
             return profile.user.get_full_name()
         except:
             pass
-        return profile.email
+        return profile.fb_name
 
     @property
     def has_been_proposed_to(self):
