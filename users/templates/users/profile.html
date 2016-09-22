@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 
 {% block main %}
-Hello, {{ profile }}. These are your friends: $${{ profile.friends.all }}$$
+Hello, {{ profile }}.
+
+{% for friend_match_ctx in profile_context.good_potential_matches %}
+<div class="col-md-4">
+  <h3>{{ friend_match_ctx.name }}</h3>
+  {% if friend_match_ctx.has_been_proposed_to %}
+  You have proposed to this friend.
+  {% else %}
+    <p>{{ friend_match_ctx.proposal_string }}</p>
+  {% endif %}
+</div>
+{% endfor %}
+
 {% endblock %}
