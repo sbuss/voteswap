@@ -244,6 +244,17 @@ class _TestSafeStateFriendsOfFriendsMatchBase(TestCase):
                 tipping_point_rank += 1
                 friend_profile.friends.add(foaf.profile)
                 self.foaf_expected_matches.append(foaf.profile)
+        # And make another foaf that's friends with both of my friends
+        state = StateFactory.create(
+            tipping_point_rank=tipping_point_rank)
+        self.foafoaf = UserFactory.create(
+            profile__state=state.name,
+            profile__preferred_candidate=CANDIDATE_JOHNSON,
+            profile__second_candidate=CANDIDATE_CLINTON)
+        for friend in self.user.profile.friends.all():
+            friend.friends.add(self.foafoaf.profile)
+        self.foaf_expected_matches.append(self.foafoaf.profile)
+        tipping_point_rank += 1
         self.direct_expected_matches = []
         # Create friends in swing states
         for i in range(2):
@@ -259,7 +270,7 @@ class _TestSafeStateFriendsOfFriendsMatchBase(TestCase):
         # Direct friends are always preferred, so prepend them to expected
         self.expected_matches = (
             self.direct_expected_matches + self.foaf_expected_matches)
-        # At this point there are two direct friends and four indirect friends
+        # At this point there are two direct friends and five indirect friends
         # to match
 
 
@@ -267,7 +278,7 @@ class TestSafeStateFriendsOfFriendsMatch(
         _TestSafeStateFriendsOfFriendsMatchBase):
     def test_matches(self):
         matches = _matches_for_safe_state_profile(self.user.profile)
-        self.assertEqual(len(matches), 6)
+        self.assertEqual(len(matches), 7)
         self.assertEqual(_profiles(matches), self.expected_matches)
         self.assertEqual(
             _profiles(get_friend_matches(self.user.profile)),
@@ -283,6 +294,6 @@ class TestSafeStateFriendsOfFriendsMatch(
     def test_foaf(self):
         matches = _matches_for_safe_state_profile(
             self.user.profile, direct=False, foaf=True)
-        self.assertEqual(len(matches), 4)
+        self.assertEqual(len(matches), 5)
         self.assertEqual(_profiles(matches), self.foaf_expected_matches)
         self.assertFalse(any(match.is_direct for match in matches))

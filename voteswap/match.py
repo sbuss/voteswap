@@ -27,14 +27,21 @@ def _order_matches_by_state_rank(matches, ordered_states):
 
 def _matches_for_swing_state_profile(profile, direct=True, foaf=True):
     """Find the suitable matches for a swing state profile"""
+    found_friends = set()
+
     def _get_friends(for_profile):
         through = None if profile == for_profile else for_profile
-        return set(
-            FriendMatch(pf, through) for pf in
-            for_profile.friends.unpaired()
-            .exclude(id=profile.id)
-            .filter(state__in=potential_states,
-                    preferred_candidate=profile.second_candidate))
+        new_matches = set()
+        for matched_profile in for_profile.friends.unpaired().exclude(
+                id=profile.id).filter(
+                    state__in=potential_states,
+                    preferred_candidate=profile.second_candidate):
+            if matched_profile in found_friends:
+                # Don't double add
+                continue
+            found_friends.add(matched_profile)
+            new_matches.add(FriendMatch(matched_profile, through))
+        return new_matches
 
     potential_states = list(
         State.objects
@@ -57,14 +64,20 @@ def _matches_for_swing_state_profile(profile, direct=True, foaf=True):
 
 def _matches_for_safe_state_profile(profile, direct=True, foaf=True):
     """Find the suitable matches for a safe state profile"""
+    found_friends = set()
+
     def _get_friends(for_profile):
         through = None if profile == for_profile else for_profile
-        return set(
-            FriendMatch(pf, through) for pf in
-            for_profile.friends.unpaired()
-            .exclude(id=profile.id)
-            .filter(state__in=potential_states,
-                    second_candidate=profile.preferred_candidate))
+        new_matches = set()
+        for matched_profile in for_profile.friends.unpaired().exclude(
+                id=profile.id).filter(
+                    state__in=potential_states,
+                    second_candidate=profile.preferred_candidate):
+            if matched_profile in found_friends:
+                continue
+            found_friends.add(matched_profile)
+            new_matches.add(FriendMatch(matched_profile, through))
+        return new_matches
 
     potential_states = list(
         State.objects
