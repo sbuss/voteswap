@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db import transaction
+from django.db.models import Q
 import us
 
 from polling.models import CANDIDATES
@@ -84,6 +85,30 @@ class Profile(models.Model):
     friends = models.ManyToManyField('self', symmetrical=True)
 
     objects = ProfileManager()
+
+    def _all_friends(self, unpaired=False):
+        # TODO Raw SQL query is faster
+        direct_friend_ids = self.friends.all().values_list('id', flat=True)
+        all_friend_ids = self.friends.through.objects.filter(
+            Q(from_profile_id=self.id) |
+            Q(from_profile_id__in=direct_friend_ids)).values_list(
+                'to_profile_id', flat=True)
+        if unpaired:
+            return (Profile.objects.unpaired()
+                    .filter(id__in=all_friend_ids)
+                    .exclude(id=self.id))
+        else:
+            return (Profile.objects
+                    .filter(id__in=all_friend_ids)
+                    .exclude(id=self.id))
+
+    @property
+    def all_friends(self):
+        return self._all_friends()
+
+    @property
+    def all_unpaired_friends(self):
+        return self._all_friends(unpaired=True)
 
     @transaction.atomic
     def set_pair(self, other):

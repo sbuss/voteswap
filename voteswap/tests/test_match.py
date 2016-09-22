@@ -6,8 +6,8 @@ from polling.models import CANDIDATE_TRUMP
 from polling.tests.factories import StateFactory
 from users.tests.factories import ProfileFactory
 from users.tests.factories import UserFactory
-from voteswap.match import _matches_for_safe_state_user
-from voteswap.match import _matches_for_swing_state_user
+from voteswap.match import _matches_for_safe_state_profile
+from voteswap.match import _matches_for_swing_state_profile
 from voteswap.match import get_friend_matches
 from voteswap.match import NoMatchNecessary
 
@@ -59,15 +59,15 @@ class _TestSafeStateMatchBase(TestCase):
 class TestSafeStateMatch(_TestSafeStateMatchBase):
     def test_safe_state_major_candidate(self):
         # Now we should have two matches that show up
-        matches = _matches_for_safe_state_user(self.user)
+        matches = _matches_for_safe_state_profile(self.user.profile)
         self.assertEqual(len(matches), 2)
         self.assertEqual(_profiles(matches), self.expected_matches)
-        self.assertEqual(_profiles(get_friend_matches(self.user)),
+        self.assertEqual(_profiles(get_friend_matches(self.user.profile)),
                          self.expected_matches)
         # And I should be in my friend's potential matches
         self.assertIn(
             self.user.profile,
-            _profiles(_matches_for_swing_state_user(matches[0].profile.user)))
+            _profiles(_matches_for_swing_state_profile(matches[0].profile)))
 
     def test_no_match_minor_in_safe_state(self):
         state_safe = StateFactory.create(
@@ -80,31 +80,31 @@ class TestSafeStateMatch(_TestSafeStateMatchBase):
             profile__second_candidate=CANDIDATE_CLINTON,
         )
         self.assertTrue(
-            isinstance(get_friend_matches(user), NoMatchNecessary))
+            isinstance(get_friend_matches(user.profile), NoMatchNecessary))
 
     def test_paired_not_included(self):
         # pick two friends and pair them
-        matches = _matches_for_safe_state_user(self.user)
+        matches = _matches_for_safe_state_profile(self.user.profile)
         self.assertEqual(len(matches), 2)
         friend1 = matches[0].profile
         friend2 = self.user.profile.friends.exclude(id=friend1.id)[0]
         friend1.paired_with = friend2
-        matches = _matches_for_safe_state_user(self.user)
+        matches = _matches_for_safe_state_profile(self.user.profile)
         self.assertEqual(len(matches), 1)
         self.assertNotIn(friend1, _profiles(matches))
 
     def test_all_active(self):
-        matches = _matches_for_safe_state_user(self.user)
+        matches = _matches_for_safe_state_profile(self.user.profile)
         self.assertTrue(all(match.profile.active for match in matches))
 
     def test_no_inactive(self):
         """No inactive profiles should be returned."""
-        matches = _matches_for_safe_state_user(self.user)
+        matches = _matches_for_safe_state_profile(self.user.profile)
         self.assertEqual(len(matches), 2)
         friend1 = matches[0].profile
         friend1.active = False
         friend1.save()
-        matches = _matches_for_safe_state_user(self.user)
+        matches = _matches_for_safe_state_profile(self.user.profile)
         self.assertEqual(len(matches), 1)
         self.assertNotIn(friend1, _profiles(matches))
 
@@ -165,15 +165,17 @@ class TestSwingStateMatch(_TestSwingStateMatchBase):
     def test_swing_state_minor_candidate(self):
         # Now we should have eight friends in safe states, but only 4 of them
         # would vote for my second choice
-        matches = _matches_for_swing_state_user(self.user)
+        matches = _matches_for_swing_state_profile(self.user.profile)
         self.assertEqual(len(matches), 4)
         self.assertEqual(_profiles(matches), self.expected_matches)
         self.assertEqual(
-            _profiles(get_friend_matches(self.user)), self.expected_matches)
+            _profiles(get_friend_matches(self.user.profile)),
+            self.expected_matches)
         # And I should be in my friend's potential matches
         self.assertIn(
             self.user.profile,
-            _profiles(_matches_for_safe_state_user(matches[0].profile.user)))
+            _profiles(_matches_for_safe_state_profile(
+                matches[0].profile)))
 
     def test_no_match_major_in_swing_state(self):
         state_safe = StateFactory.create(
@@ -184,32 +186,32 @@ class TestSwingStateMatch(_TestSwingStateMatchBase):
             profile__preferred_candidate=CANDIDATE_CLINTON,
         )
         self.assertTrue(
-            isinstance(get_friend_matches(user), NoMatchNecessary))
+            isinstance(get_friend_matches(user.profile), NoMatchNecessary))
 
     def test_paired_not_included(self):
         # pick two friends and pair them
-        matches = _matches_for_swing_state_user(self.user)
+        matches = _matches_for_swing_state_profile(self.user.profile)
         self.assertEqual(len(matches), 4)
         friend1 = matches[0].profile
         friend2 = self.user.profile.friends.exclude(
             id__in=[match.profile.id for match in matches])[0]
         friend1.paired_with = friend2
-        matches = _matches_for_swing_state_user(self.user)
+        matches = _matches_for_swing_state_profile(self.user.profile)
         self.assertEqual(len(matches), 3)
         self.assertNotIn(friend1, _profiles(matches))
 
     def test_all_active(self):
-        matches = _matches_for_swing_state_user(self.user)
+        matches = _matches_for_swing_state_profile(self.user.profile)
         self.assertTrue(all(match.profile.active for match in matches))
 
     def test_no_inactive(self):
         """No inactive profiles should be returned."""
-        matches = _matches_for_swing_state_user(self.user)
+        matches = _matches_for_swing_state_profile(self.user.profile)
         self.assertEqual(len(matches), 4)
         friend1 = matches[0].profile
         friend1.active = False
         friend1.save()
-        matches = _matches_for_swing_state_user(self.user)
+        matches = _matches_for_swing_state_profile(self.user.profile)
         self.assertEqual(len(matches), 3)
         self.assertNotIn(friend1, _profiles(matches))
 
@@ -242,6 +244,17 @@ class _TestSafeStateFriendsOfFriendsMatchBase(TestCase):
                 tipping_point_rank += 1
                 friend_profile.friends.add(foaf.profile)
                 self.foaf_expected_matches.append(foaf.profile)
+        # And make another foaf that's friends with both of my friends
+        state = StateFactory.create(
+            tipping_point_rank=tipping_point_rank)
+        self.foafoaf = UserFactory.create(
+            profile__state=state.name,
+            profile__preferred_candidate=CANDIDATE_JOHNSON,
+            profile__second_candidate=CANDIDATE_CLINTON)
+        for friend in self.user.profile.friends.all():
+            friend.friends.add(self.foafoaf.profile)
+        self.foaf_expected_matches.append(self.foafoaf.profile)
+        tipping_point_rank += 1
         self.direct_expected_matches = []
         # Create friends in swing states
         for i in range(2):
@@ -257,29 +270,30 @@ class _TestSafeStateFriendsOfFriendsMatchBase(TestCase):
         # Direct friends are always preferred, so prepend them to expected
         self.expected_matches = (
             self.direct_expected_matches + self.foaf_expected_matches)
-        # At this point there are two direct friends and four indirect friends
+        # At this point there are two direct friends and five indirect friends
         # to match
 
 
 class TestSafeStateFriendsOfFriendsMatch(
         _TestSafeStateFriendsOfFriendsMatchBase):
     def test_matches(self):
-        matches = _matches_for_safe_state_user(self.user)
-        self.assertEqual(len(matches), 6)
+        matches = _matches_for_safe_state_profile(self.user.profile)
+        self.assertEqual(len(matches), 7)
         self.assertEqual(_profiles(matches), self.expected_matches)
         self.assertEqual(
-            _profiles(get_friend_matches(self.user)), self.expected_matches)
+            _profiles(get_friend_matches(self.user.profile)),
+            self.expected_matches)
 
     def test_direct(self):
-        matches = _matches_for_safe_state_user(
-            self.user, direct=True, foaf=False)
+        matches = _matches_for_safe_state_profile(
+            self.user.profile, direct=True, foaf=False)
         self.assertEqual(len(matches), 2)
         self.assertEqual(_profiles(matches), self.direct_expected_matches)
         self.assertTrue(all(match.is_direct for match in matches))
 
     def test_foaf(self):
-        matches = _matches_for_safe_state_user(
-            self.user, direct=False, foaf=True)
-        self.assertEqual(len(matches), 4)
+        matches = _matches_for_safe_state_profile(
+            self.user.profile, direct=False, foaf=True)
+        self.assertEqual(len(matches), 5)
         self.assertEqual(_profiles(matches), self.foaf_expected_matches)
         self.assertFalse(any(match.is_direct for match in matches))

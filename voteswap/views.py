@@ -99,7 +99,7 @@ def confirm_signup(request):
 
 @login_required
 def match(request):
-    matches = get_friend_matches(request.user)
+    matches = get_friend_matches(request.user.profile)
     context = RequestContext(
         request,
         {'request': request, 'user': request.user, 'matches': matches})

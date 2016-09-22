@@ -22,7 +22,7 @@ class Common(object):
             request.user = self.user
             response = match_view(request)
             self.assertEqual(response.status_code, HTTP_OK)
-            matches = get_friend_matches(self.user)
+            matches = get_friend_matches(self.user.profile)
             for match in matches:
                 self.assertContains(
                     response, match.profile.user.get_full_name())
@@ -43,7 +43,7 @@ class TestSafeStateFriendsOfFriendsMatch(
         request.user = self.user
         response = match_view(request)
         self.assertEqual(response.status_code, HTTP_OK)
-        matches = get_friend_matches(self.user)
+        matches = get_friend_matches(self.user.profile)
         for match in matches:
             self.assertContains(
                 response, match.profile.fb_name)

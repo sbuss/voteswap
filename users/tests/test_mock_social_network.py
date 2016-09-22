@@ -3,10 +3,9 @@ from users.tests import BaseUsersTest
 
 
 class TestProfile(BaseUsersTest):
-    @classmethod
-    def setUpClass(cls):
-        super(TestProfile, cls).setUpClass()
-        cls.social_network = MockSocialNetwork()
+    def setUp(self):
+        super(TestProfile, self).setUp()
+        self.social_network = MockSocialNetwork()
 
     def test_friends(self):
         friends = self.social_network.get_friends(self.users[0].id)

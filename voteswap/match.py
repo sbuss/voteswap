@@ -25,16 +25,23 @@ def _order_matches_by_state_rank(matches, ordered_states):
     return sorted(matches, key=keyfunc)
 
 
-def _matches_for_swing_state_user(user, direct=True, foaf=True):
-    """Find the suitable matches for a swing state user"""
-    def _get_friends(profile):
-        through = None if profile.user == user else profile
-        return set(
-            FriendMatch(profile, through) for profile in
-            profile.friends.unpaired()
-            .exclude(id=user.profile.id)
-            .filter(state__in=potential_states,
-                    preferred_candidate=user.profile.second_candidate))
+def _matches_for_swing_state_profile(profile, direct=True, foaf=True):
+    """Find the suitable matches for a swing state profile"""
+    found_friends = set()
+
+    def _get_friends(for_profile):
+        through = None if profile == for_profile else for_profile
+        new_matches = set()
+        for matched_profile in for_profile.friends.unpaired().exclude(
+                id=profile.id).filter(
+                    state__in=potential_states,
+                    preferred_candidate=profile.second_candidate):
+            if matched_profile in found_friends:
+                # Don't double add
+                continue
+            found_friends.add(matched_profile)
+            new_matches.add(FriendMatch(matched_profile, through))
+        return new_matches
 
     potential_states = list(
         State.objects
@@ -45,26 +52,32 @@ def _matches_for_swing_state_user(user, direct=True, foaf=True):
     matches = list()
     if direct:
         matches.extend(_order_matches_by_state_rank(
-            _get_friends(user.profile), potential_states))
+            _get_friends(profile), potential_states))
     if foaf:
         foaf_friends = set()
-        for friend in user.profile.friends.all():
+        for friend in profile.friends.all():
             foaf_friends = foaf_friends.union(_get_friends(friend))
         matches.extend(_order_matches_by_state_rank(
             foaf_friends, potential_states))
     return matches
 
 
-def _matches_for_safe_state_user(user, direct=True, foaf=True):
-    """Find the suitable matches for a safe state user"""
-    def _get_friends(profile):
-        through = None if profile.user == user else profile
-        return set(
-            FriendMatch(profile, through) for profile in
-            profile.friends.unpaired()
-            .exclude(id=user.profile.id)
-            .filter(state__in=potential_states,
-                    second_candidate=user.profile.preferred_candidate))
+def _matches_for_safe_state_profile(profile, direct=True, foaf=True):
+    """Find the suitable matches for a safe state profile"""
+    found_friends = set()
+
+    def _get_friends(for_profile):
+        through = None if profile == for_profile else for_profile
+        new_matches = set()
+        for matched_profile in for_profile.friends.unpaired().exclude(
+                id=profile.id).filter(
+                    state__in=potential_states,
+                    second_candidate=profile.preferred_candidate):
+            if matched_profile in found_friends:
+                continue
+            found_friends.add(matched_profile)
+            new_matches.add(FriendMatch(matched_profile, through))
+        return new_matches
 
     potential_states = list(
         State.objects
@@ -76,32 +89,32 @@ def _matches_for_safe_state_user(user, direct=True, foaf=True):
     matches = list()
     if direct:
         matches.extend(_order_matches_by_state_rank(
-            _get_friends(user.profile), potential_states))
+            _get_friends(profile), potential_states))
     if foaf:
         foaf_friends = set()
-        for friend in user.profile.friends.all():
+        for friend in profile.friends.all():
             foaf_friends = foaf_friends.union(_get_friends(friend))
         matches.extend(_order_matches_by_state_rank(
             foaf_friends, potential_states))
     return matches
 
 
-def get_friend_matches(user):
-    """Find suitable matches for the given user.
+def get_friend_matches(profile):
+    """Find suitable matches for the given profile.
 
     Match critera:
       * safe state <-> swing states
       * primary <-> secondary choice match
     """
-    state = State.objects.get(name=user.profile.state)
+    state = State.objects.get(name=profile.state)
     if state.is_swing:
-        if user.profile.preferred_candidate in dict(CANDIDATES_MAIN):
+        if profile.preferred_candidate in dict(CANDIDATES_MAIN):
             # The user shouldn't change their vote
             return NoMatchNecessary()
-        return _matches_for_swing_state_user(user)
+        return _matches_for_swing_state_profile(profile)
     else:
         # In a safe state
-        if user.profile.preferred_candidate in dict(CANDIDATES_THIRD_PARTY):
+        if profile.preferred_candidate in dict(CANDIDATES_THIRD_PARTY):
             # The user shouldn't change their vote
             return NoMatchNecessary()
-        return _matches_for_safe_state_user(user)
+        return _matches_for_safe_state_profile(profile)

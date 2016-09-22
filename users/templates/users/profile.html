@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
 
 {% block main %}
-Hello, {{ profile }}. These are your friends: $${{ profile.friends.all }}$$
+Hello, {{ profile.fb_name }}.
+
+<div class="row">
+  {% for fm_ctx in profile_context.good_potential_matches %}
+  <div class="col-md-4">
+    <h3>{{ fm_ctx.name }}{% if not fm_ctx.friend_match.is_direct %} (via {{ fm_ctx.friend_match.through.user.get_full_name }}){% endif %}</h3>
+    {% if fm_ctx.has_been_proposed_to %}
+    You have proposed to this friend.
+    {% else %}
+      <p>{{ fm_ctx.proposal_string }}</p>
+      <a type="button" class="btn btn-primary">Swap with {{ fm_ctx.name }}</a>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
 {% endblock %}
