@@ -19,4 +19,4 @@ class PairProposalForm(forms.ModelForm):
         super(PairProposalForm, self).__init__(*args, **kwargs)
         self.fields['from_profile'].queryset = Profile.objects.filter(
             id=from_profile.id)
-        self.fields['to_profile'].queryset = from_profile.friends.unpaired()
+        self.fields['to_profile'].queryset = from_profile.all_unpaired_friends

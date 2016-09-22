@@ -54,3 +54,31 @@ class TestPairProposalForm(TestCase):
         proposal = PairProposal.objects.get()
         self.assertEqual(proposal.from_profile, profile)
         self.assertEqual(proposal.to_profile, friend)
+
+    def test_friends_of_friends(self):
+        profile = ProfileFactory.create(active=True)
+        # Start with no friends
+        self.assertQuerysetEqual(
+            profile.friends.all(),
+            profile.all_unpaired_friends)
+        friend = ProfileFactory.create(active=True)
+        profile.friends.add(friend)
+        # Add a friend and make sure it's there
+        self.assertEqual(
+            friend,
+            profile.all_unpaired_friends.get())
+        foaf = ProfileFactory.create(active=True)
+        # After creating another profile, it isn't yet a friend
+        self.assertEqual(
+            friend,
+            profile.all_unpaired_friends.get())
+        friend.friends.add(foaf)
+        # But after adding it as a friend of my friend, I can see it
+        self.assertEqual(
+            set([friend, foaf]),
+            set(profile.all_unpaired_friends))
+        # But won't see friends-of-friends-of-friends
+        foaf.friends.add(ProfileFactory.create(active=True))
+        self.assertEqual(
+            set([friend, foaf]),
+            set(profile.all_unpaired_friends))

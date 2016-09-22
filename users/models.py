@@ -88,12 +88,11 @@ class Profile(models.Model):
 
     def _all_friends(self, unpaired=False):
         # TODO Raw SQL query is faster
-        # TODO Do I even need this?
         direct_friend_ids = self.friends.all().values_list('id', flat=True)
         all_friend_ids = self.friends.through.objects.filter(
             Q(from_profile_id=self.id) |
             Q(from_profile_id__in=direct_friend_ids)).values_list(
-                'id', flat=True)
+                'to_profile_id', flat=True)
         if unpaired:
             return (Profile.objects.unpaired()
                     .filter(id__in=all_friend_ids)
