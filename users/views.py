@@ -84,9 +84,10 @@ def propose_swap(request):
             from_profile=request.user.profile, data=request.POST)
         if form.is_valid():
             form.save()
-            return json_response({'status': 'ok', 'errors': []})
+            return json_response({'status': 'ok', 'errors': {}})
         else:
             return json_response({'status': 'error', 'errors': form.errors})
     else:
         return json_response(
-            {'status': 'error', 'errors': ['Must POST with to_profile set']})
+                {'status': 'error',
+                 'errors': {'method': 'Must POST with to_profile set'}})
