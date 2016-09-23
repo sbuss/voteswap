@@ -27,8 +27,7 @@ class TestProfileContext(TestCase):
         # The logged in user is in a swing state, their match in a safe state
         user = UserFactory.create(
             profile__state=swing_state.name,
-            profile__preferred_candidate=CANDIDATE_JOHNSON,
-            profile__second_candidate=CANDIDATE_CLINTON)
+            profile__preferred_candidate=CANDIDATE_JOHNSON)
         friend = UserFactory.create(
             profile__state=safe_state.name,
             profile__preferred_candidate=CANDIDATE_CLINTON)
@@ -48,8 +47,7 @@ class TestProfileContext(TestCase):
         # The logged in user is in a safe state, their match in a swing state
         friend = UserFactory.create(
             profile__state=swing_state.name,
-            profile__preferred_candidate=CANDIDATE_JOHNSON,
-            profile__second_candidate=CANDIDATE_CLINTON)
+            profile__preferred_candidate=CANDIDATE_JOHNSON)
         user = UserFactory.create(
             profile__state=safe_state.name,
             profile__preferred_candidate=CANDIDATE_CLINTON)

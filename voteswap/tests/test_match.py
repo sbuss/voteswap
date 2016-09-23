@@ -38,14 +38,12 @@ class _TestSafeStateMatchBase(TestCase):
         swing_state_1 = StateFactory.create(tipping_point_rank=1)
         swing_user_1 = UserFactory.create(
             profile__state=swing_state_1.name,
-            profile__preferred_candidate=CANDIDATE_JOHNSON,
-            profile__second_candidate=candidate)
+            profile__preferred_candidate=CANDIDATE_JOHNSON)
         self.user.profile.friends.add(swing_user_1.profile)
         swing_state_2 = StateFactory.create(tipping_point_rank=2)
         swing_user_2 = UserFactory.create(
             profile__state=swing_state_2.name,
-            profile__preferred_candidate=CANDIDATE_JOHNSON,
-            profile__second_candidate=candidate)
+            profile__preferred_candidate=CANDIDATE_JOHNSON)
         self.user.profile.friends.add(swing_user_2.profile)
         swing_state_3 = StateFactory.create(tipping_point_rank=3)
         swing_user_3 = UserFactory.create(
@@ -58,7 +56,7 @@ class _TestSafeStateMatchBase(TestCase):
 
 class TestSafeStateMatch(_TestSafeStateMatchBase):
     def test_safe_state_major_candidate(self):
-        # Now we should have two matches that show up
+        # Now we should have three matches that show up
         matches = _matches_for_safe_state_profile(self.user.profile)
         self.assertEqual(len(matches), 2)
         self.assertEqual(_profiles(matches), self.expected_matches)
@@ -77,7 +75,6 @@ class TestSafeStateMatch(_TestSafeStateMatchBase):
         user = UserFactory.create(
             profile__state=state_safe.name,
             profile__preferred_candidate=CANDIDATE_JOHNSON,
-            profile__second_candidate=CANDIDATE_CLINTON,
         )
         self.assertTrue(
             isinstance(get_friend_matches(user.profile), NoMatchNecessary))
@@ -119,7 +116,6 @@ class _TestSwingStateMatchBase(TestCase):
         self.user = UserFactory.create(
             profile__state=self.state_safe.name,
             profile__preferred_candidate=candidate,
-            profile__second_candidate=CANDIDATE_CLINTON
         )
         # Make two friends for each candidate in a safe state for each
         # The ordering of expected matches is by state safe_rank
@@ -138,21 +134,19 @@ class _TestSwingStateMatchBase(TestCase):
                     profile__state=state.name,
                     profile__preferred_candidate=preferred_candidate)
                 self.user.profile.friends.add(friend.profile)
-                if preferred_candidate == self.user.profile.second_candidate:
+                if preferred_candidate == CANDIDATE_CLINTON:
                     self.expected_matches.append(friend.profile)
                 safe_rank += 1
         # Create friends in swing states
         swing_state_1 = StateFactory.create(tipping_point_rank=2)
         swing_user_1 = UserFactory.create(
             profile__state=swing_state_1.name,
-            profile__preferred_candidate=CANDIDATE_JOHNSON,
-            profile__second_candidate=candidate)
+            profile__preferred_candidate=CANDIDATE_JOHNSON)
         self.user.profile.friends.add(swing_user_1.profile)
         swing_state_2 = StateFactory.create(tipping_point_rank=3)
         swing_user_2 = UserFactory.create(
             profile__state=swing_state_2.name,
-            profile__preferred_candidate=CANDIDATE_JOHNSON,
-            profile__second_candidate=candidate)
+            profile__preferred_candidate=CANDIDATE_JOHNSON)
         self.user.profile.friends.add(swing_user_2.profile)
         swing_state_3 = StateFactory.create(tipping_point_rank=4)
         swing_user_3 = UserFactory.create(
@@ -164,7 +158,7 @@ class _TestSwingStateMatchBase(TestCase):
 class TestSwingStateMatch(_TestSwingStateMatchBase):
     def test_swing_state_minor_candidate(self):
         # Now we should have eight friends in safe states, but only 4 of them
-        # would vote for my second choice
+        # are suitable for swapping
         matches = _matches_for_swing_state_profile(self.user.profile)
         self.assertEqual(len(matches), 4)
         self.assertEqual(_profiles(matches), self.expected_matches)
@@ -239,8 +233,7 @@ class _TestSafeStateFriendsOfFriendsMatchBase(TestCase):
                     tipping_point_rank=tipping_point_rank)
                 foaf = UserFactory.create(
                     profile__state=state.name,
-                    profile__preferred_candidate=CANDIDATE_JOHNSON,
-                    profile__second_candidate=CANDIDATE_CLINTON)
+                    profile__preferred_candidate=CANDIDATE_JOHNSON)
                 tipping_point_rank += 1
                 friend_profile.friends.add(foaf.profile)
                 self.foaf_expected_matches.append(foaf.profile)
@@ -249,8 +242,7 @@ class _TestSafeStateFriendsOfFriendsMatchBase(TestCase):
             tipping_point_rank=tipping_point_rank)
         self.foafoaf = UserFactory.create(
             profile__state=state.name,
-            profile__preferred_candidate=CANDIDATE_JOHNSON,
-            profile__second_candidate=CANDIDATE_CLINTON)
+            profile__preferred_candidate=CANDIDATE_JOHNSON)
         for friend in self.user.profile.friends.all():
             friend.friends.add(self.foafoaf.profile)
         self.foaf_expected_matches.append(self.foafoaf.profile)
@@ -262,8 +254,7 @@ class _TestSafeStateFriendsOfFriendsMatchBase(TestCase):
                 tipping_point_rank=tipping_point_rank)
             friend = UserFactory.create(
                 profile__state=state.name,
-                profile__preferred_candidate=CANDIDATE_JOHNSON,
-                profile__second_candidate=CANDIDATE_CLINTON)
+                profile__preferred_candidate=CANDIDATE_JOHNSON)
             tipping_point_rank += 1
             self.user.profile.friends.add(friend.profile)
             self.direct_expected_matches.append(friend.profile)
