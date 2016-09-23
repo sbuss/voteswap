@@ -1,45 +1,41 @@
-.leader {
-    font: normal 1.5em verdana,sans-serif;
-    margin-bottom: 20px;
+.landing-page__header-image {
+  background: #738ace url('http://www.fillmurray.com/800/900') center center no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height: 50vw;
+  max-height: 400px;
 }
 
-.navbar {
-    margin-bottom: 10px;
-    background: #eee;
-    border: none;
+.landing-page__section h1 {
+  border-bottom: 2px solid #738ace;
+  display: inline-block;
 }
 
-.navbar-brand {
-    float: left;
+.landing-page__section {
+  text-align: center;
+  margin-bottom: 25px;
 }
 
-.navbar-collapse.collapse {
-    display: block!important;
+.landing-page__section p {
+  font-size: 16px;
+  text-align: left;
 }
 
-.navbar-nav>li, .navbar-nav {
-    float: left !important;
+.landing-page__section a {
+  color: #738ace;
+  display: block;
+  float: right;
+  margin-bottom: 25px;
 }
 
-.navbar-nav.navbar-right:last-child {
-    margin-right: -15px !important;
+.navbar-inverse {
+  background-image: none;
+  background-color: #3e00fa;
 }
 
-.navbar-right {
-    float: right!important;
+.navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav>li>a  {
+  color: #fff;
 }
 
-.circle {
-    width:50px;
-    height:50px;
-    line-height:50px;
-    border-radius:50%;
-    color:red;
-    text-align:center;
-    font-weight:bold;
-    background:#ddd;
-    float: left;
-    margin-top: -15px;
-    margin-left: -15px;
-    margin-right: 10px;
-}
