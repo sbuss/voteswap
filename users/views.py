@@ -3,7 +3,6 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.functional import cached_property
 
-from polling.models import State
 from voteswap.match import get_friend_matches
 
 
@@ -45,30 +44,14 @@ class FriendMatchContext(object):
     @property
     def proposal_string(self):
         profile = self.friend_match.profile
-        state = State.objects.get(name=profile.state)
-        if state.is_swing:
-            # If I'm a good match, then I must be voting for a third party
-            # and I must have a second choice candidate
-            return (
-                "Will vote for {second_candidate} in {state} in exchange for "
-                "your vote for {preferred_candidate} in {your_state}").format(
-                    second_candidate=profile.second_candidate,
-                    state=profile.state,
-                    preferred_candidate=profile.preferred_candidate,
-                    your_state=self.profile_context.profile.state)
-        else:
-            # If I'm a good match in a safe state, then I must be voting for
-            # a major party, and my friend must be voting for a third party
-            # in a swing state
-            up_friend = self.profile_context.profile
-            return (
-                "Will vote for {up_friend_preferred} in {my_state} in "
-                "exchange for your vote for {up_friend_second} in "
-                "{your_state}").format(
-                    up_friend_preferred=up_friend.preferred_candidate,
-                    my_state=profile.state,
-                    up_friend_second=up_friend.second_candidate,
-                    your_state=up_friend.state)
+        return (
+            "Will vote for {your_candidate} in {my_state} in exchange for "
+            "your vote for {my_candidate} in {your_state}").format(
+                your_candidate=(
+                    self.profile_context.profile.preferred_candidate),
+                my_state=profile.state,
+                my_candidate=profile.preferred_candidate,
+                your_state=self.profile_context.profile.state)
 
 
 @login_required

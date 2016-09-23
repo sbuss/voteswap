@@ -7,7 +7,7 @@ from django.db import transaction
 from django.db.models import Q
 import us
 
-from polling.models import CANDIDATES
+from polling.models import CANDIDATES_ADVOCATED
 
 STATES = [(state.name, state.name) for state in us.STATES]
 
@@ -73,9 +73,7 @@ class Profile(models.Model):
     active = models.BooleanField(default=False)
     state = models.CharField(max_length=255, choices=STATES, null=True)
     preferred_candidate = models.CharField(
-        max_length=255, choices=CANDIDATES, null=True)
-    second_candidate = models.CharField(
-        max_length=255, choices=CANDIDATES, null=True, blank=True)
+        max_length=255, choices=CANDIDATES_ADVOCATED, null=True)
     reason = models.TextField(null=True, blank=True)  # Why a user is swapping
     # Pairing with a User might be more technically correct, but then that
     # requires us to JOIN against the users table when trying to get the
@@ -129,13 +127,10 @@ class Profile(models.Model):
             raise ValidationError(
                 "Cannot create an active profile for a user who has not "
                 "authorized Facebook login.")
-        if self.preferred_candidate == self.second_candidate:
-            raise ValidationError("Your candidate choices cannot be the same.")
 
     def __repr__(self):
-        return "<Profile: user:{user}, state:{state}, pc:{pc}, sc:{sc}, pair:{pair}>".format(  # NOQA
+        return "<Profile: user:{user}, state:{state}, cand:{candidate}, pair:{pair}>".format(  # NOQA
                 user=self.user,
                 state=self.state,
-                pc=self.preferred_candidate,
-                sc=self.second_candidate,
+                candidate=self.preferred_candidate,
                 pair=repr(getattr(self.paired_with, 'user', None)))

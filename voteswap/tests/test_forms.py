@@ -17,18 +17,10 @@ class TestLandingPageForm(TestCase):
 
     def _data(self, **kwargs):
         data = {'preferred_candidate': CANDIDATE_CLINTON,
-                'second_candidate': '',
                 'state': 'California',
                 'reason': ''}
         data.update(**kwargs)
         return data
-
-    def test_invalid_same_candidate(self):
-        form = LandingPageForm(
-            data=self._data(
-                preferred_candidate=CANDIDATE_CLINTON,
-                second_candidate=CANDIDATE_CLINTON))
-        self.assertFalse(form.is_valid())
 
     def test_preferred_candidate_major_party(self):
         form = LandingPageForm(
@@ -42,30 +34,12 @@ class TestLandingPageForm(TestCase):
             data=self._data(preferred_candidate=CANDIDATE_CLINTON))
         self.assertTrue(form.is_valid())
 
-    def test_third_party_swing(self):
-        """Ensure that second_candidate is required if state is swing."""
-        self.state.tipping_point_rank = 1
-        self.state.save()
-        form = LandingPageForm(
-            data=self._data(
-                preferred_candidate=CANDIDATE_JOHNSON,
-            ))
-        self.assertFalse(form.is_valid())
-
-        form = LandingPageForm(
-            data=self._data(
-                preferred_candidate=CANDIDATE_JOHNSON,
-                second_candidate=CANDIDATE_CLINTON,
-            ))
-        self.assertTrue(form.is_valid())
-
     def test_save_no_profile(self):
         """Ensure saving the form creates a profile for a user."""
         user = UserFactory.create(profile=None)
         reason = 'because'
         data = self._data(
             preferred_candidate=CANDIDATE_JOHNSON,
-            second_candidate=CANDIDATE_CLINTON,
             reason=reason)
         form = LandingPageForm(data=data)
         self.assertTrue(form.is_valid())
@@ -74,8 +48,6 @@ class TestLandingPageForm(TestCase):
         self.assertEqual(user.profile.state, data['state'])
         self.assertEqual(user.profile.preferred_candidate,
                          data['preferred_candidate'])
-        self.assertEqual(user.profile.second_candidate,
-                         data['second_candidate'])
         self.assertEqual(user.profile.reason,
                          data['reason'])
         self.assertTrue(user.profile.active)

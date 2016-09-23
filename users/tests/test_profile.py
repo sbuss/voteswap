@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.db.models import F
 from django.utils import timezone
 
 from users.models import PairProposal
@@ -25,23 +24,9 @@ class TestProfile(BaseUsersTest):
         user0.profile.paired_with = user2.profile
         self.assertEqual(user0.profile.paired_with, user2.profile)
 
-    def test_profile_candidate_validation(self):
-        profile = ProfileFactory.build()
-        profile.preferred_candidate = profile.second_candidate
-        self.assertRaises(ValidationError, profile.clean)
-
     def test_empty_preferred(self):
         """No Profiles created in BaseUsersTest w/o preferred candidate."""
         self.assertFalse(Profile.objects.filter(preferred_candidate=""))
-
-    def test_empty_second(self):
-        """No Profiles created in BaseUsersTest w/o second candidate."""
-        self.assertFalse(Profile.objects.filter(second_candidate=""))
-
-    def test_equal_candidates(self):
-        """No Profiles created in BaseUsersTest where preferred==second."""
-        self.assertFalse(Profile.objects.filter(
-            preferred_candidate=F('second_candidate')))
 
     def test_active(self):
         self.assertEqual(len(Profile.objects.all()),

@@ -1,4 +1,6 @@
 from polling.models import State
+from polling.models import CANDIDATE_CLINTON
+from polling.models import CANDIDATE_JOHNSON
 from polling.models import CANDIDATE_NONE
 from polling.models import CANDIDATES_MAIN
 from polling.models import CANDIDATES_THIRD_PARTY
@@ -28,6 +30,10 @@ def _order_matches_by_state_rank(matches, ordered_states):
 def _matches_for_swing_state_profile(profile, direct=True, foaf=True):
     """Find the suitable matches for a swing state profile"""
     found_friends = set()
+    compatible_candidate = (
+        CANDIDATE_CLINTON
+        if profile.preferred_candidate == CANDIDATE_JOHNSON
+        else CANDIDATE_JOHNSON)
 
     def _get_friends(for_profile):
         through = None if profile == for_profile else for_profile
@@ -35,7 +41,7 @@ def _matches_for_swing_state_profile(profile, direct=True, foaf=True):
         for matched_profile in for_profile.friends.unpaired().exclude(
                 id=profile.id).filter(
                     state__in=potential_states,
-                    preferred_candidate=profile.second_candidate):
+                    preferred_candidate=compatible_candidate):
             if matched_profile in found_friends:
                 # Don't double add
                 continue
@@ -65,6 +71,10 @@ def _matches_for_swing_state_profile(profile, direct=True, foaf=True):
 def _matches_for_safe_state_profile(profile, direct=True, foaf=True):
     """Find the suitable matches for a safe state profile"""
     found_friends = set()
+    compatible_candidate = (
+        CANDIDATE_CLINTON
+        if profile.preferred_candidate == CANDIDATE_JOHNSON
+        else CANDIDATE_JOHNSON)
 
     def _get_friends(for_profile):
         through = None if profile == for_profile else for_profile
@@ -72,7 +82,7 @@ def _matches_for_safe_state_profile(profile, direct=True, foaf=True):
         for matched_profile in for_profile.friends.unpaired().exclude(
                 id=profile.id).filter(
                     state__in=potential_states,
-                    second_candidate=profile.preferred_candidate):
+                    preferred_candidate=compatible_candidate):
             if matched_profile in found_friends:
                 continue
             found_friends.add(matched_profile)
@@ -104,7 +114,7 @@ def get_friend_matches(profile):
 
     Match critera:
       * safe state <-> swing states
-      * primary <-> secondary choice match
+      * candidate != my candidate
     """
     state = State.objects.get(name=profile.state)
     if state.is_swing:

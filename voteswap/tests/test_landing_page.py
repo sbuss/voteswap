@@ -2,10 +2,8 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory
 from django.test import TestCase
-from django.utils import html
 
 from polling.models import CANDIDATE_CLINTON
-from polling.models import CANDIDATE_JOHNSON
 from polling.tests.factories import StateFactory
 from users.tests.factories import UserFactory
 from voteswap.forms import LandingPageForm
@@ -55,15 +53,3 @@ class TestLandingPageView(TestCase):
             base=reverse('social:begin', args=['facebook']),
             next=reverse('confirm_signup'))
         self.assertEqual(response.get('Location'), redirect_to)
-
-    def test_post_bad(self):
-        state = StateFactory(tipping_point_rank=1)
-        data = {'preferred_candidate': CANDIDATE_JOHNSON,
-                'state': state.name}
-        request = self.request.post(reverse(landing_page), data=data)
-        request.user = AnonymousUser()
-        request.session = {}
-        response = landing_page(request)
-        self.assertContains(
-            response,
-            html.escape(LandingPageForm._error_messages['swing_state']))
