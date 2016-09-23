@@ -1,8 +1,11 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.functional import cached_property
+import json
 
+from users.forms import PairProposalForm
 from voteswap.match import get_friend_matches
 
 
@@ -66,3 +69,24 @@ def profile(request):
     )
     return render_to_response('users/profile.html',
                               context_instance=context)
+
+
+def json_response(data):
+    if isinstance(data, dict):
+        data = json.dumps(data)
+    return HttpResponse(data, content_type='application/json')
+
+
+@login_required
+def propose_swap(request):
+    if request.method == "POST":
+        form = PairProposalForm(
+            from_profile=request.user.profile, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return json_response({'status': 'ok', 'errors': []})
+        else:
+            return json_response({'status': 'error', 'errors': form.errors})
+    else:
+        return json_response(
+            {'status': 'error', 'errors': ['Must POST with to_profile set']})
