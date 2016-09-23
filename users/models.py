@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.db import transaction
 from django.db.models import Q
@@ -55,14 +54,8 @@ class ProfileManager(models.Manager):
                 .select_related('user')
                 .prefetch_related('_paired_with__user'))
 
-    def active(self):
-        return self.get_queryset().filter(active=True)
-
-    def inactive(self):
-        return self.get_queryset().filter(active=False)
-
     def unpaired(self):
-        return self.active().filter(_paired_with=None)
+        return self.get_queryset().filter(_paired_with=None)
 
 
 class Profile(models.Model):
@@ -70,7 +63,6 @@ class Profile(models.Model):
     # TODO: populate fb_name with facebook name
     fb_name = models.CharField(max_length=255, null=True)
     fb_id = models.CharField(max_length=255, null=True)
-    active = models.BooleanField(default=False)
     state = models.CharField(max_length=255, choices=STATES, null=True)
     preferred_candidate = models.CharField(
         max_length=255, choices=CANDIDATES_ADVOCATED, null=True)
@@ -121,12 +113,6 @@ class Profile(models.Model):
         return None
 
     paired_with = property(get_pair, set_pair)
-
-    def clean(self):
-        if self.active and not self.user:
-            raise ValidationError(
-                "Cannot create an active profile for a user who has not "
-                "authorized Facebook login.")
 
     def __repr__(self):
         return "<Profile: user:{user}, state:{state}, cand:{candidate}, pair:{pair}>".format(  # NOQA

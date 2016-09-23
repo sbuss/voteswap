@@ -1,11 +1,9 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 from users.models import PairProposal
 from users.models import Profile
 from users.tests import BaseUsersTest
-from users.tests.factories import ProfileFactory
 
 
 class TestProfile(BaseUsersTest):
@@ -27,19 +25,6 @@ class TestProfile(BaseUsersTest):
     def test_empty_preferred(self):
         """No Profiles created in BaseUsersTest w/o preferred candidate."""
         self.assertFalse(Profile.objects.filter(preferred_candidate=""))
-
-    def test_active(self):
-        self.assertEqual(len(Profile.objects.all()),
-                         len(Profile.objects.active()))
-
-    def test_inactive(self):
-        self.assertEqual(0, len(Profile.objects.inactive()))
-        ProfileFactory.create(user=None)
-        self.assertEqual(1, len(Profile.objects.inactive()))
-
-    def test_invalid_active(self):
-        profile = Profile(user=None, active=True)
-        self.assertRaises(ValidationError, profile.full_clean)
 
 
 class TestPairProposal(BaseUsersTest):

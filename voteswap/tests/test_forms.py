@@ -50,15 +50,20 @@ class TestLandingPageForm(TestCase):
                          data['preferred_candidate'])
         self.assertEqual(user.profile.reason,
                          data['reason'])
-        self.assertTrue(user.profile.active)
         self.assertNotEqual(user.profile.fb_id, '')
         self.assertEqual(user.profile.fb_id, user.social_auth.get().uid)
 
     def test_save_profile(self):
-        """A profile may exist for a FB user, without a db User."""
+        """A profile may exist for a FB user, without a db User.
+
+        This *should* never happen in practice, but it might happen if the
+        user sign up flow screws up. Or it may happen if I change the sign up
+        flow to log in with facebook first, before declaring votes.
+        """
         user = UserFactory.create(profile=None)
+        self.assertFalse(getattr(user, 'profile', False))
         profile = ProfileFactory.create(fb_id=user.social_auth.get().uid)
-        self.assertFalse(profile.active)
+        self.assertFalse(getattr(profile, 'user', False))
         data = self._data()
         form = LandingPageForm(data=data)
         self.assertTrue(form.is_valid())
@@ -66,7 +71,6 @@ class TestLandingPageForm(TestCase):
         user = get_user_model().objects.get(id=user.id)
         profile = Profile.objects.get(id=profile.id)
         self.assertEqual(user.profile, profile)
-        self.assertTrue(user.profile.active)
         self.assertEqual(user.profile.fb_id, user.social_auth.get().uid)
 
     def test_save_update_name_user_only(self):
