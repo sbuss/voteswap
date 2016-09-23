@@ -49,6 +49,5 @@ class UserFactory(factory.DjangoModelFactory):
         ProfileFactory, 'user',
         fb_name=factory.LazyAttribute(
             lambda profile: profile.user.get_full_name()),
-        fb_id=factory.LazyAttribute(_lazy_uid),
-        active=True)
+        fb_id=factory.LazyAttribute(_lazy_uid))
     social_auth = factory.RelatedFactory(SocialAuthFactory, 'user')

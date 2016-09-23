@@ -3,6 +3,7 @@ from django.test import TestCase
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
 from polling.models import CANDIDATE_TRUMP
+from polling.models import State
 from polling.tests.factories import StateFactory
 from users.tests.factories import ProfileFactory
 from users.tests.factories import UserFactory
@@ -90,20 +91,14 @@ class TestSafeStateMatch(_TestSafeStateMatchBase):
         self.assertEqual(len(matches), 1)
         self.assertNotIn(friend1, _profiles(matches))
 
-    def test_all_active(self):
+    def test_states(self):
         matches = _matches_for_safe_state_profile(self.user.profile)
-        self.assertTrue(all(match.profile.active for match in matches))
-
-    def test_no_inactive(self):
-        """No inactive profiles should be returned."""
-        matches = _matches_for_safe_state_profile(self.user.profile)
-        self.assertEqual(len(matches), 2)
-        friend1 = matches[0].profile
-        friend1.active = False
-        friend1.save()
-        matches = _matches_for_safe_state_profile(self.user.profile)
-        self.assertEqual(len(matches), 1)
-        self.assertNotIn(friend1, _profiles(matches))
+        self.assertTrue(matches)
+        swing_states = State.objects.filter(
+            tipping_point_rank__gt=0, safe_rank=-1).values_list(
+                'name', flat=True)
+        self.assertTrue(
+            all(match.profile.state in swing_states for match in matches))
 
 
 class _TestSwingStateMatchBase(TestCase):
@@ -194,20 +189,13 @@ class TestSwingStateMatch(_TestSwingStateMatchBase):
         self.assertEqual(len(matches), 3)
         self.assertNotIn(friend1, _profiles(matches))
 
-    def test_all_active(self):
+    def test_states(self):
         matches = _matches_for_swing_state_profile(self.user.profile)
-        self.assertTrue(all(match.profile.active for match in matches))
-
-    def test_no_inactive(self):
-        """No inactive profiles should be returned."""
-        matches = _matches_for_swing_state_profile(self.user.profile)
-        self.assertEqual(len(matches), 4)
-        friend1 = matches[0].profile
-        friend1.active = False
-        friend1.save()
-        matches = _matches_for_swing_state_profile(self.user.profile)
-        self.assertEqual(len(matches), 3)
-        self.assertNotIn(friend1, _profiles(matches))
+        safe_states = State.objects.filter(
+            tipping_point_rank=-1, safe_rank__gt=0).values_list(
+                'name', flat=True)
+        self.assertTrue(
+            all(match.profile.state in safe_states for match in matches))
 
 
 class _TestSafeStateFriendsOfFriendsMatchBase(TestCase):
@@ -223,9 +211,9 @@ class _TestSafeStateFriendsOfFriendsMatchBase(TestCase):
             profile__preferred_candidate=candidate)
         tipping_point_rank = 1
         self.foaf_expected_matches = []
-        # Create friends that haven't activated to ensure we follow those links
+        # Create friends that haven't specified a vote choice just for links
         for i in range(2):
-            friend_profile = ProfileFactory.create(state='', active=False)
+            friend_profile = ProfileFactory.create(state='')
             self.user.profile.friends.add(friend_profile)
             # And create friends of these friends in swing states
             for i in range(2):
