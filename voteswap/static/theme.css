@@ -43,10 +43,10 @@ p {
   padding: 30px;
 }
 
-.join-now > a.btn {
+.join-now > form > div > button {
   background-image: none;
   background-color: #0A234E;
-  font-size: 3em;
+  font-size: 2em;
 }
 
 .navbar-inverse {
