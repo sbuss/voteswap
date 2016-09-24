@@ -105,3 +105,11 @@ def match(request):
         {'request': request, 'user': request.user, 'matches': matches})
     return render_to_response('match.html',
                               context_instance=context)
+
+
+def about(request):
+    return render_to_response('about.html')
+
+
+def press(request):
+    return render_to_response('press.html')
