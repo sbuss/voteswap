@@ -6,6 +6,7 @@ from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 import requests
 
+from polling.models import State
 from users.models import Profile
 from voteswap.match import get_friend_matches
 # from voteswap.match import NoMatchNecessary
@@ -41,7 +42,12 @@ def landing_page(request):
             return HttpResponseRedirect(fb_login_url)
     else:
         form = LandingPageForm()
-    context = RequestContext(request, {'form': form})
+    swing_states = list(State.objects.exclude(tipping_point_rank=-1).order_by(
+        'tipping_point_rank').values_list('name', flat=True))[:6]
+    swing_states[-1] = "or %s" % swing_states[-1]
+    swing_states = ', '.join(swing_states)
+    context = RequestContext(
+        request, {'form': form, 'swing_states': swing_states})
     return render_to_response('landing_page.html',
                               context_instance=context)
 
