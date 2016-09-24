@@ -31,9 +31,19 @@
   border-radius: 0px;
   width: 100%;
   margin: 0px;
-  padding-right: 0px;
+  font-size: 3em;
 }
 
+@media all and (max-width: 830px) {
+    .landing-page__header-text {
+        font-size: 2.5em;
+    }
+}
+@media all and (max-width: 650px) {
+    .landing-page__header-text {
+        font-size: 2em;
+    }
+}
 
 .landing-page__section h1 {
   border-bottom: 2px solid #738ace;
