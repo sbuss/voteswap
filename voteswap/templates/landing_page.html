@@ -2,19 +2,11 @@
 {% load bootstrap %}
 
 {% block main %}
-<div class="jumbotron landing-page__header-image"></div>
-<div class="landing-page__section">
-  <h1>Make your vote count</h1>
-  <p>
-  Nam venenatis enim quis dolor ultricies consequat. Mauris pulvinar posuere sollicitudin. Fusce accumsan tortor at neque pellentesque, ut molestie lectus sagittis. Nulla a iaculis libero. Duis in ornare mauris. Fusce ac lectus dictum, interdum velit sed, iaculis massa. Mauris condimentum consectetur lobortis. 
-  </p>
-</div>
-
-<div class="landing-page__section">
-  <h1>How does it work?</h1>
-  <p>
-  Nam venenatis enim quis dolor ultricies consequat. Mauris pulvinar posuere sollicitudin. Fusce accumsan tortor at neque pellentesque, ut molestie lectus sagittis. Nulla a iaculis libero. Duis in ornare mauris. Fusce ac lectus dictum, interdum velit sed, iaculis massa. Mauris condimentum consectetur lobortis. 
-  </p>
+{% include "_fb.js" %}
+<div class="jumbotron landing-page__header-image">
+  <div class="landing-page__header-text col-md-8">
+    Vote your conscience <i>and</i> stop Trump
+  </div>
 </div>
 
 <div class="jumbotron">

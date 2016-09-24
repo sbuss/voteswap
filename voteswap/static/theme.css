@@ -1,12 +1,36 @@
+.jumbotron {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 .landing-page__header-image {
-  background: #738ace url('http://www.fillmurray.com/800/900') center center no-repeat;
+  background: #738ace url(/static/clinton.jpg) center center no-repeat;
+  margin: 0px;
+  margin: auto;
+  margin-top: -25px;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  height: 50vw;
+  height: 100vw;
   max-height: 400px;
+  max-width: 800px;
+  float: center;
 }
+
+.landing-page__header-text {
+  position: relative;
+  top: 85%;
+  padding-left: 10px;
+  background: none;
+  font: bold 2em sans-serif;
+  color: #fff;
+  background: #000;
+  display: block;
+  border-radius: 0px;
+  width: 100%;
+}
+
 
 .landing-page__section h1 {
   border-bottom: 2px solid #738ace;
