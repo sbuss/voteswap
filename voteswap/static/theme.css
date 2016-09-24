@@ -31,6 +31,10 @@
   font-size: 3em;
 }
 
+.container-full > div > h1 {
+  padding-left: 10px;
+}
+
 p {
   font-size: 2em;
 }
