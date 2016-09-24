@@ -28,7 +28,7 @@
     <div class="col-md-4 join-now">
       <form class="form" method="POST" action="{% url "signup" %}">
         {% csrf_token %}
-        {% bootstrap_form form %}
+        {% bootstrap_form form size='large' %}
         {% buttons %}
           <button type="submit" class="btn btn-primary join-now">Join now with Facebook</button>
         {% endbuttons %}

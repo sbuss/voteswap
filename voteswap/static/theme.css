@@ -47,6 +47,12 @@ p {
   background-image: none;
   background-color: #0A234E;
   font-size: 2em;
+  display: block;
+  padding: 10px;
+}
+
+.join-now > form > div > textarea {
+  height: 100px;
 }
 
 .navbar-inverse {
