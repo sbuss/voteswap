@@ -31,7 +31,7 @@
   font-size: 3em;
 }
 
-.container-full > div > h1 {
+.container-full > div > h1,h2,h3,h4,h5 {
   padding-left: 10px;
 }
 
