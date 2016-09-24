@@ -9,41 +9,50 @@
   <div class="landing-page__header-text col-sm-12">
     Vote your conscience <i>and</i> stop Trump
   </div>
-
-  <div class="landing-page__section">
-    <h1>Make your vote count</h1>
-    <p>
-      The only way to stop Trump and show your unhappiness with the political
-      process is to swap votes. Gary Johnson voters in in swing states are
-      matched with Clinton votes in safe Clinton states. This ensures that
-      Johnson voters don't split the vote and let the worst option -- Trump --
-      into the White House.
-    </p>
-    <h1>How does it work?</h1>
-    <p>
-      When you join <a href="http://voteswap.us">voteswap</a> you will be matched
-      with a compatible voter in your Facebook friends network. Your match will
-      be someone your know personally, or a friend of a friend. We think this
-      will keep out liars and almost everyone will follow through with their
-      pledges.
-    </p>
+  <br />
+  <br />
+  <div class="row">
+    <div class="col-md-8">
+      <h1>Make your vote count</h1>
+      <p>
+        <b>Gary Johnson voters in in swing states</b> are matched with
+        <b>Clinton voters in safe Clinton states</b>. This ensures that
+        Johnson voters don't split the vote and put Trump in the White House
+        (think Nader voters making Al Gore lose Florida in 2000a).
+      </p>
+    </div>
+    <div class="col-md-4 text-center join-now">
+      <a href="/join" type='button' class='btn btn-primary'>Join now!</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-offset-2 col-md-8">
+      <h1>How does it work?</h1>
+      <p>
+        When you join <a href="http://voteswap.us">voteswap</a> you will be
+        matched with a compatible voter in your Facebook friends network. Your
+        match will be someone your know personally, or a friend of a friend. We
+        think this will keep out liars and almost everyone will follow through
+        with their pledges.
+      </p>
+    </div>
   </div>
 
-  <div class="landing-page__section">
-    <h1>After the election</h1>
-    <p>
-      After the election, while the surprisingly high third-party turnout is
-      still on everyone's minds, we can start a dialogue on changing our election
-      process to use <a
-      href="https://en.wikipedia.org/wiki/Instant-runoff_voting">ranked choice voting</a>,
-      aka instant runoff elections. This system of voting lets you write down
-      your candidates in order, allowing votes for third parties to not take away
-      from votes for other parties.
-    </p>
-    <a href="#">Read more</a>
+  <div class="row">
+    <div class="col-md-offset-2 col-md-8">
+      <h1>After the election</h1>
+      <p>
+        After the election, while the surprisingly high third-party turnout is
+        still on everyone's minds, we can start a dialogue on changing our
+        election process to use
+        <a href="https://en.wikipedia.org/wiki/Instant-runoff_voting">ranked choice voting</a>,
+        aka instant runoff elections. This system of voting lets you write down
+        your candidates in order, allowing votes for third parties to not take
+        away from votes for other parties.
+      </p>
+      <a href="#">Read more</a>
+    </div>
   </div>
-
-  {% include "_leader.html" %}
 
   <form class="form-horizontal" method="POST" action="{% url "signup" %}">
     {% csrf_token %}

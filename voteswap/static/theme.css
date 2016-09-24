@@ -15,7 +15,7 @@
   -o-background-size: cover;
   background-size: cover;
   height: 70vw;
-  max-height: 600px;
+  max-height: 400px;
   max-width: 1158px;
   border-radius: 0px;
 }
@@ -31,37 +31,22 @@
   font-size: 3em;
 }
 
-@media all and (max-width: 830px) {
-    .landing-page__header-text {
-        font-size: 2.5em;
-    }
-}
-@media all and (max-width: 650px) {
-    .landing-page__header-text {
-        font-size: 2em;
-    }
+p {
+  font-size: 2em;
 }
 
-.landing-page__section h1 {
-  border-bottom: 2px solid #738ace;
-  display: inline-block;
+.row {
+  padding: 10px;
 }
 
-.landing-page__section {
-  text-align: center;
-  margin-bottom: 25px;
+.join-now {
+  padding: 30px;
 }
 
-.landing-page__section p {
-  font-size: 16px;
-  text-align: left;
-}
-
-.landing-page__section a {
-  color: #738ace;
-  display: block;
-  float: right;
-  margin-bottom: 25px;
+.join-now > a.btn {
+  background-image: none;
+  background-color: #0A234E;
+  font-size: 3em;
 }
 
 .navbar-inverse {
@@ -76,3 +61,17 @@
   color: #fff;
 }
 
+/* Media overrides */
+@media all and (max-width: 830px) {
+    .landing-page__header-text {
+        font-size: 2.5em;
+    }
+    p {
+	font-size: 1.5em;
+    }
+}
+@media all and (max-width: 670px) {
+    .landing-page__header-text {
+        font-size: 2em;
+    }
+}
