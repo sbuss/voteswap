@@ -9,29 +9,51 @@
   </div>
 </div>
 
-<div class="jumbotron">
-  <h1>Slogan / Quote / Stats / Whatever</h1>
-</div>
-
-<div class="landing-page__section">
-  <h1>After the election</h1>
-  <p>
-  Nam venenatis enim quis dolor ultricies consequat. Mauris pulvinar posuere sollicitudin. Fusce accumsan tortor at neque pellentesque, ut molestie lectus sagittis. Nulla a iaculis libero. Duis in ornare mauris. Fusce ac lectus dictum, interdum velit sed, iaculis massa. Mauris condimentum consectetur lobortis. 
-  </p>
-  <a href="#">Read more</a>
-</div>
-
-{% include "_leader.html" %}
-
-<form class="form-horizontal" method="POST" action="{% url "signup" %}">
-  {% csrf_token %}
-  {{ form|bootstrap_horizontal }}
-  <div class="form-group">
-    <div class="col-sm-10 col-sm-offset-2">
-      <button type="submit" class="btn btn-primary">Login with Facebook</button>
-    </div>
+<div class="container">
+  <div class="landing-page__section">
+    <h1>Make your vote count</h1>
+    <p>
+      The only way to stop Trump and show your unhappiness with the political
+      process is to swap votes. Gary Johnson voters in in swing states are
+      matched with Clinton votes in safe Clinton states. This ensures that
+      Johnson voters don't split the vote and let the worst option -- Trump --
+      into the White House.
+    </p>
+    <h1>How does it work?</h1>
+    <p>
+      When you join <a href="http://voteswap.us">voteswap</a> you will be matched
+      with a compatible voter in your Facebook friends network. Your match will
+      be someone your know personally, or a friend of a friend. We think this
+      will keep out liars and almost everyone will follow through with their
+      pledges.
+    </p>
   </div>
-</form>
 
+  <div class="landing-page__section">
+    <h1>After the election</h1>
+    <p>
+      After the election, while the surprisingly high third-party turnout is
+      still on everyone's minds, we can start a dialogue on changing our election
+      process to use <a
+      href="https://en.wikipedia.org/wiki/Instant-runoff_voting">ranked choice voting</a>,
+      aka instant runoff elections. This system of voting lets you write down
+      your candidates in order, allowing votes for third parties to not take away
+      from votes for other parties.
+    </p>
+    <a href="#">Read more</a>
+  </div>
+
+  {% include "_leader.html" %}
+
+  <form class="form-horizontal" method="POST" action="{% url "signup" %}">
+    {% csrf_token %}
+    {{ form|bootstrap_horizontal }}
+    <div class="form-group">
+      <div class="col-sm-10 col-sm-offset-2">
+        <button type="submit" class="btn btn-primary">Login with Facebook</button>
+      </div>
+    </div>
+  </form>
+</div>
 {% endblock %}
 
