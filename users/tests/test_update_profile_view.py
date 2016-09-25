@@ -17,6 +17,13 @@ class TestProfileView(TestCase):
         self.request = RequestFactory()
         self.user = UserFactory.create(profile__reason="#NeverTrump")
 
+    def test_go_back(self):
+        request = self.request.get(reverse('users:update_profile'))
+        request.user = self.user
+        response = update_profile(request)
+        self.assertEqual(response.status_code, HTTP_OK)
+        self.assertContains(response, "Cancel")
+
     def test_initial_data(self):
         request = self.request.get(reverse('users:update_profile'))
         request.user = self.user
