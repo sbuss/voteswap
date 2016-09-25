@@ -14,6 +14,7 @@ class ProfileFactory(factory.DjangoModelFactory):
         model = Profile
     state = factory.Sequence(lambda n: STATES[n % 51][0])
     fb_name = factory.Faker('name')
+    fb_id = factory.Sequence(lambda n: str(n))
 
     @factory.lazy_attribute
     def preferred_candidate(self):
