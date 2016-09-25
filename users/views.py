@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.functional import cached_property
@@ -7,6 +9,7 @@ import json
 
 from users.forms import PairProposalForm
 from voteswap.match import get_friend_matches
+from voteswap.forms import LandingPageForm
 
 
 class ProfileContext(object):
@@ -89,5 +92,24 @@ def propose_swap(request):
             return json_response({'status': 'error', 'errors': form.errors})
     else:
         return json_response(
-                {'status': 'error',
-                 'errors': {'method': 'Must POST with to_profile set'}})
+            {'status': 'error',
+             'errors': {'method': 'Must POST with to_profile set'}})
+
+
+@login_required
+def update_profile(request):
+    if request.method == "POST":
+        form = LandingPageForm(data=request.POST)
+        if form.is_valid():
+            form.save(request.user)
+            return HttpResponseRedirect(reverse('users:profile'))
+    else:
+        initial = {
+            'state': request.user.profile.state,
+            'preferred_candidate': request.user.profile.preferred_candidate,
+            'reason': request.user.profile.reason
+        }
+        form = LandingPageForm(initial=initial)
+    context = RequestContext(request, {'form': form})
+    return render_to_response(
+        'users/update_profile.html', context_instance=context)
