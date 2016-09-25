@@ -1,3 +1,4 @@
+from django.http.request import QueryDict
 from django.test import TestCase
 
 from users.forms import PairProposalForm
@@ -11,6 +12,21 @@ class TestPairProposalForm(TestCase):
         profile = ProfileFactory.create()
         form = PairProposalForm(profile)
         self.assertFalse(form.is_valid())
+
+    def test_querydict(self):
+        ProfileFactory.create()
+        profile = ProfileFactory.create()
+        friends = [ProfileFactory.create() for x in range(2)]
+        profile.friends.add(*friends)
+
+        form = PairProposalForm(
+            profile, data=QueryDict(
+                'from_profile=%s&to_profile=%s' % (profile.id, friends[0].id)))
+        self.assertEqual(
+            form.fields['from_profile'].queryset.get(), profile)
+        self.assertEqual(
+            set(form.fields['to_profile'].queryset.all()),
+            set(friends))
 
     def test_friends_queryset(self):
         ProfileFactory.create()
