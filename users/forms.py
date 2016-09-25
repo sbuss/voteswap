@@ -1,4 +1,5 @@
 from django import forms
+from django.http.request import QueryDict
 from users.models import PairProposal
 from users.models import Profile
 
@@ -13,7 +14,7 @@ class PairProposalForm(forms.ModelForm):
         fields = ['from_profile', 'to_profile']
 
     def __init__(self, from_profile, *args, **kwargs):
-        data = kwargs.get('data', {})
+        data = kwargs.get('data', QueryDict()).copy()
         data['from_profile'] = from_profile.id
         kwargs['data'] = data
         super(PairProposalForm, self).__init__(*args, **kwargs)
