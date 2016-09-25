@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
+{% load state_face %}
 
 {% block main %}
 
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
+    <p>Hello, {{ profile.fb_name }}.</p>
     <p>
-    Hello, {{ profile.fb_name }}.
-    {% if profile.preferred_candidate and profile.state %}
-    You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}.
-    {% else %}
-    We're missing some information from you, please
-    <a href="{% url "users:update_profile" %}">Update your profile</a>.
-    {% endif %}
+      {% if profile.preferred_candidate and profile.state %}
+      You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}.
+      {% else %}
+      We're missing some information from you, please
+      <a href="{% url "users:update_profile" %}">Update your profile</a>.
+      {% endif %}
+    </p>
   </div>
 </div>
 
@@ -47,11 +49,14 @@
            src="https://graph.facebook.com/v2.7/{{ profile.fb_id }}/picture?type=large"
            alt="{{ fm_ctx.name }}'s image"/>
       <h2>{{ fm_ctx.name }}</h2>
-      {% if not fm_ctx.friend_match.is_direct %}<h3>via {{ fm_ctx.friend_match.through.user.get_full_name }}</h3>{% endif %}
+      <h3>{% if not fm_ctx.friend_match.is_direct %}via {{ fm_ctx.friend_match.through.user.get_full_name }}{% endif %}&nbsp;</h3>
     </div>
     <div class="col-md-6 match-info">
+      <p style="font-size:4em" class="text-center">
+        <span class="stateface">{{ profile.state|stateface }}</span><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span class="stateface">{{ fm_ctx.friend_match.profile.state|stateface }}</span>
+      </p>
       <div class="proposed-content">
-        <p>You have proposed to this {{ fm_ctx.friend_match.profile.fb_name }}.</p>
+        <p>You have proposed to {{ fm_ctx.friend_match.profile.fb_name }}.</p>
         <a role="button" class="btn btn-info btn-lg">Message</a>
       </div>
       <div class="not-proposed-content">
@@ -59,6 +64,7 @@
         <button type="button" class="btn btn-success btn-lg js-propose-swap" data-profile-id="{{fm_ctx.friend_match.profile.id}}" data-name="{{ fm_ctx.name }}">Swap</button>
         <a role="button" class="btn btn-info btn-lg">Message</a>
       </div>
+      <br />
     </div>
   </div>
 </div>
