@@ -2,44 +2,41 @@
 {% load bootstrap3 %}
 
 {% block main %}
-{% include "_fb.js" %}
-<div class="container-full">
-  {% include "_how_does_it_work.html" %}
+{% include "_how_does_it_work.html" %}
 
-  <div class="row">
-    <h1>After the election</h1>
-    <div class="col-sm-12">
-      <p>
-        After the election, while the surprisingly high third-party turnout is
-        still on everyone's minds, we can start a dialogue on changing our
-        election process to use <a href="https://en.wikipedia.org/wiki/Instant-runoff_voting">ranked choice voting</a>,
-        aka instant runoff elections.
-      </p>
-    </div>
+<div class="row">
+  <h1>After the election</h1>
+  <div class="col-sm-12">
+    <p>
+      After the election, while the surprisingly high third-party turnout is
+      still on everyone's minds, we can start a dialogue on changing our
+      election process to use <a href="https://en.wikipedia.org/wiki/Instant-runoff_voting">ranked choice voting</a>,
+      aka instant runoff elections.
+    </p>
   </div>
+</div>
 
-  <div class="row">
-    <h2>Ranked choice voting</h2>
-    <div class="col-sm-12">
-      <p>
-        This system of voting lets you write down
-        your candidates in order, so if your first choice doesn't win, your
-        vote goes to your second choice, and so on. This allows votes for third
-        parties (or fourth, or fifth, or ...) to not be wasted and let the
-        least favored candidate win.
-      </p>
-      <p>
-        Ranked choice voting is used around the world:
-        <a href="https://en.wikipedia.org/wiki/Instant-runoff_voting_in_the_United_States#2006_San_Francisco_results">cities and states in the United States</a>, <a href="https://en.wikipedia.org/wiki/Electoral_system_of_Australia#Preferential_voting">congressional elections in Australia</a>, and for various elections in
-        <a href="https://en.wikipedia.org/wiki/History_and_use_of_instant-runoff_voting">India, New Zealand, Ireland, and the United Kingdom</a>.
-      </p>
-      <p>
-        Ranked choice voting is not without its flaws, but they can be
-        addressed by using the <a href="https://en.wikipedia.org/wiki/Condorcet_method">Condorcet method</a>
-        to count votes. Condorcet voting prevents a few counter-intuitive
-        outcomes of ranked choice voting, and should be our preferred method.
-      </p>
-    </div>
+<div class="row">
+  <h2>Ranked choice voting</h2>
+  <div class="col-sm-12">
+    <p>
+      This system of voting lets you write down
+      your candidates in order, so if your first choice doesn't win, your
+      vote goes to your second choice, and so on. This allows votes for third
+      parties (or fourth, or fifth, or ...) to not be wasted and let the
+      least favored candidate win.
+    </p>
+    <p>
+      Ranked choice voting is used around the world:
+      <a href="https://en.wikipedia.org/wiki/Instant-runoff_voting_in_the_United_States#2006_San_Francisco_results">cities and states in the United States</a>, <a href="https://en.wikipedia.org/wiki/Electoral_system_of_Australia#Preferential_voting">congressional elections in Australia</a>, and for various elections in
+      <a href="https://en.wikipedia.org/wiki/History_and_use_of_instant-runoff_voting">India, New Zealand, Ireland, and the United Kingdom</a>.
+    </p>
+    <p>
+      Ranked choice voting is not without its flaws, but they can be
+      addressed by using the <a href="https://en.wikipedia.org/wiki/Condorcet_method">Condorcet method</a>
+      to count votes. Condorcet voting prevents a few counter-intuitive
+      outcomes of ranked choice voting, and should be our preferred method.
+    </p>
   </div>
 </div>
 {% endblock %}
