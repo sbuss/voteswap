@@ -30,13 +30,6 @@ def login(request):
                               context_instance=context)
 
 
-def index(request):
-    context = RequestContext(
-        request, {'request': request, 'user': request.user})
-    return render_to_response('index.html',
-                              context_instance=context)
-
-
 def landing_page(request):
     if hasattr(request, 'user') and request.user.is_authenticated():
         return HttpResponseRedirect(reverse('users:profile'))

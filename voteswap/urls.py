@@ -19,7 +19,6 @@ from django.contrib import admin
 
 from voteswap.views import about
 from voteswap.views import confirm_signup
-from voteswap.views import index
 from voteswap.views import landing_page
 from voteswap.views import login
 from voteswap.views import logout
@@ -30,7 +29,7 @@ from voteswap.views import press
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('', include('social.apps.django_app.urls', namespace='social')),
-    url('^home/$', index, name='index'),
+    url('^home/$', landing_page, name='index'),
     url('^$', landing_page, name='landing_page'),
     url('^logout/$', logout, name='logout'),
     url('^login/$', login, name='login'),
