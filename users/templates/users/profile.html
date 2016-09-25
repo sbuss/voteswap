@@ -40,7 +40,7 @@
 
 <div class="row">
 {% for fm_ctx in profile_context.good_potential_matches %}
-<div class="col-sm-9 col-md-6">
+<div class="col-sm-9 col-md-6 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
   <div class="well match clearfix">
     <div class="match-image col-sm-6 text-center">
       <img class="match img-responsive pull-center"
@@ -51,12 +51,12 @@
     </div>
     <div class="col-md-6 match-info">
       <div class="proposed-content">
-        <p>You have proposed to this friend.</p>
+        <p>You have proposed to this {{ fm_ctx.friend_match.profile.fb_name }}.</p>
         <a role="button" class="btn btn-info btn-lg">Message</a>
       </div>
       <div class="not-proposed-content">
         <p>{{ fm_ctx.proposal_string }}</p>
-        <a role="button" class="btn btn-success btn-lg">Swap</a>
+        <button type="button" class="btn btn-success btn-lg js-propose-swap" data-profile-id="{{fm_ctx.friend_match.profile.id}}" data-name="{{ fm_ctx.name }}">Swap</button>
         <a role="button" class="btn btn-info btn-lg">Message</a>
       </div>
     </div>
