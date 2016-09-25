@@ -120,8 +120,10 @@ def match(request):
 
 
 def about(request):
-    return render_to_response('about.html')
+    context = RequestContext(request)
+    return render_to_response('about.html', context_instance=context)
 
 
 def press(request):
-    return render_to_response('press.html')
+    context = RequestContext(request)
+    return render_to_response('press.html', context_instance=context)
