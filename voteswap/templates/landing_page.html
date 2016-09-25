@@ -9,7 +9,7 @@
 </div>
 <div class="row">
   <div class="col-md-8">
-    <h1>Make your vote count</h1>
+    <h1 id="make-your-vote-count">Make your vote count</h1>
     <p>
       Third party voters have all the power this election. Voting for Johnson
       in {{ swing_states }} will split the vote and make Clinton lose.
@@ -21,7 +21,7 @@
       vote like we did with Nader and Al Gore in 2000.
     </p>
   </div>
-  <div class="col-md-4 join-now">
+  <div id="join" class="col-md-4 join-now">
     <form class="form" method="POST" action="{% url "signup" %}">
       {% csrf_token %}
       {% bootstrap_form form size='large' %}
@@ -37,8 +37,8 @@
 {% include "_dont_fuck_it_up.html" %}
 
 <div class="row">
-  <div class="col-md-8">
-    <h2><a href="{% url "about" %}">Learn More</a></h2>
+  <div class="col-md-8 col-md-offset-2">
+    <a role="button" class="btn btn-primary join-now" href="{% url "signup" %}">Join now!</a>
   </div>
 </div>
 {% endblock %}

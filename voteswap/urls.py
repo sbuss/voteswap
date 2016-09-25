@@ -16,20 +16,20 @@ Including another URLconf
 from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
-from django.contrib.auth.views import logout
 
 from voteswap.views import about
 from voteswap.views import confirm_signup
-from voteswap.views import index
 from voteswap.views import landing_page
+from voteswap.views import logout
 from voteswap.views import match
 from voteswap.views import press
+from voteswap.views import signup
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('', include('social.apps.django_app.urls', namespace='social')),
-    url('^home/$', index, name='index'),
+    url('^home/$', landing_page, name='index'),
     url('^$', landing_page, name='landing_page'),
     url('^logout/$', logout, name='logout'),
     url('^about/$', about, name='about'),
@@ -37,5 +37,5 @@ urlpatterns = [
     url('^user/', include('users.urls', namespace='users')),
     url('^swap/', match, name='swap'),
     url('^signup/confirm$', confirm_signup, name='confirm_signup'),
-    url('^signup/$', landing_page, name='signup'),
+    url('^signup/$', signup, name='signup'),
 ]

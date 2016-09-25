@@ -1,3 +1,4 @@
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -17,10 +18,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def index(request):
-    context = RequestContext(
-        request, {'request': request, 'user': request.user})
-    return render_to_response('index.html',
+def logout(request):
+    auth_logout(request)
+    return HttpResponseRedirect(reverse('index'))
+
+
+def signup(request):
+    form = LandingPageForm()
+    context = RequestContext(request, {'form': form})
+    return render_to_response('sign_up.html',
                               context_instance=context)
 
 
@@ -114,8 +120,10 @@ def match(request):
 
 
 def about(request):
-    return render_to_response('about.html')
+    context = RequestContext(request)
+    return render_to_response('about.html', context_instance=context)
 
 
 def press(request):
-    return render_to_response('press.html')
+    context = RequestContext(request)
+    return render_to_response('press.html', context_instance=context)

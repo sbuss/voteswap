@@ -47,7 +47,7 @@ p {
   padding: 30px;
 }
 
-.join-now > form > div > button {
+button.join-now, a.join-now {
   background-image: none;
   background-color: #0A234E;
   font-size: 2em;
