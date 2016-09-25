@@ -16,12 +16,12 @@ Including another URLconf
 from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
-from django.contrib.auth.views import logout
 
 from voteswap.views import about
 from voteswap.views import confirm_signup
 from voteswap.views import index
 from voteswap.views import landing_page
+from voteswap.views import logout
 from voteswap.views import match
 from voteswap.views import press
 

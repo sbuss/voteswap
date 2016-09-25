@@ -1,3 +1,4 @@
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -15,6 +16,11 @@ from voteswap.forms import LandingPageForm
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def logout(request):
+    auth_logout(request)
+    return HttpResponseRedirect(reverse('index'))
 
 
 def index(request):
