@@ -28,13 +28,25 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
             <li><a href="{% url "about" %}">About</a></li>
-            <li><a href="{% url "press" %}">Press</a></li>
           </ul>
         </div>
       </div>
     </nav>
     {% block main %}
     {% endblock %}
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <ul class='nav nav-pills navbar-right'>
+              <li><a class='text-muted' href="{% url "about" %}">About</a></li>
+              <li><a class='text-muted' href="{% url "press" %}">Press</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="{% static 'jquery.slim.min.js' %}"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
