@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
+{% load state_face %}
 
 {% block main %}
 
 <div class="row">
   <div class="col-md-8 col-md-offset-2">
+    <p>Hello, {{ profile.fb_name }}.</p>
     <p>
-    Hello, {{ profile.fb_name }}.
-    {% if profile.preferred_candidate and profile.state %}
-    You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}.
-    {% else %}
-    We're missing some information from you, please
-    <a href="{% url "users:update_profile" %}">Update your profile</a>.
-    {% endif %}
+      {% if profile.preferred_candidate and profile.state %}
+      You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}.
+      {% else %}
+      We're missing some information from you, please
+      <a href="{% url "users:update_profile" %}">Update your profile</a>.
+      {% endif %}
+    </p>
   </div>
 </div>
 
@@ -59,6 +61,10 @@
         <button type="button" class="btn btn-success btn-lg js-propose-swap" data-profile-id="{{fm_ctx.friend_match.profile.id}}" data-name="{{ fm_ctx.name }}">Swap</button>
         <a role="button" class="btn btn-info btn-lg">Message</a>
       </div>
+      <br />
+      <p style="font-size:4em" class="text-center">
+        <span class="stateface">{{ profile.state|stateface }}</span>/<span class="stateface">{{ fm_ctx.friend_match.profile.state|stateface }}</span>
+      </p>
     </div>
   </div>
 </div>
