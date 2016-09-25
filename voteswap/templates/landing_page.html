@@ -37,8 +37,8 @@
 {% include "_dont_fuck_it_up.html" %}
 
 <div class="row">
-  <div class="col-md-8">
-    <h2><a href="{% url "about" %}">Learn More</a></h2>
+  <div class="col-md-8 col-md-offset-2">
+    <a role="button" class="btn btn-primary join-now" href="{% url "signup" %}">Join now!</a>
   </div>
 </div>
 {% endblock %}
