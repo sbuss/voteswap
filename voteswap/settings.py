@@ -110,6 +110,7 @@ WSGI_APPLICATION = 'voteswap.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': CloudSettings.get('database_engine'),
+        'OPTIONS': {'charset': 'utf8mb4'},
         'HOST': CloudSettings.get('database_host'),
         'PORT': CloudSettings.get('database_port'),
         'NAME': CloudSettings.get('database_name'),
