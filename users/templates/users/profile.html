@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
 
 {% block main %}
-Hello, {{ profile.fb_name }}.
 
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <p>
+    Hello, {{ profile.fb_name }}.
+    {% if profile.preferred_candidate and profile.state %}
+    You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}.
+    {% else %}
+    We're missing some information from you, please
+    <a href="{% url "users:update_profile" %}">Update your profile</a>.
+    {% endif %}
+  </div>
+</div>
 <div class="row">
   {% for fm_ctx in profile_context.good_potential_matches %}
   <div class="col-md-4 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
