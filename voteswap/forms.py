@@ -6,9 +6,16 @@ from users.models import Profile
 
 
 class LandingPageForm(forms.Form):
-    state = forms.ChoiceField(choices=STATES)
-    preferred_candidate = forms.ChoiceField(choices=CANDIDATES_ADVOCATED)
-    reason = forms.CharField(widget=forms.Textarea(), required=False)
+    state = forms.ChoiceField(
+        choices=STATES, label="Your state")
+    preferred_candidate = forms.ChoiceField(
+        choices=CANDIDATES_ADVOCATED,
+        label="Who do you want to vote for")
+    reason = forms.CharField(
+        widget=forms.Textarea(
+            {'placeholder': "Because #NeverTrump"}),
+        required=False,
+        label="Why do you want to swap?")
 
     def save(self, user):
         """Create a Profile for the given user

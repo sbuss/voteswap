@@ -1,41 +1,110 @@
+.container-full {
+  margin: 0 auto;
+  padding-top: 0;
+  width: 100%;
+  max-width: 1158px;
+  overflow-x: hidden;
+}
+
 .landing-page__header-image {
-  background: #738ace url('http://www.fillmurray.com/800/900') center center no-repeat;
+  background: #738ace url(/static/clinton.jpg) center top no-repeat;
+  padding: 0;
+  margin: 0 auto;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  height: 50vw;
+  height: 70vw;
   max-height: 400px;
+  max-width: 1158px;
+  border-radius: 0px;
 }
 
-.landing-page__section h1 {
-  border-bottom: 2px solid #738ace;
-  display: inline-block;
-}
-
-.landing-page__section {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-.landing-page__section p {
-  font-size: 16px;
-  text-align: left;
-}
-
-.landing-page__section a {
-  color: #738ace;
+.landing-page__header-text {
+  font: bold 2em sans-serif;
+  color: #fff;
+  background: #000;
   display: block;
-  float: right;
-  margin-bottom: 25px;
+  border-radius: 0px;
+  width: 100%;
+  margin: 0px;
+  font-size: 3em;
+}
+
+.container-full > div > h1,h2,h3,h4,h5 {
+  padding-left: 10px;
+}
+
+p {
+  font-size: 2em;
+}
+
+.row {
+  padding: 10px;
+}
+
+.join-now {
+  padding: 30px;
+}
+
+.join-now > form > div > button {
+  background-image: none;
+  background-color: #0A234E;
+  font-size: 2em;
+  display: block;
+  padding: 10px;
+}
+
+.join-now > form > div > textarea {
+  height: 100px;
 }
 
 .navbar-inverse {
   background-image: none;
-  background-color: #3e00fa;
+  margin-bottom: 0px;
+  border-radius: 0px;
+  background-color: #0A234E;
+  border: none;
 }
 
 .navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav>li>a  {
   color: #fff;
 }
 
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 120px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 120px;
+  background-color: #f5f5f5;
+}
+
+.footer p {
+  padding: 20px;
+}
+
+/* Media overrides */
+@media all and (max-width: 830px) {
+    .landing-page__header-text {
+        font-size: 2.5em;
+    }
+    p {
+	font-size: 1.5em;
+    }
+}
+@media all and (max-width: 670px) {
+    .landing-page__header-text {
+        font-size: 2em;
+    }
+}

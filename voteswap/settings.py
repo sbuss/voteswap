@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'social.apps.django_app.default',
     'polling',
     'users',
-    'bootstrapform',
+    'bootstrap3',
 ]
 
 MIDDLEWARE_CLASSES = [
