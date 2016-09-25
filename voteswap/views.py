@@ -23,6 +23,13 @@ def logout(request):
     return HttpResponseRedirect(reverse('index'))
 
 
+def login(request):
+    form = LandingPageForm()
+    context = RequestContext(request, {'form': form})
+    return render_to_response('sign_up.html',
+                              context_instance=context)
+
+
 def index(request):
     context = RequestContext(
         request, {'request': request, 'user': request.user})
