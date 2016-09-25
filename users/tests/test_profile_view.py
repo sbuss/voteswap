@@ -41,6 +41,7 @@ class TestProfileView(TestCase):
         request = self.request.get(reverse('users:profile'))
         request.user = self.user
         response = profile(request)
+        self.assertEqual(response.status_code, HTTP_OK)
         self.assertContains(
             response,
             "You're a {candidate} voter in {state}".format(
