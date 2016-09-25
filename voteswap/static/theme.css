@@ -107,4 +107,16 @@ body {
     .landing-page__header-text {
         font-size: 2em;
     }
+
+}
+.proposed-content {
+  display: none;
+}
+
+.proposed .proposed-content {
+  display: block;
+}
+
+.proposed .not-proposed-content {
+  display: none;
 }
