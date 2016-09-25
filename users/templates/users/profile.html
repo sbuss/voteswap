@@ -14,10 +14,17 @@
     {% endif %}
   </div>
 </div>
-<div class="row">
-  {% for fm_ctx in profile_context.good_potential_matches %}
-  <div class="col-md-4 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
-    <h3>{{ fm_ctx.name }}{% if not fm_ctx.friend_match.is_direct %} (via {{ fm_ctx.friend_match.through.user.get_full_name }}){% endif %}</h3>
+
+{% for fm_ctx in profile_context.good_potential_matches %}
+<div class="col-sm-4 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
+    <div class="clearfix">
+      <div class="pull-left">
+        <img src="https://graph.facebook.com/v2.7/{{ profile.fb_id }}/picture?type=normal" />
+      </div>
+      <div class="pull-left">
+        <h2>{{ fm_ctx.name }}{% if not fm_ctx.friend_match.is_direct %} (via {{ fm_ctx.friend_match.through.user.get_full_name }}){% endif %}</h2>
+      </div>
+    </div>
     <div class="proposed-content">
       You have proposed to this friend.
     </div>
@@ -26,7 +33,7 @@
       <button type="button" class="btn btn-primary js-propose-swap" data-profile-id="{{fm_ctx.friend_match.profile.id}}" data-name="{{ fm_ctx.name }}">Swap with {{ fm_ctx.name }}</button>
     </div>
   </div>
-  {% endfor %}
 </div>
+{% endfor %}
 
 {% endblock %}
