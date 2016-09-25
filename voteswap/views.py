@@ -23,7 +23,7 @@ def logout(request):
     return HttpResponseRedirect(reverse('index'))
 
 
-def login(request):
+def signup(request):
     form = LandingPageForm()
     context = RequestContext(request, {'form': form})
     return render_to_response('sign_up.html',

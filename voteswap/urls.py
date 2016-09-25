@@ -20,10 +20,10 @@ from django.contrib import admin
 from voteswap.views import about
 from voteswap.views import confirm_signup
 from voteswap.views import landing_page
-from voteswap.views import login
 from voteswap.views import logout
 from voteswap.views import match
 from voteswap.views import press
+from voteswap.views import signup
 
 
 urlpatterns = [
@@ -32,11 +32,10 @@ urlpatterns = [
     url('^home/$', landing_page, name='index'),
     url('^$', landing_page, name='landing_page'),
     url('^logout/$', logout, name='logout'),
-    url('^login/$', login, name='login'),
     url('^about/$', about, name='about'),
     url('^press/$', press, name='press'),
     url('^user/', include('users.urls', namespace='users')),
     url('^swap/', match, name='swap'),
     url('^signup/confirm$', confirm_signup, name='confirm_signup'),
-    url('^signup/$', landing_page, name='signup'),
+    url('^signup/$', signup, name='signup'),
 ]
