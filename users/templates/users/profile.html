@@ -38,70 +38,30 @@
 {% endfor %}
 -->
 
-
-
-
+<div class="row">
 {% for fm_ctx in profile_context.good_potential_matches %}
-<!-- Adapted from http://bootsnipp.com/snippets/featured/user-profile-sidebar -->
-<div class="col-xs-12 col-sm-6 col-md-4">
-  <div class="match-box">
-    <!-- SIDEBAR USERPIC -->
-    <div class="match-userpic">
-      <img src="https://graph.facebook.com/v2.7/{{ profile.fb_id }}/picture?type=large" 
-           class="img-responsive"
+<div class="col-sm-9 col-md-6">
+  <div class="well match clearfix">
+    <div class="match-image col-sm-6 text-center">
+      <img class="match img-responsive pull-center"
+           src="https://graph.facebook.com/v2.7/{{ profile.fb_id }}/picture?type=large"
            alt="{{ fm_ctx.name }}'s image"/>
+      <h2>{{ fm_ctx.name }}</h2>
+      {% if not fm_ctx.friend_match.is_direct %}<h3>via {{ fm_ctx.friend_match.through.user.get_full_name }}</h3>{% endif %}
     </div>
-    <!-- END SIDEBAR USERPIC -->
-    <!-- SIDEBAR USER TITLE -->
-    <div class="match-usertitle">
-      <div class="match-usertitle-name">
-        {{ fm_ctx.name }}
+    <div class="col-md-6 match-info">
+      <div class="proposed-content">
+        <p>You have proposed to this friend.</p>
+        <a role="button" class="btn btn-info btn-lg">Message</a>
       </div>
-      <div class="match-usertitle-job">
-        {% if not fm_ctx.friend_match.is_direct %} (via {{ fm_ctx.friend_match.through.user.get_full_name }}){% endif %}
-        <!--<div class="proposed-content">
-          You have proposed to this friend.
-        </div>
-        <div class="not-proposed-content">
-          <p>{{ fm_ctx.proposal_string }}</p>
-          <button type="button" class="btn btn-primary js-propose-swap" data-profile-id="{{fm_ctx.friend_match.profile.id}}" data-name="{{ fm_ctx.name }}">Swap with {{ fm_ctx.name }}</button>
-          </div>-->
+      <div class="not-proposed-content">
+        <p>{{ fm_ctx.proposal_string }}</p>
+        <a role="button" class="btn btn-success btn-lg">Swap</a>
+        <a role="button" class="btn btn-info btn-lg">Message</a>
       </div>
     </div>
-    <!-- END SIDEBAR USER TITLE -->
-    <!-- SIDEBAR BUTTONS -->
-    <div class="match-userbuttons">
-      <button type="button" class="btn btn-success btn-sm">Swap</button>
-      <button type="button" class="btn btn-info btn-sm">Message</button>
-    </div>
-    <!-- END SIDEBAR BUTTONS -->
-    <!-- SIDEBAR MENU -->
-    <div class="match-usermenu">
-      <ul class="nav">
-        <li class="active">
-          <a href="#">
-            <i class="glyphicon glyphicon-home"></i>
-            Overview </a>
-        </li>
-        <li>
-          <a href="https://facebook.com/{{ fm_ctx.friend_match.profile.fb_id }}">
-            <i class="glyphicon glyphicon-user"></i>
-            View Facebook Profile </a>
-        </li>
-        <li>
-          <a href="#" target="_blank">
-            <i class="glyphicon glyphicon-ok"></i>
-            Tasks </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="glyphicon glyphicon-flag"></i>
-            Help </a>
-        </li>
-      </ul>
-    </div>
-    <!-- END MENU -->
   </div>
 </div>
 {% endfor %}
+</div>
 {% endblock %}
