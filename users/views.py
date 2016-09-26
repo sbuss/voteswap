@@ -212,13 +212,13 @@ def update_profile(request):
 
 @login_required
 @transaction.atomic
-def reject_swap(request, pair_proposal_id):
+def reject_swap(request, ref_id):
     if request.method == "POST":
         try:
             proposal = (
                 request.user.profile.proposals_received
                 .select_for_update()
-                .get(ref_id=pair_proposal_id))
+                .get(ref_id=ref_id))
         except PairProposal.DoesNotExist:
             return json_response(
                 {'status': 'error',
@@ -240,13 +240,13 @@ def reject_swap(request, pair_proposal_id):
 
 @login_required
 @transaction.atomic
-def confirm_swap(request, pair_proposal_id):
+def confirm_swap(request, ref_id):
     if request.method == "POST":
         try:
             proposal = (
                 request.user.profile.proposals_received
                 .select_for_update()
-                .get(ref_id=pair_proposal_id))
+                .get(ref_id=ref_id))
         except PairProposal.DoesNotExist:
             return json_response(
                 {'status': 'error',
