@@ -5,8 +5,8 @@
     <div class="match-image col-sm-6 text-center">
       <img class="match img-responsive pull-center"
            src="https://graph.facebook.com/v2.7/{{ pending_match_ctx.matched_profile.fb_id }}/picture?type=square&width=200&height=200"
-           alt="{{ pending_match_ctx.matched_profile.name }}'s image"/>
-      <h2><a href="https://facebook.com/{{ pending_match_ctx.matched_profile.fb_id }}">{{ pending_match_ctx.matched_profile.name }}</a></h2>
+           alt="{{ pending_match_ctx.matched_profile.fb_name }}'s image"/>
+      <h2><a href="https://facebook.com/{{ pending_match_ctx.matched_profile.fb_id }}">{{ pending_match_ctx.matched_profile.fb_name }}</a></h2>
       <h3>todo: via</h3>
     </div>
     <div class="col-md-6 match-info">
