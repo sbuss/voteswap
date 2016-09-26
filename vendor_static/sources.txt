@@ -1,3 +1,5 @@
 bootstrap: https://github.com/twbs/bootstrap/releases/download/v3.3.7/bootstrap-3.3.7-dist.zip
 jquery: https://code.jquery.com/jquery-3.1.0.slim.min.js
 stateface (font/ dir): http://propublica.github.com/stateface/pkg/stateface.tar.gz
+fontawesome: http://fontawesome.io/assets/font-awesome-4.6.3.zip
+bootstrap-social: https://raw.githubusercontent.com/lipis/bootstrap-social/e21290aa2872290c6f70dd3580de884f39f664ac/bootstrap-social.css
