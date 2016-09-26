@@ -15,8 +15,20 @@
       </p>
       {% if pending_match_ctx.from_me %}
       <p>You proposed a swap to {{ pending_match_ctx.matched_profile.fb_name }} {{ pending_match_ctx.match.date_proposed|naturaltime }}. We're still waiting to hear back from them.</p>
+      <p>
+        <a class="btn btn-primary btn-social btn-facebook btn-lg"
+           href="https://www.facebook.com/messages/{{ pending_match_ctx.matched_profile.fb_id }}">
+          <span class="fa fa-facebook"></span> Message {{ pending_match_ctx.matched_profile.user.first_name }}
+        </a>
+      </p>
       {% else %}
       <p>{{ pending_match_ctx.matched_profile.fb_name }} proposed a swap to you {{ pending_match_ctx.match.date_proposed|naturaltime }}.</p>
+      <p>
+        <a class="btn btn-primary btn-social btn-facebook btn-lg"
+           href="https://www.facebook.com/messages/{{ pending_match_ctx.matched_profile.fb_id }}">
+          <span class="fa fa-facebook"></span> Message {{ pending_match_ctx.matched_profile.user.first_name }}
+        </a>
+      </p>
         <div class="pull-left">
           <form method="POST" action="{% url "users:confirm_swap" ref_id=pending_match_ctx.match.ref_id %}">
             {% csrf_token %}
