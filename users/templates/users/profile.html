@@ -5,7 +5,10 @@
 
 <div class="row">
   <div class="profile-sidebar col-md-3">
-    <p>
+    <div class="pull-left" style="padding: 10px;">
+      <span class="stateface" style="font-size:5em">{{ profile.state|stateface }}</span>
+    </div>
+    <p class="clearfix">
       Hello, {{ profile.fb_name }}. You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}, a {{ profile_context.state_type }}.
     </p>
     {% if profile_context.needs_match %}
