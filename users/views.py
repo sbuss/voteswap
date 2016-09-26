@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import Q
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -76,9 +77,38 @@ class ProfileContext(object):
         return friend.id in self.pair_proposal_friend_ids
 
     @cached_property
+    def pending_matches(self):
+        pending_matches = PairProposal.objects.pending().filter(
+            Q(from_profile=self.profile) | Q(to_profile=self.profile))
+        return [PendingMatchContext(pending_match, self)
+                for pending_match in pending_matches]
+
+    @cached_property
     def good_potential_matches(self):
         return [FriendMatchContext(fm, self)
                 for fm in get_friend_matches(self.profile)]
+
+
+class PendingMatchContext(object):
+    def __init__(self, match, profile_context):
+        self.profile_context = profile_context
+        self.match = match
+
+    @cached_property
+    def form(self):
+        if self.from_me:
+            return None
+        return ConfirmPairProposalForm(instance=self.match)
+
+    @property
+    def from_me(self):
+        return self.match.from_profile == self.profile_context.profile
+
+    @property
+    def matched_profile(self):
+        if self.from_me:
+            return self.match.to_profile
+        return self.match.from_profile
 
 
 class FriendMatchContext(object):
