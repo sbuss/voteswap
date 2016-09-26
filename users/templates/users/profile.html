@@ -4,17 +4,16 @@
 {% block main %}
 
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <p>Hello, {{ profile.fb_name }}.</p>
-    <p>
-      {% if profile.preferred_candidate and profile.state %}
-      You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}.
-      {% else %}
-      We're missing some information from you, please
-      <a href="{% url "users:update_profile" %}">Update your profile</a>.
-      {% endif %}
-    </p>
+  {% if profile.preferred_candidate and profile.state %}
+  <div class="col-md-8 col-md-offset-2 alert" role="alert">
+    <p>Hello, {{ profile.fb_name }}. You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}.</p>
   </div>
+  {% else %}
+  <div class="col-md-8 col-md-offset-2 alert alert-danger" role="alert">
+    <p>We're missing some information from you, please
+    <a href="{% url "users:update_profile" %}">Update your profile</a>.</p>
+  </div>
+  {% endif %}
 </div>
 
 <!--
