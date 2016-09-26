@@ -5,120 +5,28 @@
 
 <div class="row">
   <div class="profile-sidebar col-md-3">
-    <div class="pull-left" style="padding: 10px;">
-      <span class="stateface" style="font-size:5em">{{ profile.state|stateface }}</span>
-    </div>
-    <p class="clearfix">
-      Hello, {{ profile.fb_name }}. You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}, a {{ profile_context.state_type }}.
-    </p>
-    {% if profile_context.needs_match %}
-    <p>
-      {% if profile_context.kingmaker %}
-        Voting for Gary Johnson in {{ profile.state }} is extremely dangerous.
-        You'll take votes away from Hillary Clinton and let Trump win the
-        presidency.
-      {% endif %}
-      Trump is an unstable, racist, xenophobic, little dictator that
-      can't be allowed to win. You should swap your vote with
-      {{ profile_context.paired_candidate }} voters in
-      {{ profile_context.paired_state_type }} states.
-    </p>
-    {% else %}
-      {% if profile_context.johnson %}
-      <p>You don't have any good pairings. Go ahead and vote for Johnson.</p>
-      {% else %}
-      <p>
-        Your vote <b>is extremely important</b>, so you <b>shouldn't swap</b>.
-        Be sure to vote for {{ profile.preferred_candidate }} on election day,
-        November 8th!
-      </p>
-      {% endif %}
-    {% endif %}
-    <p>
-      Help spread the word and build out our network.
-      <div class="fb-share-button" data-href="https://voteswap.us" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fvoteswap.us%2F&amp;src=sdkpreparse">Share</a></div>
-    </p>
+    {% include "users/_sidebar.html" %}
   </div>
 
   <div class="col-md-9">
-  <div class="row">
   {% if profile.preferred_candidate and profile.state %}
   {% if profile_context.needs_match %}
     {% if profile_context.pending_matches %}
-    <div class="col-sm-12">
+    <div class="col-sm-12 clearfix">
       <h1>Pending swaps</h1>
-      {% for pending_match_ctx in profile_context.pending_matches %}
-      <div class="col-sm-12 col-lg-6">
-        <div class="well match clearfix">
-          <div class="match-image col-sm-6 text-center">
-            <img class="match img-responsive pull-center"
-                 src="https://graph.facebook.com/v2.7/{{ pending_match_ctx.matched_profile.fb_id }}/picture?type=square&width=200&height=200"
-                 alt="{{ pending_match_ctx.matched_profile.name }}'s image"/>
-            <h2><a href="https://facebook.com/{{ pending_match_ctx.matched_profile.fb_id }}">{{ pending_match_ctx.matched_profile.name }}</a></h2>
-            <h3>todo: via</h3>
-          </div>
-          <div class="col-md-6 match-info">
-            <p style="font-size:4em" class="text-center">
-              <span class="stateface">{{ profile.state|stateface }}</span><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span class="stateface">{{ pending_match_ctx.matched_profile.state|stateface }}</span>
-            </p>
-            <div class="pull-left">
-              <form method="POST" action="{% url "users:confirm_swap" uuid=pending_match_ctx.match.ref_id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-success btn-lg">Confirm</button>
-              </form>
-            </div>&nbsp;
-            <div class="pull-left clearfix">
-              <form method="POST" action="{% url "users:reject_swap" uuid=pending_match_ctx.match.ref_id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-lg">Reject</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endfor %} {# /pending matches #}
+      {% include "users/_pending_swaps.html" %}
     </div>
     {% endif %}
 
     {% if profile_context.good_potential_matches %}
-    <div class="col-sm-12">
+    <div class="col-sm-12 clearfix">
       <h1>Potential swaps</h1>
-      {% for i in "1234" %}
-      {% for fm_ctx in profile_context.good_potential_matches %}
-      <div class="col-sm-12 col-lg-6 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
-        <div class="well match clearfix">
-          <div class="match-image col-sm-6 text-center">
-            <img class="match img-responsive pull-center"
-                 src="https://graph.facebook.com/v2.7/{{ fm_ctx.friend_match.profile.fb_id }}/picture?type=square&width=200&height=200"
-                 alt="{{ fm_ctx.name }}'s image"/>
-            <h2><a href="https://facebook.com/{{ fm_ctx.friend_match.profile.fb_id }}">{{ fm_ctx.name }}</a></h2>
-            <h3>{% if not fm_ctx.friend_match.is_direct %}via <a href="https://facebook.com/{{ fm_ctx.friend_match.through.fb_id }}">{{ fm_ctx.friend_match.through.user.get_full_name }}</a>{% else %}&nbsp;{% endif %}</h3>
-          </div>
-          <div class="col-md-6 match-info">
-            <p style="font-size:4em" class="text-center">
-              <span class="stateface">{{ profile.state|stateface }}</span><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span class="stateface">{{ fm_ctx.friend_match.profile.state|stateface }}</span>
-            </p>
-            <div class="proposed-content">
-              <p>You have proposed to {{ fm_ctx.friend_match.profile.fb_name }}.</p>
-              <a role="button" class="btn btn-info btn-lg">Message</a>
-            </div>
-            <div class="not-proposed-content">
-              <p>{{ fm_ctx.proposal_string }}</p>
-              <button type="button" class="btn btn-success btn-lg js-propose-swap" data-profile-id="{{fm_ctx.friend_match.profile.id}}" data-name="{{ fm_ctx.name }}">Swap</button>
-              <a role="button" class="btn btn-info btn-lg">Message</a>
-            </div>
-            <br />
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-      {% endfor %}
+      {% include "users/_potential_swaps.html" %}
     </div>
     {% endif %}
   </div>
   {% endif %}
   {% endif %}
-  </div> <!-- /row -->
 </div> <!-- /row -->
 {% endblock %}
 
