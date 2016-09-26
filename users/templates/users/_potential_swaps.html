@@ -15,12 +15,18 @@
       </p>
       <div class="proposed-content">
         <p>You have proposed to {{ fm_ctx.friend_match.profile.fb_name }}.</p>
-        <a role="button" class="btn btn-info btn-lg">Message</a>
+        <a class="btn btn-primary btn-social btn-facebook"
+           href="https://www.facebook.com/messages/{{ fm_ctx.friend_match.profile.fb_id }}">
+          <span class="fa fa-facebook"></span> Message
+        </a>
       </div>
       <div class="not-proposed-content">
         <p>{{ fm_ctx.proposal_string }}</p>
         <button type="button" class="btn btn-success btn-lg js-propose-swap" data-profile-id="{{fm_ctx.friend_match.profile.id}}" data-name="{{ fm_ctx.name }}">Swap</button>
-        <a role="button" class="btn btn-info btn-lg">Message</a>
+        <a class="btn btn-primary btn-social btn-facebook btn-lg"
+           href="https://www.facebook.com/messages/{{ fm_ctx.friend_match.profile.fb_id }}">
+          <span class="fa fa-facebook"></span> Message {{ fm_ctx.friend_match.profile.user.first_name }}
+        </a>
       </div>
       <br />
     </div>
