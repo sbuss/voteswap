@@ -28,12 +28,15 @@ class LandingPageForm(forms.Form):
         fb_id = user.social_auth.get().uid
         fb_profile = Profile.objects.filter(fb_id=fb_id)
 
-        if (user_profile and fb_profile and
-                user_profile.get().id != fb_profile.get().id):
-            profile = user_profile.get()
-            profile.fb_id = fb_id
-            profile.fb_name = fb_profile.get().fb_name or user.get_full_name()
-            fb_profile.delete()
+        if user_profile and fb_profile:
+            if user_profile.get().id != fb_profile.get().id:
+                profile = user_profile.get()
+                profile.fb_id = fb_id
+                profile.fb_name = (
+                    fb_profile.get().fb_name or user.get_full_name())
+                fb_profile.delete()
+            else:
+                profile = user_profile.get()
         elif user_profile:
             profile = user_profile.get()
             profile.fb_id = fb_id
