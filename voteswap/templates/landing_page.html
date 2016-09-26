@@ -28,7 +28,7 @@
       </p>
     </div>
     <div id="join" class="col-md-4 join-now">
-      <form class="form" method="POST" action="{% url "signup" %}">
+      <form class="form" method="POST" action="{% url "landing_page" %}">
         {% csrf_token %}
         {% bootstrap_form form size='large' %}
         {% buttons %}

@@ -35,7 +35,7 @@ class TestLandingPageView(TestCase):
         response = landing_page(request)
         self.assertEqual(response.status_code, HTTP_OK)
         self.assertContains(response, 'Join with Facebook')
-        self.assertContains(response, 'action="%s"' % reverse('signup'))
+        self.assertContains(response, 'action="%s"' % reverse('landing_page'))
 
     def test_post(self):
         state = StateFactory()

@@ -98,6 +98,12 @@ def confirm_signup(request):
         return HttpResponseRedirect(reverse('signup'))
     logger.info("Data in confirm_signup is %s" % data)
 
+    try:
+        if request.user.profile.fb_id:
+            # Skip sign up, they probably clicked "Join" on accident
+            return HttpResponseRedirect(reverse('users:profile'))
+    except:
+        pass
     form = LandingPageForm(data=data)
     try:
         if form.is_valid():
