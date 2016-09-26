@@ -169,13 +169,14 @@ def update_profile(request):
 def reject_swap(request, pair_proposal_id):
     if request.method == "POST":
         try:
-            proposal = request.user.profile.proposals_received.get(
-                ref_id=pair_proposal_id)
+            proposal = (
+                request.user.profile.proposals_received
+                .select_for_update()
+                .get(ref_id=pair_proposal_id))
         except PairProposal.DoesNotExist:
             return json_response(
                 {'status': 'error',
                  'errors': {'proposal': 'Invalid swap proposal ID'}})
-        proposal = PairProposal.objects.select_for_update(id=proposal.id)
         data = {'from_profile': proposal.from_profile.id,
                 'to_profile': proposal.to_profile.id,
                 'reason_rejected': request.POST.get('reason_rejected', '')}
@@ -196,13 +197,14 @@ def reject_swap(request, pair_proposal_id):
 def confirm_swap(request, pair_proposal_id):
     if request.method == "POST":
         try:
-            proposal = request.user.profile.proposals_received.get(
-                ref_id=pair_proposal_id)
+            proposal = (
+                request.user.profile.proposals_received
+                .select_for_update()
+                .get(ref_id=pair_proposal_id))
         except PairProposal.DoesNotExist:
             return json_response(
                 {'status': 'error',
                  'errors': {'proposal': 'Invalid swap proposal ID'}})
-        proposal = PairProposal.objects.select_for_update(id=proposal.id)
         # I don't want someone posting new values, this is just to confirm
         # an existing PairRequest, so build the data dict manually
         data = {'from_profile': proposal.from_profile.id,
