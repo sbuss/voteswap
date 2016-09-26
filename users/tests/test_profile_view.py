@@ -2,6 +2,8 @@ from django.core.urlresolvers import reverse
 from django.test import RequestFactory
 from django.test import TestCase
 
+from polling.models import CANDIDATE_CLINTON
+from polling.tests.factories import StateFactory
 from users.tests.factories import UserFactory
 from users.views import profile
 
@@ -11,8 +13,10 @@ HTTP_OK = 200
 class TestProfileView(TestCase):
     def setUp(self):
         super(TestProfileView, self).setUp()
+        self.safe_state = StateFactory.create(
+            safe_rank=1, safe_for=CANDIDATE_CLINTON)
         self.request = RequestFactory()
-        self.user = UserFactory.create()
+        self.user = UserFactory.create(profile__state=self.safe_state.name)
 
     def test_nav(self):
         """Login-aware context menu has the right links"""

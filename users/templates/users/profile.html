@@ -4,42 +4,51 @@
 {% block main %}
 
 <div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <p>Hello, {{ profile.fb_name }}.</p>
+  {% if profile.preferred_candidate and profile.state %}
+  <div class="col-md-8 col-md-offset-2 alert" role="alert">
     <p>
-      {% if profile.preferred_candidate and profile.state %}
-      You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}.
+      Hello, {{ profile.fb_name }}. You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}, a {{ profile_context.state_type }}.
+    </p>
+      {% if profile_context.needs_match %}
+      <p>
+        {% if profile_context.kingmaker %}
+          Voting for Gary Johnson in {{ profile.state }} is extremely dangerous.
+          You'll take votes away from Hillary Clinton and let Trump win the
+          presidency.
+        {% endif %}
+        Trump is an unstable, racist, xenophobic, little dictator that
+        can't be allowed to win. You should swap your vote with 
+        {{ profile_context.paired_candidate }} voters in
+        {{ profile_context.paired_state_type }} states.
+      </p>
       {% else %}
-      We're missing some information from you, please
-      <a href="{% url "users:update_profile" %}">Update your profile</a>.
+        {% if profile_context.johnson %}
+        <p>You don't have any good pairings. Go ahead and vote for Johnson.</p>
+        {% else %}
+        <p>
+          Your vote <b>is extremely important</b>, so you <b>shouldn't swap</b>.
+          Be sure to vote for {{ profile.preferred_candidate }} on election day,
+          November 8th!
+        </p>
+        {% endif %}
       {% endif %}
+      <p>
+        TODO: Share on facebook. Tell your friends.
+      </p>
     </p>
   </div>
-</div>
-
-<!--
-{% for fm_ctx in profile_context.good_potential_matches %}
-<div class="col-sm-4 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
-    <div class="clearfix">
-      <div class="pull-left">
-        <img src="https://graph.facebook.com/v2.7/{{ profile.fb_id }}/picture?type=normal" />
-      </div>
-      <div class="pull-left">
-        <h2>{{ fm_ctx.name }}{% if not fm_ctx.friend_match.is_direct %} (via {{ fm_ctx.friend_match.through.user.get_full_name }}){% endif %}</h2>
-      </div>
-    </div>
-    <div class="proposed-content">
-      You have proposed to this friend.
-    </div>
-    <div class="not-proposed-content">
-      <p>{{ fm_ctx.proposal_string }}</p>
-      <button type="button" class="btn btn-primary js-propose-swap" data-profile-id="{{fm_ctx.friend_match.profile.id}}" data-name="{{ fm_ctx.name }}">Swap with {{ fm_ctx.name }}</button>
-    </div>
+  {% else %}
+  <div class="col-md-8 col-md-offset-2 alert alert-danger" role="alert">
+    <p>
+    We're missing some information from you and can't match you with friends
+    until you <a href="{% url "users:update_profile" %}">update your profile</a>.
+    </p>
   </div>
+  {% endif %}
 </div>
-{% endfor %}
--->
 
+{% if profile.preferred_candidate and profile.state %}
+{% if profile_context.needs_match %}
 <div class="row">
 {% for fm_ctx in profile_context.good_potential_matches %}
 <div class="col-sm-9 col-md-6 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
@@ -70,4 +79,6 @@
 </div>
 {% endfor %}
 </div>
+{% endif %}
+{% endif %}
 {% endblock %}
