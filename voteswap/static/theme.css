@@ -2,7 +2,12 @@
   margin: 0 auto;
   padding-top: 0;
   width: 100%;
-  max-width: 1158px;
+  /*max-width: 1158px;*/
+}
+
+.landing-page {
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
 .landing-page__header-image {
@@ -14,8 +19,9 @@
   -o-background-size: cover;
   background-size: cover;
   height: 70vw;
-  max-height: 400px;
-  max-width: 1158px;
+  max-height: 600px;
+  max-width: 1440px;
+  /*max-width: 1158px;*/
   border-radius: 0px;
 }
 
@@ -94,7 +100,15 @@ body {
 }
 
 /* Media overrides */
+@media all and (max-width: 1050px) {
+    .landing-page__header-image {
+	max-height: 500px;
+    }
+}
 @media all and (max-width: 830px) {
+    .landing-page__header-image {
+	max-height: 400px;
+    }
     .landing-page__header-text {
         font-size: 2.5em;
     }
