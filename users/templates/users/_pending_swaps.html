@@ -1,4 +1,5 @@
 {% load state_face %}
+{% load humanize %}
 {% for pending_match_ctx in profile_context.pending_matches %}
 <div class="col-sm-12 col-lg-6">
   <div class="well match clearfix">
@@ -13,18 +14,23 @@
       <p style="font-size:4em" class="text-center">
         <span class="stateface">{{ profile.state|stateface }}</span><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span class="stateface">{{ pending_match_ctx.matched_profile.state|stateface }}</span>
       </p>
-      <div class="pull-left">
-        <form method="POST" action="{% url "users:confirm_swap" uuid=pending_match_ctx.match.ref_id %}">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-success btn-lg">Confirm</button>
-        </form>
-      </div>&nbsp;
-      <div class="pull-left clearfix">
-        <form method="POST" action="{% url "users:reject_swap" uuid=pending_match_ctx.match.ref_id %}">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-danger btn-lg">Reject</button>
-        </form>
-      </div>
+      {% if pending_match_ctx.from_me %}
+      <p>You proposed a swap to {{ pending_match_ctx.matched_profile.fb_name }} {{ pending_match_ctx.match.date_proposed|naturaltime }}. We're still waiting to hear back from them.</p>
+      {% else %}
+      <p>{{ pending_match_ctx.matched_profile.fb_name }} proposed a swap to you {{ pending_match_ctx.match.date_proposed|naturaltime }}.</p>
+        <div class="pull-left">
+          <form method="POST" action="{% url "users:confirm_swap" ref_id=pending_match_ctx.match.ref_id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success btn-lg">Confirm</button>
+          </form>
+        </div>&nbsp;
+        <div class="pull-left clearfix">
+          <form method="POST" action="{% url "users:reject_swap" ref_id=pending_match_ctx.match.ref_id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-lg">Reject</button>
+          </form>
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>
