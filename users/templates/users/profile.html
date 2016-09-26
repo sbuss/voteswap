@@ -4,7 +4,7 @@
 {% block main %}
 
 <div class="row">
-  <div class="col-md-8 col-md-offset-2 alert" role="alert">
+  <div class="profile-sidebar col-md-3">
     <p>
       Hello, {{ profile.fb_name }}. You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}, a {{ profile_context.state_type }}.
     </p>
@@ -36,40 +36,40 @@
       </p>
     </p>
   </div>
-</div>
 
-{% if profile.preferred_candidate and profile.state %}
-{% if profile_context.needs_match %}
-<div class="row">
-{% for fm_ctx in profile_context.good_potential_matches %}
-<div class="col-sm-9 col-md-6 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
-  <div class="well match clearfix">
-    <div class="match-image col-sm-6 text-center">
-      <img class="match img-responsive pull-center"
-           src="https://graph.facebook.com/v2.7/{{ fm_ctx.friend_match.profile.fb_id }}/picture?type=square&width=200&height=200"
-           alt="{{ fm_ctx.name }}'s image"/>
-      <h2><a href="https://facebook.com/{{ fm_ctx.friend_match.profile.fb_id }}">{{ fm_ctx.name }}</a></h2>
-      <h3>{% if not fm_ctx.friend_match.is_direct %}via <a href="https://facebook.com/{{ fm_ctx.friend_match.through.fb_id }}">{{ fm_ctx.friend_match.through.user.get_full_name }}</a>{% else %}&nbsp;{% endif %}</h3>
-    </div>
-    <div class="col-md-6 match-info">
-      <p style="font-size:4em" class="text-center">
-        <span class="stateface">{{ profile.state|stateface }}</span><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span class="stateface">{{ fm_ctx.friend_match.profile.state|stateface }}</span>
-      </p>
-      <div class="proposed-content">
-        <p>You have proposed to {{ fm_ctx.friend_match.profile.fb_name }}.</p>
-        <a role="button" class="btn btn-info btn-lg">Message</a>
+  {% if profile.preferred_candidate and profile.state %}
+  {% if profile_context.needs_match %}
+  <div class="match-content col-md-9 col-md-offset-3">
+    {% for fm_ctx in profile_context.good_potential_matches %}
+    <div class="col-sm-12 col-md-12 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
+      <div class="well match clearfix">
+        <div class="match-image col-sm-6 text-center">
+          <img class="match img-responsive pull-center"
+               src="https://graph.facebook.com/v2.7/{{ fm_ctx.friend_match.profile.fb_id }}/picture?type=square&width=200&height=200"
+               alt="{{ fm_ctx.name }}'s image"/>
+          <h2><a href="https://facebook.com/{{ fm_ctx.friend_match.profile.fb_id }}">{{ fm_ctx.name }}</a></h2>
+          <h3>{% if not fm_ctx.friend_match.is_direct %}via <a href="https://facebook.com/{{ fm_ctx.friend_match.through.fb_id }}">{{ fm_ctx.friend_match.through.user.get_full_name }}</a>{% else %}&nbsp;{% endif %}</h3>
+        </div>
+        <div class="col-md-6 match-info">
+          <p style="font-size:4em" class="text-center">
+            <span class="stateface">{{ profile.state|stateface }}</span><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span class="stateface">{{ fm_ctx.friend_match.profile.state|stateface }}</span>
+          </p>
+          <div class="proposed-content">
+            <p>You have proposed to {{ fm_ctx.friend_match.profile.fb_name }}.</p>
+            <a role="button" class="btn btn-info btn-lg">Message</a>
+          </div>
+          <div class="not-proposed-content">
+            <p>{{ fm_ctx.proposal_string }}</p>
+            <button type="button" class="btn btn-success btn-lg js-propose-swap" data-profile-id="{{fm_ctx.friend_match.profile.id}}" data-name="{{ fm_ctx.name }}">Swap</button>
+            <a role="button" class="btn btn-info btn-lg">Message</a>
+          </div>
+          <br />
+        </div>
       </div>
-      <div class="not-proposed-content">
-        <p>{{ fm_ctx.proposal_string }}</p>
-        <button type="button" class="btn btn-success btn-lg js-propose-swap" data-profile-id="{{fm_ctx.friend_match.profile.id}}" data-name="{{ fm_ctx.name }}">Swap</button>
-        <a role="button" class="btn btn-info btn-lg">Message</a>
-      </div>
-      <br />
     </div>
+    {% endfor %}
   </div>
-</div>
-{% endfor %}
-</div>
-{% endif %}
-{% endif %}
+  {% endif %}
+  {% endif %}
+</div> <!-- /row -->
 {% endblock %}
