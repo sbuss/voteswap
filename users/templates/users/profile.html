@@ -38,9 +38,9 @@
 
   {% if profile.preferred_candidate and profile.state %}
   {% if profile_context.needs_match %}
-  <div class="match-content col-md-9 col-md-offset-3">
+  <div class="match-content col-md-9">
     {% for fm_ctx in profile_context.good_potential_matches %}
-    <div class="col-sm-12 col-md-12 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
+    <div class="col-sm-12 col-lg-6 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
       <div class="well match clearfix">
         <div class="match-image col-sm-6 text-center">
           <img class="match img-responsive pull-center"

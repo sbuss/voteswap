@@ -112,15 +112,13 @@ body {
 
 /** Vote swap matching **/
 div.profile-sidebar {
-  padding: 20px;
 }
 
 @media (min-width: 992px) {
   div.profile-sidebar {
-    position: fixed;
-    top: 50px;
+    position: relative;
+    top: 0;
     left: 0;
-    bottom: 0;
     z-index: 1000;
   }
 }
