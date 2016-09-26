@@ -4,28 +4,38 @@
 {% block main %}
 
 <div class="row">
-  <div class="profile-sidebar col-md-3">
-    {% include "users/_sidebar.html" %}
-  </div>
 
-  <div class="col-md-9">
-  {% if profile.preferred_candidate and profile.state %}
-  {% if profile_context.needs_match %}
-    {% if profile_context.pending_matches %}
-    <div class="col-sm-12 clearfix">
-      <h1>Pending swaps</h1>
+  {% if profile.paired_with %}
+    <div class="col-md-9 pull-right">
+      <h1>You're paired</h1>
+      {% include "users/_paired_profile.html" %}
+    </div>
+    <div class="profile-sidebar col-md-3 pull-left">
+      {% include "users/_sidebar.html" %}
+    </div>
+  {% else %}
+    <div class="profile-sidebar col-md-3">
+      {% include "users/_sidebar.html" %}
+    </div>
+    <div class="col-md-9">
+    {% if profile.preferred_candidate and profile.state %}
+    {% if profile_context.needs_match %}
+      {% if profile_context.pending_matches %}
+      <div class="row no-gutter">
+      <h1 class="clearfix">Pending swaps</h1>
       {% include "users/_pending_swaps.html" %}
-    </div>
-    {% endif %}
+      </div>
+      {% endif %}
 
-    {% if profile_context.good_potential_matches %}
-    <div class="col-sm-12 clearfix">
-      <h1>Potential swaps</h1>
+      {% if profile_context.good_potential_matches %}
+      <div class="row no-gutter">
+      <h1 class="clearfix">Potential swaps</h1>
       {% include "users/_potential_swaps.html" %}
-    </div>
+      </div>
+      {% endif %}
     {% endif %}
-  </div>
-  {% endif %}
+    {% endif %}
+    </div>
   {% endif %}
 </div> <!-- /row -->
 {% endblock %}
