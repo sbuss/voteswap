@@ -31,6 +31,10 @@ class ProfileContext(object):
                 'to_profile__id', flat=True))
 
     @property
+    def profile_needs_updating(self):
+        return not (self.profile.preferred_candidate and self.profile.state)
+
+    @property
     def paired_candidate(self):
         if self.profile.preferred_candidate == CANDIDATE_CLINTON:
             return CANDIDATE_JOHNSON
@@ -112,11 +116,15 @@ class FriendMatchContext(object):
 @login_required
 def profile(request):
     user = request.user
+    profile_ctx = ProfileContext(user.profile)
+    if profile_ctx.profile_needs_updating:
+        return HttpResponseRedirect(reverse('users:update_profile'))
+
     context = RequestContext(
         request,
         {
             'profile': user.profile,
-            'profile_context': ProfileContext(user.profile),
+            'profile_context': profile_ctx,
         }
     )
     return render_to_response('users/profile.html',
