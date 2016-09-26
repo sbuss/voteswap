@@ -1,8 +1,8 @@
 {% load state_face %}
 {% load humanize %}
 {% for pending_match_ctx in profile_context.pending_matches %}
-<div class="col-sm-12 col-lg-6">
-  <div class="well match clearfix">
+<div class="col-sm-12 col-lg-6 match">
+  <div class="match well clearfix">
     <div class="match-image col-sm-6 text-center">
       <img class="match img-responsive pull-center"
            src="https://graph.facebook.com/v2.7/{{ pending_match_ctx.matched_profile.fb_id }}/picture?type=square&width=200&height=200"

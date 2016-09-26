@@ -7,7 +7,7 @@
 }
 
 .no-gutter {
-    padding-left:0;
+  padding-left:0;
 }
 
 .container-full div.row {
@@ -111,28 +111,41 @@ body {
 
 /* Media overrides */
 @media all and (max-width: 1050px) {
-    .landing-page__header-image {
-	max-height: 500px;
-    }
+  .landing-page__header-image {
+    max-height: 500px;
+  }
 }
 @media all and (max-width: 830px) {
-    .landing-page__header-image {
-	max-height: 400px;
-    }
-    .landing-page__header-text {
-        font-size: 2.5em;
-    }
-    p {
-	font-size: 1.5em;
-    }
+  .landing-page__header-image {
+    max-height: 400px;
+  }
+  .landing-page__header-text {
+    font-size: 2.5em;
+  }
+  p {
+    font-size: 1.5em;
+  }
 }
 @media all and (max-width: 670px) {
-    .landing-page__header-text {
-        font-size: 2em;
-    }
-
+  .col-md-6.match-info,.match,.well {
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+  .landing-page__header-text {
+    font-size: 2em;
+  }
 }
 
+@media all and (max-width: 425px) {
+  .col-md-6.match-info,.match,.well {
+    padding-left: 2px;
+    padding-right: 2px;
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+}
 
 /** Vote swap matching **/
 div.profile-sidebar p {
