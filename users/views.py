@@ -174,6 +174,7 @@ def confirm_swap(request, pair_proposal_id):
             return json_response(
                 {'status': 'error',
                  'errors': {'proposal': 'Invalid swap proposal ID'}})
+        proposal = PairProposal.objects.select_for_update(id=proposal.id)
         # I don't want someone posting new values, this is just to confirm
         # an existing PairRequest, so build the data dict manually
         data = {'from_profile': proposal.from_profile.id,
