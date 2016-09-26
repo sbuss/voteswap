@@ -104,3 +104,18 @@ class TestLandingPageForm(TestCase):
         user = get_user_model().objects.get(id=user.id)
         self.assertNotEqual(user.get_full_name(), user.profile.fb_name)
         self.assertEqual(user.profile, profile)
+
+    def test_dont_delete_profile(self):
+        """From a bug where the user's profile was deleted after updating."""
+        user = UserFactory.create(profile__fb_id=1, social_auth__uid=1)
+        profile = user.profile
+        # Add a friend
+        friend = UserFactory.create(profile__fb_id=2, social_auth__uid=2)
+        profile.friends.add(friend.profile)
+        data = self._data()
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
+        user = get_user_model().objects.get(id=user.id)
+        self.assertEqual(user.profile.id, profile.id)
+        self.assertEqual(profile.friends.get(), friend.profile)
