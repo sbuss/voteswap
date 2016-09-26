@@ -18,7 +18,10 @@ from voteswap.forms import LandingPageForm
 class ProfileContext(object):
     def __init__(self, profile):
         self.profile = profile
-        self.state = State.objects.get(name=self.profile.state)
+        try:
+            self.state = State.objects.get(name=self.profile.state)
+        except State.DoesNotExist:
+            self.state = None
         self.pair_proposal_friend_ids = set(
             self.profile.proposals_made.values_list(
                 'to_profile__id', flat=True))

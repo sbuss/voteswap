@@ -7,8 +7,7 @@
   {% if profile.preferred_candidate and profile.state %}
   <div class="col-md-8 col-md-offset-2 alert" role="alert">
     <p>
-      Hello, {{ profile.fb_name }}. You're a {{ profile.preferred_candidate }}
-      voter in {{ profile.state }}, a {{ profile_context.state_type }}.
+      Hello, {{ profile.fb_name }}. You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}, a {{ profile_context.state_type }}.
     </p>
       {% if profile_context.needs_match %}
       <p>
@@ -69,6 +68,7 @@
 {% endfor %}
 -->
 
+{% if profile.preferred_candidate and profile.state %}
 {% if profile_context.needs_match %}
 <div class="row">
 {% for fm_ctx in profile_context.good_potential_matches %}
@@ -100,5 +100,6 @@
 </div>
 {% endfor %}
 </div>
+{% endif %}
 {% endif %}
 {% endblock %}
