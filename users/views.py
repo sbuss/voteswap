@@ -167,7 +167,15 @@ def update_profile(request):
             'reason': request.user.profile.reason
         }
         form = LandingPageForm(initial=initial)
-    context = RequestContext(request, {'form': form})
+    profile_ctx = ProfileContext(request.user.profile)
+    context = RequestContext(
+        request,
+        {
+            'form': form,
+            'profile': request.user.profile,
+            'profile_context': profile_ctx,
+        }
+    )
     return render_to_response(
         'users/update_profile.html', context_instance=context)
 
