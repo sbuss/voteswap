@@ -10,8 +10,8 @@
   </div>
   {% else %}
   <div class="col-md-8 col-md-offset-2 alert alert-danger" role="alert">
-    <p>We're missing some information from you, please
-    <a href="{% url "users:update_profile" %}">Update your profile</a>.</p>
+    <p>We're missing some information from you and can't match you with friends
+    until you <a href="{% url "users:update_profile" %}">update your profile</a>.</p>
   </div>
   {% endif %}
 </div>
