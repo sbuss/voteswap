@@ -10,6 +10,6 @@ urlpatterns = [
     url('^profile/$', profile, name='profile'),
     url('^swap/$', propose_swap, name='propose_swap'),
     url('^swap/confirm/(?P<uuid>[^/]+)/$', confirm_swap, name='confirm_swap'),
-    url('^swap/reject/(?P<uuid>[^/]+)/$', reject_swap, name='confirm_swap'),
+    url('^swap/reject/(?P<uuid>[^/]+)/$', reject_swap, name='reject_swap'),
     url('^profile/update/$', update_profile, name='update_profile'),
 ]
