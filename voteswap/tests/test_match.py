@@ -1,10 +1,12 @@
 from django.test import TestCase
+from django.utils import timezone
 
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
 from polling.models import CANDIDATE_TRUMP
 from polling.models import State
 from polling.tests.factories import StateFactory
+from users.models import PairProposal
 from users.tests.factories import ProfileFactory
 from users.tests.factories import UserFactory
 from voteswap.match import _matches_for_safe_state_profile
@@ -276,3 +278,61 @@ class TestSafeStateFriendsOfFriendsMatch(
         self.assertEqual(len(matches), 5)
         self.assertEqual(_profiles(matches), self.foaf_expected_matches)
         self.assertFalse(any(match.is_direct for match in matches))
+
+
+class TestExclude(TestCase):
+    def setUp(self):
+        candidate = CANDIDATE_CLINTON
+        self.state_safe = StateFactory.create(
+            safe_for=candidate,
+            safe_rank=1
+        )
+        self.user = UserFactory.create(
+            profile__state=self.state_safe.name,
+            profile__preferred_candidate=candidate)
+        self.state_swing = StateFactory.create(
+            tipping_point_rank=1)
+        self.friend = UserFactory.create(
+            profile__state=self.state_swing.name,
+            profile__preferred_candidate=CANDIDATE_JOHNSON)
+        self.user.profile.friends.add(self.friend.profile)
+        self.foaf = UserFactory.create(
+            profile__state=self.state_swing.name,
+            profile__preferred_candidate=CANDIDATE_JOHNSON)
+        self.friend.profile.friends.add(self.foaf.profile)
+        self.friend_proposal = PairProposal.objects.create(
+            from_profile=self.user.profile,
+            to_profile=self.friend.profile)
+        self.foaf_proposal = PairProposal.objects.create(
+            from_profile=self.foaf.profile,
+            to_profile=self.user.profile)
+
+    def test_matches(self):
+        """Baseline test that both friends show up in matches"""
+        self.assertEqual(
+            set(_profiles(get_friend_matches(
+                self.user.profile, exclude_pending=False))),
+            set([self.friend.profile, self.foaf.profile]))
+        self.assertEqual(
+            set(_profiles(get_friend_matches(
+                self.user.profile, exclude_pending=True))),
+            set())
+
+    def test_exclude_pending(self):
+        self.assertEqual(
+            set(_profiles(get_friend_matches(self.user.profile))),
+            set())
+        self.foaf_proposal.delete()
+        self.assertEqual(
+            set(_profiles(get_friend_matches(self.user.profile))),
+            set([self.foaf.profile]))
+
+    def test_exclude_rejected(self):
+        self.assertEqual(
+            set(_profiles(get_friend_matches(self.user.profile))),
+            set())
+        self.friend_proposal.date_rejected = timezone.now()
+        self.friend_proposal.save()
+        self.assertEqual(
+            set(_profiles(get_friend_matches(self.user.profile))),
+            set())

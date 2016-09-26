@@ -8,6 +8,7 @@ from users.tests.factories import UserFactory
 from users.views import profile
 
 HTTP_OK = 200
+HTTP_REDIRECT = 302
 
 
 class TestProfileView(TestCase):
@@ -31,15 +32,16 @@ class TestProfileView(TestCase):
         self.assertContains(response, reverse("logout"))
 
     def test_profile_missing_info(self):
-        """Update profile link shown if the user's profile is missing info"""
+        """If data is missing, redirect to update_profile"""
         self.user.profile.state = ''
         self.user.profile.save()
         request = self.request.get(reverse('users:profile'))
         request.user = self.user
         response = profile(request)
-        self.assertContains(
-            response,
-            "We're missing some information from you")
+        self.assertEqual(response.status_code, HTTP_REDIRECT)
+        self.assertTrue(response.has_header('Location'))
+        self.assertEqual(response.get('Location'),
+                         reverse('users:update_profile'))
 
     def test_voter_in_state(self):
         request = self.request.get(reverse('users:profile'))

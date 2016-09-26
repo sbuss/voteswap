@@ -9,7 +9,8 @@ from users.views import update_profile
 urlpatterns = [
     url('^profile/$', profile, name='profile'),
     url('^swap/$', propose_swap, name='propose_swap'),
-    url('^swap/confirm/(?P<uuid>[^/]+)/$', confirm_swap, name='confirm_swap'),
-    url('^swap/reject/(?P<uuid>[^/]+)/$', reject_swap, name='reject_swap'),
+    url('^swap/confirm/(?P<ref_id>[^/]+)/$',
+        confirm_swap, name='confirm_swap'),
+    url('^swap/reject/(?P<ref_id>[^/]+)/$', reject_swap, name='reject_swap'),
     url('^profile/update/$', update_profile, name='update_profile'),
 ]

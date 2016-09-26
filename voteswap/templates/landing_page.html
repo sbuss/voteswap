@@ -2,44 +2,46 @@
 {% load bootstrap3 %}
 
 {% block main %}
-<div class="jumbotron landing-page__header-image">
-</div>
-<div class="landing-page__header-text col-sm-12">
-  Vote your conscience <i>and</i> stop Trump
-</div>
-<div class="row">
-  <div class="col-md-8">
-    <h1 id="make-your-vote-count">Make your vote count</h1>
-    <p>
-      Third party voters have all the power this election. Voting for Johnson
-      in {{ swing_states }} will split the vote and make Clinton lose.
-    </p>
-    <p>
-      Don't let Trump win, swap your vote! <b>Gary Johnson voters in in swing
-      states</b> are matched with <b>Clinton voters in safe states</b>.
-      Johnson gets the same number of votes, and Trump loses. Don't split the
-      vote like we did with Nader and Al Gore in 2000.
-      <div class="fb-share-button" data-href="https://voteswap.us" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fvoteswap.us%2F&amp;src=sdkpreparse">Share</a></div>
-    </p>
+<div class="not-fullscreen">
+  <div class="jumbotron landing-page__header-image">
   </div>
-  <div id="join" class="col-md-4 join-now">
-    <form class="form" method="POST" action="{% url "signup" %}">
-      {% csrf_token %}
-      {% bootstrap_form form size='large' %}
-      {% buttons %}
-        <button type="submit" class="btn btn-primary join-now">Join with Facebook</button>
-      {% endbuttons %}
-    </form>
+  <div class="landing-page__header-text col-sm-12">
+    Vote your conscience <i>and</i> stop Trump
   </div>
-</div>
+  <div class="row">
+    <div class="col-md-8">
+      <h1 id="make-your-vote-count">Make your vote count</h1>
+      <p>
+        Third party voters have all the power this election. Voting for Johnson
+        in {{ swing_states }} will split the vote and make Clinton lose.
+      </p>
+      <p>
+        Don't let Trump win, swap your vote! <b>Gary Johnson voters in in swing
+        states</b> are matched with <b>Clinton voters in safe states</b>.
+        Johnson gets the same number of votes, and Trump loses. Don't split the
+        vote like we did with Nader and Al Gore in 2000.
+        <div class="fb-share-button" data-href="https://voteswap.us" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fvoteswap.us%2F&amp;src=sdkpreparse">Share</a></div>
+      </p>
+    </div>
+    <div id="join" class="col-md-4 join-now">
+      <form class="form" method="POST" action="{% url "signup" %}">
+        {% csrf_token %}
+        {% bootstrap_form form size='large' %}
+        {% buttons %}
+          <button type="submit" class="btn btn-primary join-now">Join with Facebook</button>
+        {% endbuttons %}
+      </form>
+    </div>
+  </div>
 
-{% include "_how_does_it_work.html" %}
+  {% include "_how_does_it_work.html" %}
 
-{% include "_dont_fuck_it_up.html" %}
+  {% include "_dont_fuck_it_up.html" %}
 
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <a role="button" class="btn btn-primary join-now" href="{% url "signup" %}">Join now!</a>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <a role="button" class="btn btn-primary join-now" href="{% url "signup" %}">Join now!</a>
+    </div>
   </div>
 </div>
 {% endblock %}

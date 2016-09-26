@@ -1,9 +1,12 @@
+from django.db.models import Q
+
 from polling.models import State
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
 from polling.models import CANDIDATE_NONE
 from polling.models import CANDIDATES_MAIN
 from polling.models import CANDIDATES_THIRD_PARTY
+from users.models import PairProposal
 
 
 class FriendMatch(object):
@@ -27,7 +30,21 @@ def _order_matches_by_state_rank(matches, ordered_states):
     return sorted(matches, key=keyfunc)
 
 
-def _matches_for_swing_state_profile(profile, direct=True, foaf=True):
+def _exclude_matches(proposal_qs, profile, matches):
+    exclude_matches = set()
+    for proposal in (
+            proposal_qs
+            .filter(Q(from_profile=profile) | Q(to_profile=profile))):
+        exclude_matches.add(proposal.from_profile)
+        exclude_matches.add(proposal.to_profile)
+    if exclude_matches:
+        return [match for match in matches
+                if match.profile not in exclude_matches]
+    return matches
+
+
+def _matches_for_swing_state_profile(
+        profile, direct=True, foaf=True, exclude_pending=True):
     """Find the suitable matches for a swing state profile"""
     found_friends = set()
     compatible_candidate = (
@@ -65,10 +82,16 @@ def _matches_for_swing_state_profile(profile, direct=True, foaf=True):
             foaf_friends = foaf_friends.union(_get_friends(friend))
         matches.extend(_order_matches_by_state_rank(
             foaf_friends, potential_states))
+    matches = _exclude_matches(
+        PairProposal.objects.rejected(), profile, matches)
+    if exclude_pending:
+        matches = _exclude_matches(
+            PairProposal.objects.pending(), profile, matches)
     return matches
 
 
-def _matches_for_safe_state_profile(profile, direct=True, foaf=True):
+def _matches_for_safe_state_profile(
+        profile, direct=True, foaf=True, exclude_pending=True):
     """Find the suitable matches for a safe state profile"""
     found_friends = set()
     compatible_candidate = (
@@ -106,10 +129,15 @@ def _matches_for_safe_state_profile(profile, direct=True, foaf=True):
             foaf_friends = foaf_friends.union(_get_friends(friend))
         matches.extend(_order_matches_by_state_rank(
             foaf_friends, potential_states))
+    matches = _exclude_matches(
+        PairProposal.objects.rejected(), profile, matches)
+    if exclude_pending:
+        matches = _exclude_matches(
+            PairProposal.objects.pending(), profile, matches)
     return matches
 
 
-def get_friend_matches(profile):
+def get_friend_matches(profile, exclude_pending=True):
     """Find suitable matches for the given profile.
 
     Match critera:
@@ -121,10 +149,12 @@ def get_friend_matches(profile):
         if profile.preferred_candidate in dict(CANDIDATES_MAIN):
             # The user shouldn't change their vote
             return NoMatchNecessary()
-        return _matches_for_swing_state_profile(profile)
+        return _matches_for_swing_state_profile(
+            profile, exclude_pending=exclude_pending)
     else:
         # In a safe state
         if profile.preferred_candidate in dict(CANDIDATES_THIRD_PARTY):
             # The user shouldn't change their vote
             return NoMatchNecessary()
-        return _matches_for_safe_state_profile(profile)
+        return _matches_for_safe_state_profile(
+            profile, exclude_pending=exclude_pending)

@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import Q
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -29,6 +30,10 @@ class ProfileContext(object):
         self.pair_proposal_friend_ids = set(
             self.profile.proposals_made.values_list(
                 'to_profile__id', flat=True))
+
+    @property
+    def profile_needs_updating(self):
+        return not (self.profile.preferred_candidate and self.profile.state)
 
     @property
     def paired_candidate(self):
@@ -72,9 +77,38 @@ class ProfileContext(object):
         return friend.id in self.pair_proposal_friend_ids
 
     @cached_property
+    def pending_matches(self):
+        pending_matches = PairProposal.objects.pending().filter(
+            Q(from_profile=self.profile) | Q(to_profile=self.profile))
+        return [PendingMatchContext(pending_match, self)
+                for pending_match in pending_matches]
+
+    @cached_property
     def good_potential_matches(self):
         return [FriendMatchContext(fm, self)
                 for fm in get_friend_matches(self.profile)]
+
+
+class PendingMatchContext(object):
+    def __init__(self, match, profile_context):
+        self.profile_context = profile_context
+        self.match = match
+
+    @cached_property
+    def form(self):
+        if self.from_me:
+            return None
+        return ConfirmPairProposalForm(instance=self.match)
+
+    @property
+    def from_me(self):
+        return self.match.from_profile == self.profile_context.profile
+
+    @property
+    def matched_profile(self):
+        if self.from_me:
+            return self.match.to_profile
+        return self.match.from_profile
 
 
 class FriendMatchContext(object):
@@ -112,11 +146,15 @@ class FriendMatchContext(object):
 @login_required
 def profile(request):
     user = request.user
+    profile_ctx = ProfileContext(user.profile)
+    if profile_ctx.profile_needs_updating:
+        return HttpResponseRedirect(reverse('users:update_profile'))
+
     context = RequestContext(
         request,
         {
             'profile': user.profile,
-            'profile_context': ProfileContext(user.profile),
+            'profile_context': profile_ctx,
         }
     )
     return render_to_response('users/profile.html',
@@ -159,20 +197,28 @@ def update_profile(request):
             'reason': request.user.profile.reason
         }
         form = LandingPageForm(initial=initial)
-    context = RequestContext(request, {'form': form})
+    profile_ctx = ProfileContext(request.user.profile)
+    context = RequestContext(
+        request,
+        {
+            'form': form,
+            'profile': request.user.profile,
+            'profile_context': profile_ctx,
+        }
+    )
     return render_to_response(
         'users/update_profile.html', context_instance=context)
 
 
 @login_required
 @transaction.atomic
-def reject_swap(request, pair_proposal_id):
+def reject_swap(request, ref_id):
     if request.method == "POST":
         try:
             proposal = (
                 request.user.profile.proposals_received
                 .select_for_update()
-                .get(ref_id=pair_proposal_id))
+                .get(ref_id=ref_id))
         except PairProposal.DoesNotExist:
             return json_response(
                 {'status': 'error',
@@ -194,13 +240,13 @@ def reject_swap(request, pair_proposal_id):
 
 @login_required
 @transaction.atomic
-def confirm_swap(request, pair_proposal_id):
+def confirm_swap(request, ref_id):
     if request.method == "POST":
         try:
             proposal = (
                 request.user.profile.proposals_received
                 .select_for_update()
-                .get(ref_id=pair_proposal_id))
+                .get(ref_id=ref_id))
         except PairProposal.DoesNotExist:
             return json_response(
                 {'status': 'error',
