@@ -125,6 +125,11 @@ class TestConfirmPairProposalForm(TestCase):
         to_profile = Profile.objects.get(id=self.to_profile.id)
         self.assertEqual(from_profile.paired_with, to_profile)
         self.assertEqual(list(self.other_profile.all_unpaired_friends), [])
+        self.assertFalse(PairProposal.objects.pending())
+        self.assertFalse(PairProposal.objects.rejected())
+        self.assertEqual(
+            list(PairProposal.objects.confirmed()),
+            [self.proposal])
 
     def test_confirm_fail(self):
         data = self._data().update({'to_profile': self.other_profile.id})

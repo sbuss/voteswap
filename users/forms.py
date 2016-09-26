@@ -38,5 +38,5 @@ class ConfirmPairProposalForm(forms.ModelForm):
 
     def save(self):
         self.instance.from_profile.paired_with = self.instance.to_profile
-        self.date_confirmed = timezone.now()
+        self.instance.date_confirmed = timezone.now()
         super(ConfirmPairProposalForm, self).save()
