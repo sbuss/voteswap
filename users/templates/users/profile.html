@@ -6,7 +6,37 @@
 <div class="row">
   {% if profile.preferred_candidate and profile.state %}
   <div class="col-md-8 col-md-offset-2 alert" role="alert">
-    <p>Hello, {{ profile.fb_name }}. You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}.</p>
+    <p>
+      Hello, {{ profile.fb_name }}. You're a {{ profile.preferred_candidate }}
+      voter in {{ profile.state }}, a {{ profile_context.state_type }}.
+    </p>
+      {% if profile_context.needs_match %}
+      <p>
+        {% if profile_context.kingmaker %}
+          Voting for Gary Johnson in {{ profile.state }} is extremely dangerous.
+          You'll take votes away from Hillary Clinton and let Trump win the
+          presidency.
+        {% endif %}
+        Trump is an unstable, racist, xenophobic, little dictator that
+        can't be allowed to win. You should swap your vote with 
+        {{ profile_context.paired_candidate }} voters in
+        {{ profile_context.paired_state_type }} states.
+      </p>
+      {% else %}
+        {% if profile_context.johnson %}
+        <p>You don't have any good pairings. Go ahead and vote for Johnson.</p>
+        {% else %}
+        <p>
+          Your vote <b>is extremely important</b>, so you <b>shouldn't swap</b>.
+          Be sure to vote for {{ profile.preferred_candidate }} on election day,
+          November 8th!
+        </p>
+        {% endif %}
+      {% endif %}
+      <p>
+        TODO: Share on facebook. Tell your friends.
+      </p>
+    </p>
   </div>
   {% else %}
   <div class="col-md-8 col-md-offset-2 alert alert-danger" role="alert">
@@ -39,6 +69,7 @@
 {% endfor %}
 -->
 
+{% if profile_context.needs_match %}
 <div class="row">
 {% for fm_ctx in profile_context.good_potential_matches %}
 <div class="col-sm-9 col-md-6 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
@@ -69,4 +100,5 @@
 </div>
 {% endfor %}
 </div>
+{% endif %}
 {% endblock %}

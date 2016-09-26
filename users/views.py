@@ -7,6 +7,9 @@ from django.template import RequestContext
 from django.utils.functional import cached_property
 import json
 
+from polling.models import CANDIDATE_CLINTON
+from polling.models import CANDIDATE_JOHNSON
+from polling.models import State
 from users.forms import PairProposalForm
 from voteswap.match import get_friend_matches
 from voteswap.forms import LandingPageForm
@@ -15,9 +18,48 @@ from voteswap.forms import LandingPageForm
 class ProfileContext(object):
     def __init__(self, profile):
         self.profile = profile
+        self.state = State.objects.get(name=self.profile.state)
         self.pair_proposal_friend_ids = set(
             self.profile.proposals_made.values_list(
                 'to_profile__id', flat=True))
+
+    @property
+    def paired_candidate(self):
+        if self.profile.preferred_candidate == CANDIDATE_CLINTON:
+            return CANDIDATE_JOHNSON
+        else:
+            return CANDIDATE_CLINTON
+
+    @property
+    def johnson(self):
+        return self.profile.preferred_candidate == CANDIDATE_JOHNSON
+
+    @property
+    def needs_match(self):
+        if self.state.is_swing or self.state.leans:
+            return self.profile.preferred_candidate == CANDIDATE_JOHNSON
+        elif not self.state.is_swing:
+            return self.profile.preferred_candidate == CANDIDATE_CLINTON
+        return True
+
+    @property
+    def state_type(self):
+        if self.state.is_swing:
+            return "swing state"
+        elif self.state.leans:
+            return "%s-leaning state" % self.state.leans
+        return "safe state for %s" % self.state.safe_for
+
+    @property
+    def paired_state_type(self):
+        if self.state.is_swing:
+            return "safe"
+        return "swing"
+
+    @property
+    def kingmaker(self):
+        return ((self.state.is_swing or self.state.leans) and
+                self.profile.preferred_candidate == CANDIDATE_JOHNSON)
 
     def has_proposed_to_friend(self, friend):
         return friend.id in self.pair_proposal_friend_ids
