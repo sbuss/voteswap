@@ -92,6 +92,29 @@
       window.vs = {
         csrf: "{{ csrf_token }}"
       };
+      $(document).ready(function() {
+        $('.fb-share-btn').click(function() {
+            FB.ui({
+              method: 'share',
+              href: 'https://voteswap.us/',
+            }, function(response){});
+        });
+        $('.fb-feed-btn').click(function() {
+            FB.ui({
+              method: 'feed',
+              link: 'https://voteswap.us/',
+              caption: "Vote your conscience and stop Trump",
+              description: "Don't let Trump win, swap your vote! Gary Johnson voters in in swing states are matched with Clinton voters in safe states. Johnson gets the same number of votes, and Trump loses. Don't split the vote like we did with Nader and Al Gore in 2000. We can't afford a Trump presidency."
+            }, function(response){});
+        });
+        $('.fb-send-btn').click(function() {
+            FB.ui({
+              method: 'send',
+              link: 'https://voteswap.us/',
+              message: "Let's stop Trump!",
+            });
+        });
+      });
     </script>
   </body>
 </html>
