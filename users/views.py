@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -10,7 +11,10 @@ import json
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
 from polling.models import State
+from users.forms import ConfirmPairProposalForm
 from users.forms import PairProposalForm
+from users.forms import RejectPairProposalForm
+from users.models import PairProposal
 from voteswap.match import get_friend_matches
 from voteswap.forms import LandingPageForm
 
@@ -158,3 +162,61 @@ def update_profile(request):
     context = RequestContext(request, {'form': form})
     return render_to_response(
         'users/update_profile.html', context_instance=context)
+
+
+@login_required
+@transaction.atomic
+def reject_swap(request, pair_proposal_id):
+    if request.method == "POST":
+        try:
+            proposal = (
+                request.user.profile.proposals_received
+                .select_for_update()
+                .get(ref_id=pair_proposal_id))
+        except PairProposal.DoesNotExist:
+            return json_response(
+                {'status': 'error',
+                 'errors': {'proposal': 'Invalid swap proposal ID'}})
+        data = {'from_profile': proposal.from_profile.id,
+                'to_profile': proposal.to_profile.id,
+                'reason_rejected': request.POST.get('reason_rejected', '')}
+        form = RejectPairProposalForm(data=data, instance=proposal)
+        if form.is_valid():
+            form.save()
+            return json_response({'status': 'ok', 'errors': {}})
+        else:
+            return json_response({'status': 'error', 'errors': form.errors})
+    else:
+        return json_response(
+            {'status': 'error',
+             'errors': {'method': 'Must POST with to_profile set'}})
+
+
+@login_required
+@transaction.atomic
+def confirm_swap(request, pair_proposal_id):
+    if request.method == "POST":
+        try:
+            proposal = (
+                request.user.profile.proposals_received
+                .select_for_update()
+                .get(ref_id=pair_proposal_id))
+        except PairProposal.DoesNotExist:
+            return json_response(
+                {'status': 'error',
+                 'errors': {'proposal': 'Invalid swap proposal ID'}})
+        # I don't want someone posting new values, this is just to confirm
+        # an existing PairRequest, so build the data dict manually
+        data = {'from_profile': proposal.from_profile.id,
+                'to_profile': proposal.to_profile.id}
+        form = ConfirmPairProposalForm(data=data, instance=proposal)
+        if form.is_valid():
+            form.save()
+            return json_response({'status': 'ok', 'errors': {}})
+        else:
+            return json_response({'status': 'error', 'errors': form.errors})
+    else:
+        return json_response(
+            {'status': 'error',
+             'errors': {'method': 'Must POST with to_profile set'}})
+    PairProposal.objects

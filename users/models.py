@@ -5,6 +5,7 @@ from django.db import models
 from django.db import transaction
 from django.db.models import Q
 import us
+import uuid
 
 from polling.models import CANDIDATES_ADVOCATED
 
@@ -35,6 +36,7 @@ class PairProposal(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name='proposals_received')
+    ref_id = models.UUIDField(primary_key=False, default=uuid.uuid4)
     date_proposed = models.DateTimeField(auto_now_add=True)
     date_confirmed = models.DateTimeField(null=True)
     date_rejected = models.DateTimeField(null=True)
