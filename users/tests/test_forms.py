@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from users.forms import ConfirmPairProposalForm
 from users.forms import PairProposalForm
+from users.forms import RejectPairProposalForm
 from users.models import PairProposal
 from users.models import Profile
 from users.tests.factories import ProfileFactory
@@ -101,7 +102,7 @@ class TestPairProposalForm(TestCase):
             set(profile.all_unpaired_friends))
 
 
-class TestConfirmPairProposalForm(TestCase):
+class _TestConfirmOrRejectPairProposalForm(TestCase):
     def setUp(self):
         self.from_profile = ProfileFactory.create()
         self.to_profile = ProfileFactory.create()
@@ -112,6 +113,8 @@ class TestConfirmPairProposalForm(TestCase):
             from_profile=self.from_profile,
             to_profile=self.to_profile)
 
+
+class TestConfirmPairProposalForm(_TestConfirmOrRejectPairProposalForm):
     def _data(self):
         return {'from_profile': self.proposal.from_profile.id,
                 'to_profile': self.proposal.to_profile.id}
@@ -136,3 +139,28 @@ class TestConfirmPairProposalForm(TestCase):
         form = ConfirmPairProposalForm(
             data=data, instance=self.proposal)
         self.assertFalse(form.is_valid())
+
+
+class TestRejectPairProposalForm(_TestConfirmOrRejectPairProposalForm):
+    def _data(self):
+        return {'from_profile': self.proposal.from_profile.id,
+                'to_profile': self.proposal.to_profile.id,
+                'reason_rejected': "I don't trust that guy"}
+
+    def test_reject_success(self):
+        form = RejectPairProposalForm(
+            data=self._data(), instance=self.proposal)
+        self.assertTrue(form.is_valid())
+        form.save()
+        from_profile = Profile.objects.get(id=self.from_profile.id)
+        to_profile = Profile.objects.get(id=self.to_profile.id)
+        self.assertFalse(from_profile.paired_with)
+        self.assertFalse(to_profile.paired_with)
+        self.assertEqual(
+            set(self.other_profile.all_unpaired_friends),
+            set([from_profile, to_profile]))
+        self.assertFalse(PairProposal.objects.pending())
+        self.assertFalse(PairProposal.objects.confirmed())
+        self.assertEqual(
+            list(PairProposal.objects.rejected()),
+            [self.proposal])

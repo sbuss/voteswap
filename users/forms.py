@@ -40,3 +40,20 @@ class ConfirmPairProposalForm(forms.ModelForm):
         self.instance.from_profile.paired_with = self.instance.to_profile
         self.instance.date_confirmed = timezone.now()
         super(ConfirmPairProposalForm, self).save()
+
+
+class RejectPairProposalForm(forms.ModelForm):
+    class Meta:
+        model = PairProposal
+        fields = ['from_profile', 'to_profile', 'reason_rejected']
+
+    def __init__(self, *args, **kwargs):
+        super(RejectPairProposalForm, self).__init__(*args, **kwargs)
+        from_profile = self.instance.from_profile
+        self.fields['from_profile'].queryset = Profile.objects.filter(
+            id=from_profile.id)
+        self.fields['to_profile'].queryset = from_profile.all_unpaired_friends
+
+    def save(self):
+        self.instance.date_rejected = timezone.now()
+        super(RejectPairProposalForm, self).save()
