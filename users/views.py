@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.functional import cached_property
+from django.utils.text import wrap as wrap_text
 from google.appengine.api.mail import EmailMessage
 import json
 
@@ -177,14 +178,18 @@ def _send_swap_proposal_email(user, match):
             user=user.profile.fb_name))
     from_profile_context = ProfileContext(match.from_profile)
     to_profile_context = ProfileContext(match.to_profile)
-    message.body = render_to_string(
-        'users/propose_swap_email.txt',
-        {'from_profile_ctx': from_profile_context,
-         'to_profile_ctx': to_profile_context})
-    message.html = render_to_string(
-        'users/propose_swap_email.html',
-        {'from_profile_ctx': from_profile_context,
-         'to_profile_ctx': to_profile_context})
+    message.body = wrap_text(
+        render_to_string(
+            'users/propose_swap_email.txt',
+            {'from_profile_ctx': from_profile_context,
+             'to_profile_ctx': to_profile_context}),
+        80)
+    message.html = wrap_text(
+        render_to_string(
+            'users/propose_swap_email.html',
+            {'from_profile_ctx': from_profile_context,
+             'to_profile_ctx': to_profile_context}),
+        80)
     message.send()
 
 
