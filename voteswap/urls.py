@@ -21,9 +21,9 @@ from voteswap.views import about
 from voteswap.views import confirm_signup
 from voteswap.views import landing_page
 from voteswap.views import logout
-from voteswap.views import match
 from voteswap.views import press
 from voteswap.views import signup
+from users.views import profile
 
 
 urlpatterns = [
@@ -35,7 +35,7 @@ urlpatterns = [
     url('^about/$', about, name='about'),
     url('^press/$', press, name='press'),
     url('^user/', include('users.urls', namespace='users')),
-    url('^swap/', match, name='swap'),
+    url('^swap/', profile, name='swap'),
     url('^signup/confirm$', confirm_signup, name='confirm_signup'),
     url('^signup/$', signup, name='signup'),
 ]
