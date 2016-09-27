@@ -14,3 +14,9 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "voteswap.settings")
 
 application = get_wsgi_application()
+
+try:
+    from google.appengine.ext import vendor
+    vendor.add('lib')
+except ImportError:
+    pass
