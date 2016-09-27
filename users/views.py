@@ -20,6 +20,7 @@ from users.forms import ConfirmPairProposalForm
 from users.forms import PairProposalForm
 from users.forms import RejectPairProposalForm
 from users.models import PairProposal
+from users.models import Profile
 from voteswap.match import get_friend_matches
 from voteswap.forms import LandingPageForm
 
@@ -150,7 +151,10 @@ class FriendMatchContext(object):
 @login_required
 def profile(request):
     user = request.user
-    profile_ctx = ProfileContext(user.profile)
+    try:
+        profile_ctx = ProfileContext(user.profile)
+    except Profile.DoesNotExist:
+        return HttpResponseRedirect(reverse('users:update_profile'))
     if profile_ctx.profile_needs_updating:
         return HttpResponseRedirect(reverse('users:update_profile'))
 
@@ -215,27 +219,28 @@ def propose_swap(request):
 
 @login_required
 def update_profile(request):
+    needs_update = False
+    initial = {}
     if request.method == "POST":
         form = LandingPageForm(data=request.POST)
         if form.is_valid():
             form.save(request.user)
             return HttpResponseRedirect(reverse('users:profile'))
     else:
-        initial = {
-            'state': request.user.profile.state,
-            'preferred_candidate': request.user.profile.preferred_candidate,
-            'reason': request.user.profile.reason
-        }
+        try:
+            profile = request.user.profile
+        except Profile.DoesNotExist:
+            needs_update = True
+        else:
+            needs_update = ProfileContext(profile).profile_needs_updating
+            initial = {
+                'state': profile.state,
+                'preferred_candidate': profile.preferred_candidate,
+                'reason': profile.reason
+            }
         form = LandingPageForm(initial=initial)
-    profile_ctx = ProfileContext(request.user.profile)
     context = RequestContext(
-        request,
-        {
-            'form': form,
-            'profile': request.user.profile,
-            'profile_context': profile_ctx,
-        }
-    )
+        request, {'form': form, 'needs_update': needs_update})
     return render_to_response(
         'users/update_profile.html', context_instance=context)
 
