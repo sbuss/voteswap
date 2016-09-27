@@ -11,6 +11,7 @@ from django.utils.functional import cached_property
 from django.utils.text import wrap as wrap_text
 from google.appengine.api.mail import EmailMessage
 import json
+import re
 
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
@@ -170,6 +171,10 @@ def json_response(data):
     return HttpResponse(data, content_type='application/json')
 
 
+def _format_email(text):
+    return re.sub("\n\n+", "\n\n", wrap_text(text, 80))
+
+
 def _send_swap_proposal_email(user, match):
     message = EmailMessage(
         sender='noreply@voteswap.us',
@@ -178,18 +183,16 @@ def _send_swap_proposal_email(user, match):
             user=user.profile.fb_name))
     from_profile_context = ProfileContext(match.from_profile)
     to_profile_context = ProfileContext(match.to_profile)
-    message.body = wrap_text(
+    message.body = _format_email(
         render_to_string(
             'users/emails/propose_swap_email.txt',
             {'from_profile_ctx': from_profile_context,
-             'to_profile_ctx': to_profile_context}),
-        80)
-    message.html = wrap_text(
+             'to_profile_ctx': to_profile_context}))
+    message.html = _format_email(
         render_to_string(
             'users/emails/propose_swap_email.html',
             {'from_profile_ctx': from_profile_context,
-             'to_profile_ctx': to_profile_context}),
-        80)
+             'to_profile_ctx': to_profile_context}))
     message.send()
 
 
