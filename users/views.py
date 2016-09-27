@@ -258,8 +258,6 @@ def _send_reject_swap_email(user, match):
             'users/emails/reject_swap_email.html',
             {'from_profile_ctx': from_profile_context,
              'to_profile_ctx': to_profile_context}))
-    logger.debug(message.body)
-    logger.debug(message.html)
     message.send()
 
 
@@ -296,8 +294,6 @@ def _send_confirm_swap_email(user, match):
     for from_profile, to_profile in [
             (match.from_profile, match.to_profile),
             (match.to_profile, match.from_profile)]:
-        logger.info('from email: %s', from_profile.user.email)
-        logger.info('to email: %s', to_profile.user.email)
         message = EmailMessage(
             sender='noreply@voteswap.us',
             to=to_profile.user.email,
