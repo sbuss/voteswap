@@ -180,13 +180,13 @@ def _send_swap_proposal_email(user, match):
     to_profile_context = ProfileContext(match.to_profile)
     message.body = wrap_text(
         render_to_string(
-            'users/propose_swap_email.txt',
+            'users/emails/propose_swap_email.txt',
             {'from_profile_ctx': from_profile_context,
              'to_profile_ctx': to_profile_context}),
         80)
     message.html = wrap_text(
         render_to_string(
-            'users/propose_swap_email.html',
+            'users/emails/propose_swap_email.html',
             {'from_profile_ctx': from_profile_context,
              'to_profile_ctx': to_profile_context}),
         80)
