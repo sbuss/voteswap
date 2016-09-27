@@ -3,7 +3,7 @@
 
 {% block main %}
 <div class="not-fullscreen">
-  {% if profile_context.profile_needs_updating %}
+  {% if needs_update %}
   <div class="row">
     <div class="col-md-8 col-md-offset-2 alert alert-danger" role="alert">
       <p>

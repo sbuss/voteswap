@@ -4,6 +4,6 @@ python-social-auth==0.2.21
 us==0.9.1
 networkx==1.11
 django-bootstrap3==7.1.0
-requests==2.11.1
+requests==2.3
 sqlparse  # For the mysql encoding migration
 setuptools
