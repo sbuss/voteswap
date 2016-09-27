@@ -240,6 +240,29 @@ def update_profile(request):
         'users/update_profile.html', context_instance=context)
 
 
+def _send_reject_swap_email(user, match):
+    message = EmailMessage(
+        sender='noreply@voteswap.us',
+        to=match.from_profile.user.email,
+        subject="{user} rejected your vote swap".format(
+            user=user.profile.fb_name))
+    from_profile_context = ProfileContext(match.from_profile)
+    to_profile_context = ProfileContext(match.to_profile)
+    message.body = _format_email(
+        render_to_string(
+            'users/emails/reject_swap_email.txt',
+            {'from_profile_ctx': from_profile_context,
+             'to_profile_ctx': to_profile_context}))
+    message.html = _format_email(
+        render_to_string(
+            'users/emails/reject_swap_email.html',
+            {'from_profile_ctx': from_profile_context,
+             'to_profile_ctx': to_profile_context}))
+    logger.debug(message.body)
+    logger.debug(message.html)
+    message.send()
+
+
 @login_required
 @transaction.atomic
 def reject_swap(request, ref_id):
@@ -259,7 +282,8 @@ def reject_swap(request, ref_id):
         form = RejectPairProposalForm(data=data, instance=proposal)
         if form.is_valid():
             form.save()
-            return json_response({'status': 'ok', 'errors': {}})
+            _send_reject_swap_email(request.user, form.instance)
+            return HttpResponseRedirect(reverse('users:profile'))
         else:
             return json_response({'status': 'error', 'errors': form.errors})
     else:

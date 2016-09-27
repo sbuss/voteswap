@@ -1,0 +1,14 @@
+Hi, {{ from_profile_ctx.profile.fb_name }}
+
+{{ to_profile_ctx.profile.fb_name }} has rejected your request to swap votes. This probably means they found a match in a more important swing state.
+
+{% if from_profile_ctx.pending_matches %}
+You still have {{ from_profile_ctx.pending_matches|length }} pending swaps, so don't worry too much!
+{% endif %}
+{% if from_profile_ctx.good_potential_matches %}
+You have {{ from_profile_ctx.good_potential_matches|length }} good potential matches. Come back to https://voteswap.us/swap and propose swaps to more friends!
+{% else %}
+Please come back to https://voteswap.us/ and share voteswap on facebook to get more of your friends on board.
+{%endif%}
+
+Our votes matter more when we vote strategically in swing states; help us save our country from Trump.
