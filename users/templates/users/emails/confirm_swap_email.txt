@@ -1,0 +1,5 @@
+Congratulations, {{ profile_ctx.profile.fb_name }}! You are confirmed to swap your vote with {{ paired_profile_ctx.profile.fb_name }}. They're a {{ paired_profile_ctx.profile.preferred_candidate }} voter in {{ paired_profile_ctx.profile.state }}, a {{ paired_profile_ctx.state_type }}.
+
+Talk to each other before and on election day, Tuesday, November 8th. You can reply to this email to send {{ paired_profile_ctx.profile.fb_name }} an email, or you can chat on Facebook at https://facebook.com/messages/{{ paired_profile_ctx.profile.fb_id }}.
+
+We all win if we work together and stay honest. Follow through with your pledge to swap votes and let's stop Trump together!
