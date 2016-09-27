@@ -2,4 +2,6 @@ Congratulations, {{ profile_ctx.profile.fb_name }}! You are confirmed to swap yo
 
 Talk to each other before and on election day, Tuesday, November 8th. You can reply to this email to send {{ paired_profile_ctx.profile.fb_name }} an email, or you can chat on Facebook at https://facebook.com/messages/{{ paired_profile_ctx.profile.fb_id }}.
 
+We'll send you another email the night before election day to remind you who you're swapping with.
+
 We all win if we work together and stay honest. Follow through with your pledge to swap votes and let's stop Trump together!
