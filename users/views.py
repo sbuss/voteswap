@@ -6,7 +6,9 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.utils.functional import cached_property
+from google.appengine.api.mail import EmailMessage
 import json
 
 from polling.models import CANDIDATE_CLINTON
@@ -167,6 +169,25 @@ def json_response(data):
     return HttpResponse(data, content_type='application/json')
 
 
+def _send_swap_proposal_email(user, match):
+    message = EmailMessage(
+        sender='noreply@voteswap.us',
+        to=match.to_profile.user.email,
+        subject="New VoteSwap with {user}".format(
+            user=user.profile.fb_name))
+    from_profile_context = ProfileContext(match.from_profile)
+    to_profile_context = ProfileContext(match.to_profile)
+    message.body = render_to_string(
+        'users/propose_swap_email.txt',
+        {'from_profile_ctx': from_profile_context,
+         'to_profile_ctx': to_profile_context})
+    message.html = render_to_string(
+        'users/propose_swap_email.html',
+        {'from_profile_ctx': from_profile_context,
+         'to_profile_ctx': to_profile_context})
+    message.send()
+
+
 @login_required
 def propose_swap(request):
     if request.method == "POST":
@@ -174,6 +195,7 @@ def propose_swap(request):
             from_profile=request.user.profile, data=request.POST)
         if form.is_valid():
             form.save()
+            _send_swap_proposal_email(request.user, form.instance)
             return json_response({'status': 'ok', 'errors': {}})
         else:
             return json_response({'status': 'error', 'errors': form.errors})
