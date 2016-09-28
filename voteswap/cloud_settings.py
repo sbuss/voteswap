@@ -5,8 +5,13 @@ run in production it will read from Google Datastore
 
 Inspired by http://stackoverflow.com/a/35261091
 """
-
 import os
+import logging
+
+from google.appengine.ext import ndb
+
+
+logger = logging.getLogger(__name__)
 
 local = (
     False if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine')
@@ -27,6 +32,11 @@ def load_local_settings():
 local_settings = load_local_settings() if local else {}
 
 
+class DatastoreSettings(ndb.Model):
+    name = ndb.StringProperty()
+    value = ndb.StringProperty()
+
+
 class CloudSettings(object):
     is_local = local
 
@@ -36,6 +46,14 @@ class CloudSettings(object):
             if local:
                 return local_settings[var]
             else:
-                raise ValueError("Settings not defined yet: {}".format(var))
+                logger.debug("cloud settings from datastore?")
+                result = DatastoreSettings.query(
+                    DatastoreSettings.name == var).get()
+                if result:
+                    return result.value
+                else:
+                    msg = "Unconfigured setting: %s" % var
+                    logger.error(msg)
+                    raise ValueError(msg)
         except KeyError:
             raise ValueError("No setting found for {}".format(var))
