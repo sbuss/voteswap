@@ -10,4 +10,4 @@ You're a good match because you want to vote for {{ to_profile_ctx.profile.prefe
 
 Trump is an unstable, racist, xenophobic, little dictator that can't be allowed to win.
 
-Go to https://voteswap.us/users/profile to confirm or reject the swap.
+Go to https://voteswap.us{% url "swap" %} to confirm or reject the swap.
