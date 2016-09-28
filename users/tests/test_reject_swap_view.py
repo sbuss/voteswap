@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory
 from django.test import TestCase
+from mock import patch
 
 from users.views import reject_swap
 from users.models import PairProposal
@@ -8,12 +9,14 @@ from users.models import Profile
 from users.tests.factories import ProfileFactory
 from users.tests.factories import UserFactory
 
+HTTP_REDIRECT = 302
+
 
 class TestProposeSwapView(TestCase):
     def setUp(self):
         super(TestProposeSwapView, self).setUp()
         self.request = RequestFactory()
-        self.from_profile = ProfileFactory.create()
+        self.from_profile = UserFactory.create().profile
         self.to_profile = UserFactory.create().profile
         self.other_profile = ProfileFactory.create()
         self.from_profile.friends.add(self.to_profile)
@@ -21,6 +24,11 @@ class TestProposeSwapView(TestCase):
         self.proposal = PairProposal.objects.create(
             from_profile=self.from_profile,
             to_profile=self.to_profile)
+        self.email_patcher = patch('users.views.EmailMessage')
+        self.mock_email_message_class = self.email_patcher.start()
+
+    def tearDown(self):
+        self.email_patcher.stop()
 
     def test_success(self):
         reason = 'foo'
@@ -29,7 +37,10 @@ class TestProposeSwapView(TestCase):
             data={'reason_rejected': reason})
         request.user = self.to_profile.user
         response = reject_swap(request, self.proposal.ref_id)
-        self.assertEqual(response.content, '{"status": "ok", "errors": {}}')
+        self.assertEqual(response.status_code, HTTP_REDIRECT)
+        self.assertTrue(response.has_header('Location'))
+        self.assertEqual(response.get('Location'),
+                         reverse('users:profile'))
         from_profile = Profile.objects.get(id=self.from_profile.id)
         to_profile = Profile.objects.get(id=self.to_profile.id)
         self.assertFalse(from_profile.paired_with)
@@ -48,7 +59,9 @@ class TestProposeSwapView(TestCase):
             data=data)
         request.user = self.to_profile.user
         response = reject_swap(request, self.proposal.ref_id)
-        self.assertEqual(response.content, '{"status": "ok", "errors": {}}')
+        self.assertTrue(response.has_header('Location'))
+        self.assertEqual(response.get('Location'),
+                         reverse('users:profile'))
         from_profile = Profile.objects.get(id=self.from_profile.id)
         to_profile = Profile.objects.get(id=self.to_profile.id)
         self.assertFalse(from_profile.paired_with)

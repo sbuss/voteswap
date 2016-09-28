@@ -23,6 +23,7 @@ from voteswap.views import landing_page
 from voteswap.views import logout
 from voteswap.views import press
 from voteswap.views import signup
+from voteswap.views import match
 from users.views import profile
 
 
@@ -38,4 +39,6 @@ urlpatterns = [
     url('^swap/', profile, name='swap'),
     url('^signup/confirm$', confirm_signup, name='confirm_signup'),
     url('^signup/$', signup, name='signup'),
+    # TODO: Remove this and fix the tests
+    url('^match/$', match, name='match'),
 ]
