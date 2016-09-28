@@ -1,4 +1,5 @@
-PYTHONPATH=PYTHONPATH=$(PWD)/lib
+# ugh, appengine why can't I just pip install you?!
+PYTHONPATH=PYTHONPATH=$(PWD)/lib:$(shell echo $$PYTHONPATH)
 
 lib: requirements-vendor.txt
 	rm -rf $@
