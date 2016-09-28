@@ -5,6 +5,13 @@
 
 <div class="row">
 
+  {% if not user.email %}
+    <div class="col-sm-12 alert alert-danger text-center" role="alert">
+      <p>Please <a class='btn btn-primary' role='button' href="{%url "users:update_profile" %}">update your email</a>
+      so we can send you match notifications and a reminder to vote on
+      Tuesday, November 8th.</p>
+    </div>
+  {% endif %}
   {% if profile.paired_with %}
     <div class="col-md-9 pull-right">
       <h1>You're paired</h1>
