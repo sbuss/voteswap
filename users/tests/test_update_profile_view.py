@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory
 from django.test import TestCase
@@ -32,13 +33,16 @@ class TestProfileView(TestCase):
         self.assertContains(response, self.user.profile.state)
         self.assertContains(response, self.user.profile.preferred_candidate)
         self.assertContains(response, self.user.profile.reason)
+        self.assertContains(response, self.user.email)
 
     def test_update(self):
         new_state = StateFactory.create()
         new_reason = "I want to get off of Mr. Trump's wild ride"
+        new_email = 'foobar@example.com'
         data = {'preferred_candidate': self.user.profile.preferred_candidate,
                 'state': new_state.name,
-                'reason': new_reason}
+                'reason': new_reason,
+                'email': new_email}
         request = self.request.post(reverse('users:update_profile'), data=data)
         request.user = self.user
         response = update_profile(request)
@@ -48,3 +52,19 @@ class TestProfileView(TestCase):
         profile = Profile.objects.get(id=self.user.profile.id)
         self.assertEqual(profile.state, new_state.name)
         self.assertEqual(profile.reason, new_reason)
+        user = User.objects.get(id=self.user.id)
+        self.assertEqual(user.email, new_email)
+
+    def test_email_required(self):
+        new_state = StateFactory.create()
+        new_reason = "Why do you need my email, anyway?"
+        data = {'preferred_candidate': self.user.profile.preferred_candidate,
+                'state': new_state.name,
+                'reason': new_reason,
+                'email': ''}
+        request = self.request.post(reverse('users:update_profile'), data=data)
+        request.user = self.user
+        response = update_profile(request)
+        self.assertEqual(response.status_code, HTTP_OK)
+        self.assertContains(response, "error")
+        self.assertContains(response, "This field is required")

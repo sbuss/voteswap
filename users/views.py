@@ -19,10 +19,10 @@ from polling.models import State
 from users.forms import ConfirmPairProposalForm
 from users.forms import PairProposalForm
 from users.forms import RejectPairProposalForm
+from users.forms import UpdateProfileForm
 from users.models import PairProposal
 from users.models import Profile
 from voteswap.match import get_friend_matches
-from voteswap.forms import LandingPageForm
 
 
 class ProfileContext(object):
@@ -161,6 +161,7 @@ def profile(request):
     context = RequestContext(
         request,
         {
+            'user': request.user,
             'profile': user.profile,
             'profile_context': profile_ctx,
         }
@@ -222,7 +223,7 @@ def update_profile(request):
     needs_update = False
     initial = {}
     if request.method == "POST":
-        form = LandingPageForm(data=request.POST)
+        form = UpdateProfileForm(data=request.POST)
         if form.is_valid():
             form.save(request.user)
             return HttpResponseRedirect(reverse('users:profile'))
@@ -236,9 +237,10 @@ def update_profile(request):
             initial = {
                 'state': profile.state,
                 'preferred_candidate': profile.preferred_candidate,
-                'reason': profile.reason
+                'reason': profile.reason,
+                'email': request.user.email,
             }
-        form = LandingPageForm(initial=initial)
+        form = UpdateProfileForm(initial=initial)
     context = RequestContext(
         request, {'form': form, 'needs_update': needs_update})
     return render_to_response(

@@ -3,6 +3,7 @@ from django.http.request import QueryDict
 from django.utils import timezone
 from users.models import PairProposal
 from users.models import Profile
+from voteswap.forms import LandingPageForm
 
 
 class PairProposalForm(forms.ModelForm):
@@ -57,3 +58,16 @@ class RejectPairProposalForm(forms.ModelForm):
     def save(self):
         self.instance.date_rejected = timezone.now()
         super(RejectPairProposalForm, self).save()
+
+
+class UpdateProfileForm(LandingPageForm):
+    email = forms.EmailField(
+        required=True, label="Email",
+        help_text=("We need your email to notify you when you are paired to "
+                   "swap your vote"))
+
+    def save(self, user):
+        super(UpdateProfileForm, self).save(user)
+        user.email = self.cleaned_data['email']
+        user.save()
+        return user.profile
