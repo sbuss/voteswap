@@ -181,9 +181,9 @@ def _format_email(text):
 
 def _send_swap_proposal_email(user, match):
     message = EmailMessage(
-        sender='noreply@voteswap.us',
+        sender=u'noreply@voteswap.us',
         to=match.to_profile.user.email,
-        subject="New VoteSwap with {user}".format(
+        subject=u"New VoteSwap with {user}".format(
             user=user.profile.fb_name))
     from_profile_context = ProfileContext(match.from_profile)
     to_profile_context = ProfileContext(match.to_profile)
@@ -247,9 +247,9 @@ def update_profile(request):
 
 def _send_reject_swap_email(user, match):
     message = EmailMessage(
-        sender='noreply@voteswap.us',
+        sender=u'noreply@voteswap.us',
         to=match.from_profile.user.email,
-        subject="{user} rejected your vote swap".format(
+        subject=u"{user} rejected your VoteSwap".format(
             user=user.profile.fb_name))
     from_profile_context = ProfileContext(match.from_profile)
     to_profile_context = ProfileContext(match.to_profile)
@@ -300,10 +300,10 @@ def _send_confirm_swap_email(user, match):
             (match.from_profile, match.to_profile),
             (match.to_profile, match.from_profile)]:
         message = EmailMessage(
-            sender='noreply@voteswap.us',
+            sender=u'noreply@voteswap.us',
             to=to_profile.user.email,
             reply_to=from_profile.user.email,
-            subject="Your vote swap with {user} is confirmed!".format(
+            subject=u"Your VoteSwap with {user} is confirmed!".format(
                 user=from_profile.fb_name))
         profile_context = ProfileContext(from_profile)
         paired_profile_context = ProfileContext(to_profile)

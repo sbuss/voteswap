@@ -6,9 +6,11 @@ Hi, {{ from_profile_ctx.profile.fb_name }}
 You still have {{ from_profile_ctx.pending_matches|length }} pending swaps, so don't worry too much!
 {% endif %}
 {% if from_profile_ctx.good_potential_matches %}
-You have {{ from_profile_ctx.good_potential_matches|length }} good potential matches. Come back to https://voteswap.us/swap and propose swaps to more friends!
+{% with num_matches=from_profile_ctx.good_potential_matches|length %}
+You have {{ num_matches }} good potential match{{ num_matches|pluralize:"es" }}. Come back to https://voteswap.us{% url "swap" %} and propose swaps to more friends!
+{% endwith %}
 {% else %}
-Please come back to https://voteswap.us/ and share voteswap on facebook to get more of your friends on board.
+Please come back to https://voteswap.us{% url "swap" %} and share voteswap on facebook to get more of your friends on board.
 {%endif%}
 
 Our votes matter more when we vote strategically in swing states; help us save our country from Trump.
