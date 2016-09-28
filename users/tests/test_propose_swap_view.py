@@ -2,7 +2,9 @@ from django.core.urlresolvers import reverse
 from django.test import RequestFactory
 from django.test import TestCase
 import json
+from mock import patch
 
+from polling.tests.factories import StateFactory
 from users.models import PairProposal
 from users.tests.factories import UserFactory
 from users.views import propose_swap
@@ -14,10 +16,17 @@ class TestProposeSwapView(TestCase):
     def setUp(self):
         super(TestProposeSwapView, self).setUp()
         self.request = RequestFactory()
+        self.email_patcher = patch('users.views.EmailMessage')
+        self.mock_email_message_class = self.email_patcher.start()
+
+    def tearDown(self):
+        self.email_patcher.stop()
 
     def test_success(self):
-        user = UserFactory.create()
-        match = UserFactory.create()
+        user_state = StateFactory.create(tipping_point_rank=1)
+        user = UserFactory.create(profile__state=user_state.name)
+        match_state = StateFactory.create(safe_rank=1)
+        match = UserFactory.create(profile__state=match_state.name)
         user.profile.friends.add(match.profile)
         request = self.request.post(
             reverse('users:propose_swap'),
