@@ -100,10 +100,15 @@ def confirm_signup(request):
 
     try:
         if request.user.profile.fb_id:
+            try:
+                del request.session['landing_page_form']
+            except KeyError:
+                pass
             # Skip sign up, they probably clicked "Join" on accident
             return HttpResponseRedirect(reverse('users:profile'))
     except:
         pass
+
     form = LandingPageForm(data=data)
     try:
         if form.is_valid():
@@ -112,6 +117,11 @@ def confirm_signup(request):
             return HttpResponseRedirect(reverse('users:profile'))
     except Exception as e:
         return HttpResponseServerError("Signup failed: %s" % e)
+    finally:
+        try:
+            del request.session['landing_page_form']
+        except KeyError:
+            pass
     return HttpResponseServerError("Unknown server error")
 
 
