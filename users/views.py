@@ -6,8 +6,12 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.utils.functional import cached_property
+from django.utils.text import wrap as wrap_text
+from google.appengine.api.mail import EmailMessage
 import json
+import re
 
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
@@ -171,6 +175,31 @@ def json_response(data):
     return HttpResponse(data, content_type='application/json')
 
 
+def _format_email(text):
+    return re.sub("\n\n+", "\n\n", wrap_text(text, 80))
+
+
+def _send_swap_proposal_email(user, match):
+    message = EmailMessage(
+        sender=u'noreply@voteswap.us',
+        to=match.to_profile.user.email,
+        subject=u"New VoteSwap with {user}".format(
+            user=user.profile.fb_name))
+    from_profile_context = ProfileContext(match.from_profile)
+    to_profile_context = ProfileContext(match.to_profile)
+    message.body = _format_email(
+        render_to_string(
+            'users/emails/propose_swap_email.txt',
+            {'from_profile_ctx': from_profile_context,
+             'to_profile_ctx': to_profile_context}))
+    message.html = _format_email(
+        render_to_string(
+            'users/emails/propose_swap_email.html',
+            {'from_profile_ctx': from_profile_context,
+             'to_profile_ctx': to_profile_context}))
+    message.send()
+
+
 @login_required
 def propose_swap(request):
     if request.method == "POST":
@@ -178,6 +207,7 @@ def propose_swap(request):
             from_profile=request.user.profile, data=request.POST)
         if form.is_valid():
             form.save()
+            _send_swap_proposal_email(request.user, form.instance)
             return json_response({'status': 'ok', 'errors': {}})
         else:
             return json_response({'status': 'error', 'errors': form.errors})
@@ -215,6 +245,27 @@ def update_profile(request):
         'users/update_profile.html', context_instance=context)
 
 
+def _send_reject_swap_email(user, match):
+    message = EmailMessage(
+        sender=u'noreply@voteswap.us',
+        to=match.from_profile.user.email,
+        subject=u"{user} rejected your VoteSwap".format(
+            user=user.profile.fb_name))
+    from_profile_context = ProfileContext(match.from_profile)
+    to_profile_context = ProfileContext(match.to_profile)
+    message.body = _format_email(
+        render_to_string(
+            'users/emails/reject_swap_email.txt',
+            {'from_profile_ctx': from_profile_context,
+             'to_profile_ctx': to_profile_context}))
+    message.html = _format_email(
+        render_to_string(
+            'users/emails/reject_swap_email.html',
+            {'from_profile_ctx': from_profile_context,
+             'to_profile_ctx': to_profile_context}))
+    message.send()
+
+
 @login_required
 @transaction.atomic
 def reject_swap(request, ref_id):
@@ -234,13 +285,39 @@ def reject_swap(request, ref_id):
         form = RejectPairProposalForm(data=data, instance=proposal)
         if form.is_valid():
             form.save()
-            return json_response({'status': 'ok', 'errors': {}})
+            _send_reject_swap_email(request.user, form.instance)
+            return HttpResponseRedirect(reverse('users:profile'))
         else:
             return json_response({'status': 'error', 'errors': form.errors})
     else:
         return json_response(
             {'status': 'error',
              'errors': {'method': 'Must POST with to_profile set'}})
+
+
+def _send_confirm_swap_email(user, match):
+    for from_profile, to_profile in [
+            (match.from_profile, match.to_profile),
+            (match.to_profile, match.from_profile)]:
+        message = EmailMessage(
+            sender=u'noreply@voteswap.us',
+            to=to_profile.user.email,
+            reply_to=from_profile.user.email,
+            subject=u"Your VoteSwap with {user} is confirmed!".format(
+                user=from_profile.fb_name))
+        profile_context = ProfileContext(from_profile)
+        paired_profile_context = ProfileContext(to_profile)
+        message.body = _format_email(
+            render_to_string(
+                'users/emails/confirm_swap_email.txt',
+                {'profile_ctx': profile_context,
+                 'paired_profile_ctx': paired_profile_context}))
+        message.html = _format_email(
+            render_to_string(
+                'users/emails/confirm_swap_email.html',
+                {'profile_ctx': profile_context,
+                 'paired_profile_ctx': paired_profile_context}))
+        message.send()
 
 
 @login_required
@@ -263,7 +340,8 @@ def confirm_swap(request, ref_id):
         form = ConfirmPairProposalForm(data=data, instance=proposal)
         if form.is_valid():
             form.save()
-            return json_response({'status': 'ok', 'errors': {}})
+            _send_confirm_swap_email(request.user, form.instance)
+            return HttpResponseRedirect(reverse('users:profile'))
         else:
             return json_response({'status': 'error', 'errors': form.errors})
     else:
