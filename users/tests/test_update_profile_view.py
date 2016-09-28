@@ -33,7 +33,7 @@ class TestProfileView(TestCase):
         self.assertContains(response, self.user.profile.preferred_candidate)
         self.assertContains(response, self.user.profile.reason)
 
-    def test_udpate(self):
+    def test_update(self):
         new_state = StateFactory.create()
         new_reason = "I want to get off of Mr. Trump's wild ride"
         data = {'preferred_candidate': self.user.profile.preferred_candidate,
