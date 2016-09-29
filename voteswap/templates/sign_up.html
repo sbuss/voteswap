@@ -6,11 +6,13 @@
   <div class="row">
     <div class="col-md-6 join-now col-md-offset-3">
       <h1>Sign up to swap your vote</h1>
-      <form class="form" method="POST" action="{% url "signup" %}">
+      <form class="form" method="POST" action="{% url "landing_page" %}">
         {% csrf_token %}
         {% bootstrap_form form size='large' %}
         {% buttons %}
-          <button type="submit" class="btn btn-primary join-now">Join with Facebook</button>
+          <button type="submit" class="btn btn-primary btn-social btn-facebook btn-lg">
+            <span class="fa fa-facebook"></span> Join with Facebook
+          </button>
         {% endbuttons %}
       </form>
     </div>
