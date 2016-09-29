@@ -116,6 +116,11 @@ class Profile(models.Model):
 
     paired_with = property(get_pair, set_pair)
 
+    def _is_paired(self):
+        return self.paired_with is not None
+    _is_paired.boolean = True
+    is_paired = property(_is_paired)
+
     def __repr__(self):
         return "<Profile: user:{user}, state:{state}, cand:{candidate}, pair:{pair}>".format(  # NOQA
                 user=self.user,
