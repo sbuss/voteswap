@@ -39,7 +39,7 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 
 LOGIN_REDIRECT_URL = '/'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['voteswap.us']
 
 ROOT_DIR = os.path.join(os.path.dirname(__file__), '..')
 APPS_DIR = os.path.join(ROOT_DIR, 'voteswap')
