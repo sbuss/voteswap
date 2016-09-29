@@ -114,7 +114,6 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
     DATABASES = {
         'default': {
             'ENGINE': CloudSettings.get('database_engine'),
-            'OPTIONS': {'charset': 'utf8mb4'},
             'HOST': CloudSettings.get('database_host'),
             'NAME': CloudSettings.get('database_name'),
             'USER': CloudSettings.get('database_user'),
