@@ -32,7 +32,7 @@ def load_local_settings():
 local_settings = load_local_settings() if local else {}
 
 
-class DatastoreSettings(ndb.Model):
+class Setting(ndb.Model):
     name = ndb.StringProperty()
     value = ndb.StringProperty()
 
@@ -47,8 +47,9 @@ class CloudSettings(object):
                 return local_settings[var]
             else:
                 logger.debug("cloud settings from datastore?")
-                result = DatastoreSettings.query(
-                    DatastoreSettings.name == var).get()
+                result = Setting.query(
+                    Setting.name == var).get()
+                logger.debug(str(result))
                 if result:
                     return result.value
                 else:
