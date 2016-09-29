@@ -109,17 +109,29 @@ WSGI_APPLICATION = 'voteswap.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': CloudSettings.get('database_engine'),
-        'OPTIONS': {'charset': 'utf8mb4'},
-        'HOST': CloudSettings.get('database_host'),
-        'PORT': CloudSettings.get('database_port'),
-        'NAME': CloudSettings.get('database_name'),
-        'USER': CloudSettings.get('database_user'),
-        'PASSWORD': CloudSettings.get('database_password'),
+if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
+    # Running on production App Engine, so use a Google Cloud SQL database.
+    DATABASES = {
+        'default': {
+            'ENGINE': CloudSettings.get('database_engine'),
+            'OPTIONS': {'charset': 'utf8mb4'},
+            'HOST': CloudSettings.get('database_host'),
+            'NAME': CloudSettings.get('database_name'),
+            'USER': CloudSettings.get('database_user'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': CloudSettings.get('database_engine'),
+            'OPTIONS': {'charset': 'utf8mb4'},
+            'HOST': CloudSettings.get('database_host'),
+            'PORT': CloudSettings.get('database_port'),
+            'NAME': CloudSettings.get('database_name'),
+            'USER': CloudSettings.get('database_user'),
+            'PASSWORD': CloudSettings.get('database_password'),
+        }
+    }
 
 LOGGING = {
     'version': 1,
