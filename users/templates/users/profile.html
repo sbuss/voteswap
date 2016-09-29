@@ -16,6 +16,27 @@
     <div class="col-md-9 pull-right">
       <h1>You're paired</h1>
       {% include "users/_paired_profile.html" %}
+      <div class="row no-gutter">
+        <div class="col-sm-12 col-lg-6 match">
+          <h2 class="clearfix">Help grow VoteSwap!</h2>
+          <p>
+            Please help grow VoteSwap! Users are only matched with friends and
+            friends-of-friends, so even though you're matched, you can still
+            be a connecting point between hundreds of people.
+            {% with num_friends=profile.friends.count %}
+            {% if not num_friends %}
+              Sadly, *none* of your friends have joined VoteSwap.
+            {% else %}
+              Only {{ num_friends }} of your friends have joined VoteSwap.
+            {% endif %}
+            Get more friends on VoteSwap by sharing us on Facebook.<br />
+            <a class="fb-feed-btn btn btn-primary btn-social btn-facebook">
+              <span class="fa fa-facebook"></span> Share on facebook
+            </a>
+            {% endwith %}
+          </p>
+        </div>
+      </div>
     </div>
     <div class="profile-sidebar col-md-3 pull-left">
       {% include "users/_sidebar.html" %}
@@ -27,18 +48,49 @@
     <div class="col-md-9">
     {% if profile.preferred_candidate and profile.state %}
     {% if profile_context.needs_match %}
-      {% if profile_context.pending_matches %}
-      <div class="row no-gutter">
-      <h1 class="clearfix">Pending swaps</h1>
-      {% include "users/_pending_swaps.html" %}
-      </div>
-      {% endif %}
+      {% if profile_context.pending_matches or profile_context.good_potential_matches %}
+        {% if profile_context.pending_matches %}
+        <div class="row no-gutter">
+        <h1 class="clearfix">Pending swaps</h1>
+        {% include "users/_pending_swaps.html" %}
+        </div>
+        {% endif %}
 
-      {% if profile_context.good_potential_matches %}
-      <div class="row no-gutter">
-      <h1 class="clearfix">Potential swaps</h1>
-      {% include "users/_potential_swaps.html" %}
-      </div>
+        {% if profile_context.good_potential_matches %}
+        <div class="row no-gutter">
+        <h1 class="clearfix">Potential swaps</h1>
+        {% include "users/_potential_swaps.html" %}
+        </div>
+        {% endif %}
+
+        <div class="row no-gutter">
+          {% if profile_context.pending_matches %}
+          <h1 class="clearfix">No more suitable matches</h1>
+          {% else %}
+          <h1 class="clearfix">No suitable matches</h1>
+          {% endif %}
+
+          <div class="col-sm-12 col-lg-6 match">
+            <p>
+              VoteSwap can only connect you to your facebook friends and
+              friends-of-friends, but not enough of your friends have signed up
+              for us to find a good match for you.
+            </p>
+            <p>
+              {% with num_friends=profile.friends.count %}
+              {% if not num_friends %}
+                Sadly, *none* of your friends have joined VoteSwap.
+              {% else %}
+                Only {{ num_friends }} of your friends have joined VoteSwap.
+              {% endif %}
+              Please help grow VoteSwap by sharing this site on Facebook.<br />
+              <a class="fb-feed-btn btn btn-primary btn-social btn-facebook">
+                <span class="fa fa-facebook"></span> Share on facebook
+              </a>
+              {% endwith %}
+            </p>
+          </div>
+        </div>
       {% endif %}
     {% endif %}
     {% endif %}
