@@ -16,12 +16,12 @@
 }
 
 .not-fullscreen {
-  max-width: 1440px;
+  /*max-width: 1440px;*/
   margin: 0 auto;
 }
 
 .landing-page__header-image {
-  background: #738ace url(/static/clinton.jpg) center top no-repeat;
+  background: #738ace url(/static/clinton-wide.jpg) center top no-repeat;
   padding: 0;
   margin: 0 auto;
   -webkit-background-size: cover;
@@ -30,7 +30,7 @@
   background-size: cover;
   height: 70vw;
   max-height: 600px;
-  max-width: 1440px;
+  /*max-width: 1440px;*/
   /*max-width: 1158px;*/
   border-radius: 0px;
 }
