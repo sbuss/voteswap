@@ -17,7 +17,7 @@
       <h1>You're paired</h1>
       {% include "users/_paired_profile.html" %}
       <div class="row no-gutter">
-        <div class="col-sm-12 col-lg-6 match">
+        <div class="col-sm-12 col-lg-6 match" id='calltoaction-paired'>
           <h2 class="clearfix">Help grow VoteSwap!</h2>
           <p>
             Please help grow VoteSwap! Users are only matched with friends and
@@ -72,7 +72,7 @@
         <h1 class="clearfix">No suitable matches</h1>
         {% endif %}
 
-        <div class="col-sm-12 col-lg-6 match">
+        <div class="col-sm-12 col-lg-6 match" id='calltoaction-unpaired'>
           <p>
             VoteSwap can only connect you to your facebook friends and
             friends-of-friends, but not enough of your friends have signed up
