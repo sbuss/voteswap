@@ -30,8 +30,11 @@ class SocialAuthFactory(factory.DjangoModelFactory):
 
     @factory.post_generation
     def _set_fb_id(self, create, extracted, **kwargs):
-        self.user.profile.fb_id = self.uid
-        self.user.profile.save()
+        try:
+            self.user.profile.fb_id = self.uid
+            self.user.profile.save()
+        except:
+            pass
 
 
 def _lazy_uid(profile):
