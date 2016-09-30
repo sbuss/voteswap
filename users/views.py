@@ -15,6 +15,7 @@ import re
 
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
+from polling.models import CANDIDATE_STEIN
 from polling.models import State
 from users.forms import ConfirmPairProposalForm
 from users.forms import PairProposalForm
@@ -23,6 +24,8 @@ from users.forms import UpdateProfileForm
 from users.models import PairProposal
 from users.models import Profile
 from voteswap.match import get_friend_matches
+
+CANDIDATES_THIRD = [CANDIDATE_JOHNSON, CANDIDATE_STEIN]
 
 
 class ProfileContext(object):
@@ -43,18 +46,18 @@ class ProfileContext(object):
     @property
     def paired_candidate(self):
         if self.profile.preferred_candidate == CANDIDATE_CLINTON:
-            return CANDIDATE_JOHNSON
+            return "%s or %s" % CANDIDATES_THIRD
         else:
             return CANDIDATE_CLINTON
 
     @property
-    def johnson(self):
-        return self.profile.preferred_candidate == CANDIDATE_JOHNSON
+    def third_party(self):
+        return self.profile.preferred_candidate in CANDIDATES_THIRD
 
     @property
     def needs_match(self):
         if self.state.is_swing or self.state.leans:
-            return self.profile.preferred_candidate == CANDIDATE_JOHNSON
+            return self.profile.preferred_candidate in CANDIDATES_THIRD
         elif not self.state.is_swing:
             return self.profile.preferred_candidate == CANDIDATE_CLINTON
         return True
@@ -76,7 +79,7 @@ class ProfileContext(object):
     @property
     def kingmaker(self):
         return ((self.state.is_swing or self.state.leans) and
-                self.profile.preferred_candidate == CANDIDATE_JOHNSON)
+                self.profile.preferred_candidate in CANDIDATES_THIRD)
 
     def has_proposed_to_friend(self, friend):
         return friend.id in self.pair_proposal_friend_ids

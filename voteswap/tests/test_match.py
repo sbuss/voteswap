@@ -3,6 +3,7 @@ from django.utils import timezone
 
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
+from polling.models import CANDIDATE_STEIN
 from polling.models import CANDIDATE_TRUMP
 from polling.models import State
 from polling.tests.factories import StateFactory
@@ -46,7 +47,7 @@ class _TestSafeStateMatchBase(TestCase):
         swing_state_2 = StateFactory.create(tipping_point_rank=2)
         swing_user_2 = UserFactory.create(
             profile__state=swing_state_2.name,
-            profile__preferred_candidate=CANDIDATE_JOHNSON)
+            profile__preferred_candidate=CANDIDATE_STEIN)
         self.user.profile.friends.add(swing_user_2.profile)
         swing_state_3 = StateFactory.create(tipping_point_rank=3)
         swing_user_3 = UserFactory.create(
@@ -143,7 +144,7 @@ class _TestSwingStateMatchBase(TestCase):
         swing_state_2 = StateFactory.create(tipping_point_rank=3)
         swing_user_2 = UserFactory.create(
             profile__state=swing_state_2.name,
-            profile__preferred_candidate=CANDIDATE_JOHNSON)
+            profile__preferred_candidate=CANDIDATE_STEIN)
         self.user.profile.friends.add(swing_user_2.profile)
         swing_state_3 = StateFactory.create(tipping_point_rank=4)
         swing_user_3 = UserFactory.create(
@@ -223,7 +224,7 @@ class _TestSafeStateFriendsOfFriendsMatchBase(TestCase):
                     tipping_point_rank=tipping_point_rank)
                 foaf = UserFactory.create(
                     profile__state=state.name,
-                    profile__preferred_candidate=CANDIDATE_JOHNSON)
+                    profile__preferred_candidate=CANDIDATE_STEIN)
                 tipping_point_rank += 1
                 friend_profile.friends.add(foaf.profile)
                 self.foaf_expected_matches.append(foaf.profile)
@@ -294,7 +295,7 @@ class TestExclude(TestCase):
             tipping_point_rank=1)
         self.friend = UserFactory.create(
             profile__state=self.state_swing.name,
-            profile__preferred_candidate=CANDIDATE_JOHNSON)
+            profile__preferred_candidate=CANDIDATE_STEIN)
         self.user.profile.friends.add(self.friend.profile)
         self.foaf = UserFactory.create(
             profile__state=self.state_swing.name,

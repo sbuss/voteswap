@@ -3,6 +3,7 @@ from django.test import RequestFactory
 from django.test import TestCase
 
 from polling.models import CANDIDATE_CLINTON
+from polling.models import CANDIDATE_STEIN
 from polling.tests.factories import StateFactory
 from users.tests.factories import UserFactory
 from users.views import profile
@@ -17,7 +18,9 @@ class TestProfileView(TestCase):
         self.safe_state = StateFactory.create(
             safe_rank=1, safe_for=CANDIDATE_CLINTON)
         self.request = RequestFactory()
-        self.user = UserFactory.create(profile__state=self.safe_state.name)
+        self.user = UserFactory.create(
+            profile__preferred_candidate=CANDIDATE_CLINTON,
+            profile__state=self.safe_state.name)
 
     def test_nav(self):
         """Login-aware context menu has the right links"""
@@ -82,6 +85,8 @@ class TestProfileView(TestCase):
     def test_some_matches_call_to_action(self):
         friend_state = StateFactory(tipping_point_rank=1)
         friend = UserFactory.create(profile__state=friend_state.name)
+        friend.profile.preferred_candidate = CANDIDATE_STEIN
+        friend.profile.save()
         self.user.profile.friends.add(friend.profile)
         request = self.request.get(reverse('users:profile'))
         request.user = self.user
