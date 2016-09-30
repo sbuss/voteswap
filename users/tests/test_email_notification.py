@@ -11,6 +11,7 @@ from users.views import _send_confirm_swap_email
 from users.tests.factories import UserFactory
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
+from polling.models import CANDIDATE_STEIN
 from polling.tests.factories import StateFactory
 
 
@@ -78,10 +79,25 @@ class TestEmailBase(TestCase):
         _send_swap_proposal_email(self.from_user, self.proposal)
         [email_message] = self.mock_email_messages
         self.assertIn(
-            "Voting for Gary Johnson in %s" % self.from_user.profile.state,
+            "Voting for Johnson in %s" % self.from_user.profile.state,
             email_message.body)
         self.assertIn(
-            "Voting for Gary Johnson in %s" % self.from_user.profile.state,
+            "Voting for Johnson in %s" % self.from_user.profile.state,
+            email_message.html)
+
+    def test_proposal_email_kingmaker_stein(self):
+        # Same as above, but with stein
+        self.proposal.from_profile = self.to_user.profile
+        self.proposal.to_profile = self.from_user.profile
+        self.proposal.to_profile.preferred_candidate = CANDIDATE_STEIN
+        self.proposal.to_profile.save()
+        _send_swap_proposal_email(self.from_user, self.proposal)
+        [email_message] = self.mock_email_messages
+        self.assertIn(
+            "Voting for Stein in %s" % self.from_user.profile.state,
+            email_message.body)
+        self.assertIn(
+            "Voting for Stein in %s" % self.from_user.profile.state,
             email_message.html)
 
     def test_reject_email(self):

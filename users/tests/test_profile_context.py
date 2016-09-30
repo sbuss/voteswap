@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
+from polling.models import CANDIDATE_STEIN
 from polling.models import CANDIDATE_TRUMP
 from polling.tests.factories import StateFactory
 from users.models import PairProposal
@@ -90,7 +91,7 @@ class TestProfileContextStates(TestCase):
         ctx = ProfileContext(user.profile)
         self.assertTrue(ctx.needs_match)
         self.assertFalse(ctx.kingmaker)
-        self.assertFalse(ctx.johnson)
+        self.assertFalse(ctx.third_party)
 
     def test_clinton_in_leans_clinton(self):
         user = UserFactory(
@@ -99,7 +100,7 @@ class TestProfileContextStates(TestCase):
         ctx = ProfileContext(user.profile)
         self.assertFalse(ctx.needs_match)
         self.assertFalse(ctx.kingmaker)
-        self.assertFalse(ctx.johnson)
+        self.assertFalse(ctx.third_party)
 
     def test_clinton_in_leans_trump(self):
         user = UserFactory(
@@ -108,7 +109,7 @@ class TestProfileContextStates(TestCase):
         ctx = ProfileContext(user.profile)
         self.assertFalse(ctx.needs_match)
         self.assertFalse(ctx.kingmaker)
-        self.assertFalse(ctx.johnson)
+        self.assertFalse(ctx.third_party)
 
     def test_clinton_in_safe_trump(self):
         user = UserFactory(
@@ -117,7 +118,7 @@ class TestProfileContextStates(TestCase):
         ctx = ProfileContext(user.profile)
         self.assertTrue(ctx.needs_match)
         self.assertFalse(ctx.kingmaker)
-        self.assertFalse(ctx.johnson)
+        self.assertFalse(ctx.third_party)
 
     def test_johnson_in_safe_clinton(self):
         user = UserFactory(
@@ -126,7 +127,7 @@ class TestProfileContextStates(TestCase):
         ctx = ProfileContext(user.profile)
         self.assertFalse(ctx.needs_match)
         self.assertFalse(ctx.kingmaker)
-        self.assertTrue(ctx.johnson)
+        self.assertTrue(ctx.third_party)
 
     def test_johnson_in_leans_clinton(self):
         user = UserFactory(
@@ -135,7 +136,7 @@ class TestProfileContextStates(TestCase):
         ctx = ProfileContext(user.profile)
         self.assertTrue(ctx.needs_match)
         self.assertTrue(ctx.kingmaker)
-        self.assertTrue(ctx.johnson)
+        self.assertTrue(ctx.third_party)
 
     def test_johnson_in_leans_trump(self):
         user = UserFactory(
@@ -144,7 +145,7 @@ class TestProfileContextStates(TestCase):
         ctx = ProfileContext(user.profile)
         self.assertTrue(ctx.needs_match)
         self.assertTrue(ctx.kingmaker)
-        self.assertTrue(ctx.johnson)
+        self.assertTrue(ctx.third_party)
 
     def test_johnson_in_safe_trump(self):
         user = UserFactory(
@@ -153,4 +154,40 @@ class TestProfileContextStates(TestCase):
         ctx = ProfileContext(user.profile)
         self.assertFalse(ctx.needs_match)
         self.assertFalse(ctx.kingmaker)
-        self.assertTrue(ctx.johnson)
+        self.assertTrue(ctx.third_party)
+
+    def test_stein_in_safe_clinton(self):
+        user = UserFactory(
+            profile__preferred_candidate=CANDIDATE_STEIN,
+            profile__state=self.safe_clinton.name)
+        ctx = ProfileContext(user.profile)
+        self.assertFalse(ctx.needs_match)
+        self.assertFalse(ctx.kingmaker)
+        self.assertTrue(ctx.third_party)
+
+    def test_stein_in_leans_clinton(self):
+        user = UserFactory(
+            profile__preferred_candidate=CANDIDATE_STEIN,
+            profile__state=self.lean_clinton.name)
+        ctx = ProfileContext(user.profile)
+        self.assertTrue(ctx.needs_match)
+        self.assertTrue(ctx.kingmaker)
+        self.assertTrue(ctx.third_party)
+
+    def test_stein_in_leans_trump(self):
+        user = UserFactory(
+            profile__preferred_candidate=CANDIDATE_STEIN,
+            profile__state=self.lean_trump.name)
+        ctx = ProfileContext(user.profile)
+        self.assertTrue(ctx.needs_match)
+        self.assertTrue(ctx.kingmaker)
+        self.assertTrue(ctx.third_party)
+
+    def test_stein_in_safe_trump(self):
+        user = UserFactory(
+            profile__preferred_candidate=CANDIDATE_STEIN,
+            profile__state=self.safe_trump.name)
+        ctx = ProfileContext(user.profile)
+        self.assertFalse(ctx.needs_match)
+        self.assertFalse(ctx.kingmaker)
+        self.assertTrue(ctx.third_party)

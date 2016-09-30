@@ -6,6 +6,7 @@ from users.tests.factories import ProfileFactory
 from users.tests.factories import UserFactory
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
+from polling.models import CANDIDATE_STEIN
 from polling.tests.factories import StateFactory
 from voteswap.forms import LandingPageForm
 
@@ -33,6 +34,23 @@ class TestLandingPageForm(TestCase):
         form = LandingPageForm(
             data=self._data(preferred_candidate=CANDIDATE_CLINTON))
         self.assertTrue(form.is_valid())
+
+    def _test_valid(self, candidate):
+        user = UserFactory.create(profile=None)
+        data = self._data(preferred_candidate=candidate)
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
+        self.assertEqual(user.profile.preferred_candidate, candidate)
+
+    def test_valid_clinton(self):
+        self._test_valid(CANDIDATE_CLINTON)
+
+    def test_valid_johnson(self):
+        self._test_valid(CANDIDATE_JOHNSON)
+
+    def test_valid_stein(self):
+        self._test_valid(CANDIDATE_STEIN)
 
     def test_save_no_profile(self):
         """Ensure saving the form creates a profile for a user."""

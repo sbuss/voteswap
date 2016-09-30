@@ -3,10 +3,18 @@ from django.db.models import Q
 from polling.models import State
 from polling.models import CANDIDATE_CLINTON
 from polling.models import CANDIDATE_JOHNSON
+from polling.models import CANDIDATE_STEIN
 from polling.models import CANDIDATE_NONE
 from polling.models import CANDIDATES_MAIN
 from polling.models import CANDIDATES_THIRD_PARTY
 from users.models import PairProposal
+
+
+COMPATIBLE_CANDIDATES = {
+    CANDIDATE_JOHNSON: [CANDIDATE_CLINTON],
+    CANDIDATE_STEIN: [CANDIDATE_CLINTON],
+    CANDIDATE_CLINTON: [CANDIDATE_JOHNSON, CANDIDATE_STEIN],
+}
 
 
 class FriendMatch(object):
@@ -47,10 +55,6 @@ def _matches_for_swing_state_profile(
         profile, direct=True, foaf=True, exclude_pending=True):
     """Find the suitable matches for a swing state profile"""
     found_friends = set()
-    compatible_candidate = (
-        CANDIDATE_CLINTON
-        if profile.preferred_candidate == CANDIDATE_JOHNSON
-        else CANDIDATE_JOHNSON)
 
     def _get_friends(for_profile):
         through = None if profile == for_profile else for_profile
@@ -58,7 +62,7 @@ def _matches_for_swing_state_profile(
         for matched_profile in for_profile.friends.unpaired().exclude(
                 id=profile.id).filter(
                     state__in=potential_states,
-                    preferred_candidate=compatible_candidate):
+                    preferred_candidate__in=COMPATIBLE_CANDIDATES[profile.preferred_candidate]):  # NOQA
             if matched_profile in found_friends:
                 # Don't double add
                 continue
@@ -94,10 +98,6 @@ def _matches_for_safe_state_profile(
         profile, direct=True, foaf=True, exclude_pending=True):
     """Find the suitable matches for a safe state profile"""
     found_friends = set()
-    compatible_candidate = (
-        CANDIDATE_CLINTON
-        if profile.preferred_candidate == CANDIDATE_JOHNSON
-        else CANDIDATE_JOHNSON)
 
     def _get_friends(for_profile):
         through = None if profile == for_profile else for_profile
@@ -105,7 +105,7 @@ def _matches_for_safe_state_profile(
         for matched_profile in for_profile.friends.unpaired().exclude(
                 id=profile.id).filter(
                     state__in=potential_states,
-                    preferred_candidate=compatible_candidate):
+                    preferred_candidate__in=COMPATIBLE_CANDIDATES[profile.preferred_candidate]):  # NOQA
             if matched_profile in found_friends:
                 continue
             found_friends.add(matched_profile)
