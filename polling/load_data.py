@@ -1,8 +1,12 @@
 import csv
-import datetime
 import os
+from django.utils import timezone
 
 from polling.models import State
+
+
+def _val(line, key):
+    return int(line.get(key, None) or -1)
 
 
 def load_fixture(fname):
@@ -11,17 +15,16 @@ def load_fixture(fname):
         fname_last = os.path.split(fname)[-1]
         date_str = fname_last.split(".")[0]
         print(date_str)
-        import_date = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+        import_date = timezone.datetime.strptime(date_str, '%Y-%m-%d')
         tsv_file = csv.DictReader(f, delimiter='\t')
         for line in tsv_file:
-            print(line['leans'])
-            state, created = State.objects.get_or_create(
+            state, created = State.all_objects.get_or_create(
                 name=line['name'],
                 updated=import_date,
                 abbv=line['abbv'],
-                tipping_point_rank=int(line['tipping_point_rank'] or -1),
+                tipping_point_rank=_val(line, 'tipping_point_rank'),
                 safe_for=line['safe_for'],
-                safe_rank=int(line['safe_rank'] or -1),
+                safe_rank=_val(line, 'safe_rank'),
                 leans=line['leans'],
-                lean_rank=int(line['lean_rank'] or -1),
+                lean_rank=_val(line, 'lean_rank'),
             )
