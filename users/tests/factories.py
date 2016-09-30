@@ -28,6 +28,11 @@ class SocialAuthFactory(factory.DjangoModelFactory):
     uid = factory.Sequence(lambda n: str(n))
     extra_data = '{"access_token":"1234"}'
 
+    @factory.post_generation
+    def _set_fb_id(self, create, extracted, **kwargs):
+        self.user.profile.fb_id = self.uid
+        self.user.profile.save()
+
 
 def _lazy_uid(profile):
     if profile.user:
@@ -46,9 +51,9 @@ class UserFactory(factory.DjangoModelFactory):
     username = factory.LazyAttributeSequence(
         lambda o, n: ("%s.%s.%s" % (o.first_name, o.last_name, n)).lower())
     email = factory.LazyAttribute(lambda o: "%s@gmail.com" % o.username)
+    social_auth = factory.RelatedFactory(SocialAuthFactory, 'user')
     profile = factory.RelatedFactory(
         ProfileFactory, 'user',
         fb_name=factory.LazyAttribute(
             lambda profile: profile.user.get_full_name()),
         fb_id=factory.LazyAttribute(_lazy_uid))
-    social_auth = factory.RelatedFactory(SocialAuthFactory, 'user')
