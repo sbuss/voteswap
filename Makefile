@@ -15,20 +15,18 @@ setup: lib requirements-test.txt requirements-local.txt
 .PHONY: setupdb
 setupdb: deps
 	$(PYTHONPATH) python manage.py migrate
-	@#$(PYTHONPATH) python manage.py createsuperuser
-	@#$(PYTHONPATH) python manage.py dumpdata
 	$(PYTHONPATH) python manage.py loaddata fixtures/*.json
+	$(PYTHONPATH) python manage.py load_state_polls
 
 .PHONY: genfixtures
 genfixtures: deps
 	$(PYTHONPATH) python manage.py migrate
 	$(PYTHONPATH) python manage.py createsuperuser
+	$(PYTHONPATH) python manage.py load_state_polls
 	@echo "Run the following:"
 	@echo "from fixtures import generate_random_network"
 	@echo "generate_random_network.create_profiles(100)"
 	@echo "generate_random_network.assign_friends()"
-	@echo "from polling.load_data import load_fixture"
-	@echo "load_fixture('polling/data/2016-09-11.tsv')"
 	$(PYTHONPATH) python manage.py shell
 	$(PYTHONPATH) python manage.py dumpdata -o fixtures/users.json
 	sed -i 's/}},/}},\n/g' fixtures/users.json
