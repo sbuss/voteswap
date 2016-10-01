@@ -8,3 +8,4 @@ secret_key: 'i39v+-00j0_ev#mupwh=4ojxep&t_cho_z(zqmkm7cr=g313sn'
 debug: "True"
 facebook_key: '329005557444514'
 facebook_secret: 'foobar'
+sendgrid_api_key: '1235098ersdfkjsd'
