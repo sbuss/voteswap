@@ -7,4 +7,4 @@ django-bootstrap3==7.1.0
 requests==2.3
 sqlparse  # For the mysql encoding migration
 setuptools
-sendgrid
+sendgrid==3.4
