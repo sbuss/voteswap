@@ -185,7 +185,7 @@ def _format_email(text):
 
 def _send_swap_proposal_email(user, match):
     message = EmailMultiAlternatives(
-        from_email=u'noreply@voteswap.us',
+        from_email=u'noreply@email.voteswap.us',
         to=[match.to_profile.user.email],
         subject=u"New VoteSwap with {user}".format(
             user=user.profile.fb_name))
@@ -254,7 +254,7 @@ def update_profile(request):
 
 def _send_reject_swap_email(user, match):
     message = EmailMultiAlternatives(
-        from_email=u'noreply@voteswap.us',
+        from_email=u'noreply@email.voteswap.us',
         to=[match.from_profile.user.email],
         subject=u"{user} rejected your VoteSwap".format(
             user=user.profile.fb_name))

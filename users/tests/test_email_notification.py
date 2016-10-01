@@ -1,8 +1,7 @@
+from django.core import mail as testmail
 from django.test import TestCase
+from django.test import override_settings
 from django.utils import timezone
-from mock import MagicMock
-from mock import call
-from mock import patch
 
 from users.models import PairProposal
 from users.views import _send_swap_proposal_email
@@ -15,13 +14,9 @@ from polling.models import CANDIDATE_STEIN
 from polling.tests.factories import StateFactory
 
 
+@override_settings(
+    EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
 class TestEmailBase(TestCase):
-    def _iter_email_message_instances(self, *args, **kwargs):
-        while True:
-            m = MagicMock()
-            self.mock_email_messages.append(m)
-            yield m
-
     def setUp(self):
         super(TestEmailBase, self).setUp()
         self.from_state = StateFactory.create(tipping_point_rank=1)
@@ -36,25 +31,20 @@ class TestEmailBase(TestCase):
             from_profile=self.from_user.profile,
             to_profile=self.to_user.profile,
             date_rejected=timezone.now())
-        self.mock_email_messages = []
-        self.email_patcher = patch(
-            'users.views.EmailMessage',
-            side_effect=self._iter_email_message_instances())
-        self.mock_email_message_class = self.email_patcher.start()
-
-    def tearDown(self):
-        self.email_patcher.stop()
 
     def test_proposal_email(self):
+        self.assertEqual(len(testmail.outbox), 0)
         _send_swap_proposal_email(self.from_user, self.proposal)
-        self.assertEqual(len(self.mock_email_messages), 1)
-        self.mock_email_message_class.assert_called_with(
-            sender=u'noreply@voteswap.us',
-            to=unicode(self.to_user.email),
-            subject=u'New VoteSwap with %s' % self.from_user.profile.fb_name)
-        [email_message] = self.mock_email_messages
-        for attr in ['body', 'html']:
-            contents = getattr(email_message, attr)
+        self.assertEqual(len(testmail.outbox), 1)
+        [message] = testmail.outbox
+        self.assertEqual(message.from_email, u'noreply@email.voteswap.us')
+        self.assertEqual(message.recipients(), [self.to_user.email])
+        self.assertEqual(
+            message.subject,
+            u'New VoteSwap with %s' % self.from_user.profile.fb_name)
+        self.assertEqual(len(message.alternatives), 1)
+        bodies = [message.body, message.alternatives[0][0]]
+        for contents in bodies:
             contents = contents.replace('\n', ' ')
             from_profile = self.from_user.profile
             to_profile = self.to_user.profile
@@ -69,7 +59,6 @@ class TestEmailBase(TestCase):
             self.assertIn("https://voteswap.us/swap/", contents)
             # Johnson voter to clinton voter is not a kingmaker
             self.assertNotIn("Voting for Gary Johnson", contents)
-        email_message.send.assert_called_once()
 
     def test_proposal_email_kingmaker(self):
         # Switch the from/to so the Johnson voter in the swing state gets
@@ -77,13 +66,13 @@ class TestEmailBase(TestCase):
         self.proposal.from_profile = self.to_user.profile
         self.proposal.to_profile = self.from_user.profile
         _send_swap_proposal_email(self.from_user, self.proposal)
-        [email_message] = self.mock_email_messages
+        [email_message] = testmail.outbox
         self.assertIn(
             "Voting for Johnson in %s" % self.from_user.profile.state,
             email_message.body)
         self.assertIn(
             "Voting for Johnson in %s" % self.from_user.profile.state,
-            email_message.html)
+            email_message.alternatives[0][0])
 
     def test_proposal_email_kingmaker_stein(self):
         # Same as above, but with stein
@@ -92,25 +81,26 @@ class TestEmailBase(TestCase):
         self.proposal.to_profile.preferred_candidate = CANDIDATE_STEIN
         self.proposal.to_profile.save()
         _send_swap_proposal_email(self.from_user, self.proposal)
-        [email_message] = self.mock_email_messages
+        [email_message] = testmail.outbox
         self.assertIn(
             "Voting for Stein in %s" % self.from_user.profile.state,
             email_message.body)
         self.assertIn(
             "Voting for Stein in %s" % self.from_user.profile.state,
-            email_message.html)
+            email_message.alternatives[0][0])
 
     def test_reject_email(self):
+        self.assertEqual(len(testmail.outbox), 0)
         _send_reject_swap_email(self.to_user, self.proposal)
-        self.assertEqual(len(self.mock_email_messages), 1)
-        self.mock_email_message_class.assert_called_with(
-            sender=u'noreply@voteswap.us',
-            to=unicode(self.from_user.email),
-            subject=(u'%s rejected your VoteSwap' %
-                     self.to_user.profile.fb_name))
-        [email_message] = self.mock_email_messages
-        for attr in ['body', 'html']:
-            contents = getattr(email_message, attr)
+        self.assertEqual(len(testmail.outbox), 1)
+        [message] = testmail.outbox
+        self.assertEqual(message.from_email, u'noreply@email.voteswap.us')
+        self.assertEqual(message.recipients(), [self.from_user.email])
+        self.assertEqual(
+            message.subject,
+            u'%s rejected your VoteSwap' % self.to_user.profile.fb_name)
+        bodies = [message.body, message.alternatives[0][0]]
+        for contents in bodies:
             contents = contents.replace('\n', ' ')
             from_profile = self.from_user.profile
             to_profile = self.to_user.profile
@@ -119,7 +109,6 @@ class TestEmailBase(TestCase):
                 ("%s has rejected" % to_profile.fb_name), contents)
             self.assertIn("Please come back to", contents)
             self.assertIn("https://voteswap.us/swap", contents)
-        email_message.send.assert_called_once()
 
     def test_reject_pending_matches(self):
         extra_user = UserFactory.create()
@@ -127,9 +116,9 @@ class TestEmailBase(TestCase):
             from_profile=self.from_user.profile,
             to_profile=extra_user.profile)
         _send_reject_swap_email(self.to_user, self.proposal)
-        [email_message] = self.mock_email_messages
-        for attr in ['body', 'html']:
-            contents = getattr(email_message, attr)
+        [message] = testmail.outbox
+        bodies = [message.body, message.alternatives[0][0]]
+        for contents in bodies:
             contents = contents.replace('\n', ' ')
             self.assertIn("You still have 1 pending swaps", contents)
             self.assertIn("https://voteswap.us/swap", contents)
@@ -141,9 +130,9 @@ class TestEmailBase(TestCase):
             profile__state=extra_state.name,
             profile__preferred_candidate=CANDIDATE_CLINTON).profile)
         _send_reject_swap_email(self.to_user, self.proposal)
-        [email_message] = self.mock_email_messages
-        for attr in ['body', 'html']:
-            contents = getattr(email_message, attr)
+        [message] = testmail.outbox
+        bodies = [message.body, message.alternatives[0][0]]
+        for contents in bodies:
             contents = contents.replace('\n', ' ')
             self.assertIn("You have 1 good potential match", contents)
             self.assertIn("https://voteswap.us/swap", contents)
@@ -158,38 +147,30 @@ class TestEmailBase(TestCase):
             profile__state=extra_state.name,
             profile__preferred_candidate=CANDIDATE_CLINTON).profile)
         _send_reject_swap_email(self.to_user, self.proposal)
-        [email_message] = self.mock_email_messages
-        for attr in ['body', 'html']:
-            contents = getattr(email_message, attr)
+        [message] = testmail.outbox
+        bodies = [message.body, message.alternatives[0][0]]
+        for contents in bodies:
             contents = contents.replace('\n', ' ')
             self.assertIn("You have 2 good potential matches", contents)
             self.assertIn("https://voteswap.us/swap", contents)
 
     def test_confirm_email(self):
+        self.assertEqual(len(testmail.outbox), 0)
         _send_confirm_swap_email(self.to_user, self.proposal)
-        self.assertEqual(len(self.mock_email_messages), 2)
-        calls = [
-            call(sender=u'noreply@voteswap.us',
-                 to=unicode(self.to_user.email),
-                 reply_to=unicode(self.from_user.email),
-                 subject=(
-                     'Your VoteSwap with %s is confirmed!' %
-                     self.from_user.profile.fb_name)),
-            call(sender=u'noreply@voteswap.us',
-                 to=unicode(self.from_user.email),
-                 reply_to=unicode(self.to_user.email),
-                 subject=(
-                     'Your VoteSwap with %s is confirmed!' %
-                     self.to_user.profile.fb_name)),
-        ]
-        self.mock_email_message_class.assert_has_calls(calls)
-
+        self.assertEqual(len(testmail.outbox), 2)
         for (from_profile, to_profile) in [
                 (self.proposal.to_profile, self.proposal.from_profile),
                 (self.proposal.from_profile, self.proposal.to_profile)]:
-            email_message = self.mock_email_messages.pop(0)
-            for attr in ['body', 'html']:
-                contents = getattr(email_message, attr)
+            message = testmail.outbox.pop(0)
+            self.assertEqual(message.from_email, u'noreply@email.voteswap.us')
+            self.assertEqual(message.recipients(), [from_profile.user.email])
+            self.assertEqual(message.reply_to, [to_profile.user.email])
+            self.assertEqual(
+                message.subject,
+                ('Your VoteSwap with %s is confirmed!' %
+                 to_profile.fb_name))
+            bodies = [message.body, message.alternatives[0][0]]
+            for contents in bodies:
                 contents = contents.replace('\n', ' ')
                 self.assertIn(
                     "Congratulations, %s" % to_profile.fb_name,
@@ -210,4 +191,3 @@ class TestEmailBase(TestCase):
                 self.assertIn(
                     "https://facebook.com/messages/%s" % from_profile.fb_id,
                     contents)
-            email_message.send.assert_called_once()
