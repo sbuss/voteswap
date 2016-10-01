@@ -1,6 +1,6 @@
 Metadata-Version: 2.0
 Name: setuptools
-Version: 27.3.0
+Version: 28.0.0
 Summary: Easily download, build, install, upgrade, and uninstall Python packages
 Home-page: https://github.com/pypa/setuptools
 Author: Python Packaging Authority
@@ -23,7 +23,7 @@ Classifier: Topic :: System :: Archiving :: Packaging
 Classifier: Topic :: System :: Systems Administration
 Classifier: Topic :: Utilities
 Provides-Extra: certs
-Requires-Dist: certifi (==2016.8.8); extra == 'certs'
+Requires-Dist: certifi (==2016.8.31); extra == 'certs'
 Provides-Extra: ssl
 Requires-Dist: wincertstore (==0.2); sys_platform=='win32' and extra == 'ssl'
 
