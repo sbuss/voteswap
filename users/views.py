@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
@@ -9,7 +10,6 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.functional import cached_property
 from django.utils.text import wrap as wrap_text
-from google.appengine.api.mail import EmailMessage
 import json
 import re
 
@@ -184,9 +184,9 @@ def _format_email(text):
 
 
 def _send_swap_proposal_email(user, match):
-    message = EmailMessage(
-        sender=u'noreply@voteswap.us',
-        to=match.to_profile.user.email,
+    message = EmailMultiAlternatives(
+        from_email=u'noreply@voteswap.us',
+        to=[match.to_profile.user.email],
         subject=u"New VoteSwap with {user}".format(
             user=user.profile.fb_name))
     from_profile_context = ProfileContext(match.from_profile)
@@ -196,11 +196,13 @@ def _send_swap_proposal_email(user, match):
             'users/emails/propose_swap_email.txt',
             {'from_profile_ctx': from_profile_context,
              'to_profile_ctx': to_profile_context}))
-    message.html = _format_email(
-        render_to_string(
-            'users/emails/propose_swap_email.html',
-            {'from_profile_ctx': from_profile_context,
-             'to_profile_ctx': to_profile_context}))
+    message.attach_alternative(
+        _format_email(
+            render_to_string(
+                'users/emails/propose_swap_email.html',
+                {'from_profile_ctx': from_profile_context,
+                 'to_profile_ctx': to_profile_context})),
+        'text/html')
     message.send()
 
 
@@ -251,9 +253,9 @@ def update_profile(request):
 
 
 def _send_reject_swap_email(user, match):
-    message = EmailMessage(
-        sender=u'noreply@voteswap.us',
-        to=match.from_profile.user.email,
+    message = EmailMultiAlternatives(
+        from_email=u'noreply@voteswap.us',
+        to=[match.from_profile.user.email],
         subject=u"{user} rejected your VoteSwap".format(
             user=user.profile.fb_name))
     from_profile_context = ProfileContext(match.from_profile)
@@ -263,11 +265,13 @@ def _send_reject_swap_email(user, match):
             'users/emails/reject_swap_email.txt',
             {'from_profile_ctx': from_profile_context,
              'to_profile_ctx': to_profile_context}))
-    message.html = _format_email(
-        render_to_string(
-            'users/emails/reject_swap_email.html',
-            {'from_profile_ctx': from_profile_context,
-             'to_profile_ctx': to_profile_context}))
+    message.attach_alternative(
+        _format_email(
+            render_to_string(
+                'users/emails/reject_swap_email.html',
+                {'from_profile_ctx': from_profile_context,
+                 'to_profile_ctx': to_profile_context})),
+        'text/html')
     message.send()
 
 
@@ -304,12 +308,12 @@ def _send_confirm_swap_email(user, match):
     for from_profile, to_profile in [
             (match.from_profile, match.to_profile),
             (match.to_profile, match.from_profile)]:
-        message = EmailMessage(
-            sender=u'noreply@voteswap.us',
-            to=to_profile.user.email,
-            reply_to=from_profile.user.email,
+        message = EmailMultiAlternatives(
             subject=u"Your VoteSwap with {user} is confirmed!".format(
-                user=from_profile.fb_name))
+                user=from_profile.fb_name),
+            from_email='noreply@email.voteswap.us',
+            to=[to_profile.user.email],
+            reply_to=[from_profile.user.email])
         profile_context = ProfileContext(from_profile)
         paired_profile_context = ProfileContext(to_profile)
         message.body = _format_email(
@@ -317,11 +321,13 @@ def _send_confirm_swap_email(user, match):
                 'users/emails/confirm_swap_email.txt',
                 {'profile_ctx': profile_context,
                  'paired_profile_ctx': paired_profile_context}))
-        message.html = _format_email(
-            render_to_string(
-                'users/emails/confirm_swap_email.html',
-                {'profile_ctx': profile_context,
-                 'paired_profile_ctx': paired_profile_context}))
+        message.attach_alternative(
+            _format_email(
+                render_to_string(
+                    'users/emails/confirm_swap_email.html',
+                    {'profile_ctx': profile_context,
+                     'paired_profile_ctx': paired_profile_context})),
+            'text/html')
         message.send()
 
 
