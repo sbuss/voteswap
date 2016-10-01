@@ -354,3 +354,14 @@ def confirm_swap(request, ref_id):
             {'status': 'error',
              'errors': {'method': 'Must POST with to_profile set'}})
     PairProposal.objects
+
+
+@login_required
+def test_email(request):
+    profile = request.user.profile
+    proposal, created = PairProposal.objects.get_or_create(
+        from_profile=profile,
+        to_profile=profile)
+    _send_swap_proposal_email(request.user, proposal)
+    _send_reject_swap_email(request.user, proposal)
+    _send_confirm_swap_email(request.user, proposal)
