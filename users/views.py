@@ -371,3 +371,4 @@ def test_email(request):
     _send_swap_proposal_email(request.user, proposal)
     _send_reject_swap_email(request.user, proposal)
     _send_confirm_swap_email(request.user, proposal)
+    return HttpResponse('ok')
