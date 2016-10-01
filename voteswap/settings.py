@@ -37,6 +37,13 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id,name,email,friends',
 }
 
+# Sendgrid email
+SENDGRID_API_KEY = CloudSettings.get('sendgrid_api_key')
+if CloudSettings.is_local:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'voteswap.mail.backends.sendgrid.SendGridBackend'
+
 LOGIN_REDIRECT_URL = '/'
 
 ALLOWED_HOSTS = ['voteswap.us']
