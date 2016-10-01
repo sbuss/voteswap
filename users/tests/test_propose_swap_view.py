@@ -1,8 +1,8 @@
+from django.core import mail as testmail
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory
 from django.test import TestCase
 import json
-from mock import patch
 
 from polling.tests.factories import StateFactory
 from users.models import PairProposal
@@ -16,11 +16,6 @@ class TestProposeSwapView(TestCase):
     def setUp(self):
         super(TestProposeSwapView, self).setUp()
         self.request = RequestFactory()
-        self.email_patcher = patch('users.views.EmailMessage')
-        self.mock_email_message_class = self.email_patcher.start()
-
-    def tearDown(self):
-        self.email_patcher.stop()
 
     def test_success(self):
         user_state = StateFactory.create(tipping_point_rank=1)
@@ -33,7 +28,9 @@ class TestProposeSwapView(TestCase):
             {'to_profile': match.profile.id})
         request.user = user
         self.assertFalse(PairProposal.objects.all())
+        self.assertEqual(len(testmail.outbox), 0)
         response = propose_swap(request)
+        self.assertEqual(len(testmail.outbox), 1)
         self.assertEqual(response.status_code, HTTP_OK)
         self.assertEqual(response.content,
                          json.dumps({'status': 'ok', 'errors': {}}))

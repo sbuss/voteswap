@@ -1,7 +1,7 @@
+from django.core import mail as testmail
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory
 from django.test import TestCase
-from mock import patch
 
 from polling.tests.factories import StateFactory
 from users.views import confirm_swap
@@ -29,18 +29,15 @@ class TestConfirmSwapView(TestCase):
         self.proposal = PairProposal.objects.create(
             from_profile=self.from_profile,
             to_profile=self.to_profile)
-        self.email_patcher = patch('users.views.EmailMessage')
-        self.mock_email_message_class = self.email_patcher.start()
-
-    def tearDown(self):
-        self.email_patcher.stop()
 
     def test_success(self):
         request = self.request.post(
             reverse('users:confirm_swap', args=[self.proposal.ref_id]),
             data={})
         request.user = self.to_profile.user
+        self.assertEqual(len(testmail.outbox), 0)
         response = confirm_swap(request, self.proposal.ref_id)
+        self.assertEqual(len(testmail.outbox), 2)
         self.assertEqual(response.status_code, HTTP_REDIRECT)
         self.assertTrue(response.has_header('Location'))
         self.assertEqual(response.get('Location'),

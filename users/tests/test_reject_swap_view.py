@@ -1,4 +1,4 @@
-from django.core.mail import outbox
+from django.core import mail as testmail
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory
 from django.test import TestCase
@@ -26,7 +26,7 @@ class TestProposeSwapView(TestCase):
             to_profile=self.to_profile)
 
     def test_success(self):
-        self.assertEqual(len(outbox), 0)
+        self.assertEqual(len(testmail.outbox), 0)
         reason = 'foo'
         request = self.request.post(
             reverse('users:reject_swap', args=[self.proposal.ref_id]),
@@ -43,7 +43,7 @@ class TestProposeSwapView(TestCase):
         self.assertFalse(to_profile.paired_with)
         proposal = PairProposal.objects.get(id=self.proposal.id)
         self.assertEqual(proposal.reason_rejected, reason)
-        self.assertEqual(len(outbox), 1)
+        self.assertEqual(len(testmail.outbox), 1)
 
     def test_data_doesnt_matter(self):
         """POSTed data that isn't reason_rejected to this view gets ignored"""
