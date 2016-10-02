@@ -80,7 +80,15 @@ class Profile(models.Model):
     objects = ProfileManager()
 
     def clean(self):
-        self.reason = base64.b64encode(self.reason.encode('utf-8'))
+        try:
+            # The point of this is to attempt to decode whatever is stored in
+            # reason. If it has already been encoded then nothing happens. If
+            # it hasn't been encoded, then the decoding will fail and we'll
+            # encode it and save it.
+            if self.reason_decoded == '':
+                pass
+        except:
+            self.reason = base64.b64encode(self.reason.encode('utf-8'))
 
     def _all_friends(self, unpaired=False):
         # TODO Raw SQL query is faster
