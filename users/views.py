@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.utils.functional import cached_property
 from django.utils.text import wrap as wrap_text
 import json
+import logging
 import re
 
 from polling.models import CANDIDATE_CLINTON
@@ -26,6 +27,8 @@ from users.models import Profile
 from voteswap.match import get_friend_matches
 
 CANDIDATES_THIRD = [CANDIDATE_JOHNSON, CANDIDATE_STEIN]
+
+logger = logging.getLogger(__name__)
 
 
 class ProfileContext(object):
@@ -154,11 +157,14 @@ class FriendMatchContext(object):
 @login_required
 def profile(request):
     user = request.user
+    logger.info("%s viewing their profile", user)
     try:
         profile_ctx = ProfileContext(user.profile)
     except Profile.DoesNotExist:
+        logger.info("%s's profile doesn't exist", user)
         return HttpResponseRedirect(reverse('users:update_profile'))
     if profile_ctx.profile_needs_updating:
+        logger.info("%s must update their profile", user)
         return HttpResponseRedirect(reverse('users:update_profile'))
 
     context = RequestContext(
@@ -184,6 +190,7 @@ def _format_email(text):
 
 
 def _send_swap_proposal_email(user, match):
+    logger.info("Sending swap proposal email. %s", match)
     message = EmailMultiAlternatives(
         from_email=u'noreply@email.voteswap.us',
         to=[match.to_profile.user.email],
@@ -203,11 +210,19 @@ def _send_swap_proposal_email(user, match):
                 {'from_profile_ctx': from_profile_context,
                  'to_profile_ctx': to_profile_context})),
         'text/html')
-    message.send()
+    try:
+        message.send()
+    except Exception as e:
+        logger.exception(
+            ("Failed to send swap proposal email for match %s. "
+             "Errors: %s"),
+            match, e)
+        raise
 
 
 @login_required
 def propose_swap(request):
+    logger.info("%s is propsing a swap", request.user)
     if request.method == "POST":
         form = PairProposalForm(
             from_profile=request.user.profile, data=request.POST)
@@ -216,8 +231,10 @@ def propose_swap(request):
             _send_swap_proposal_email(request.user, form.instance)
             return json_response({'status': 'ok', 'errors': {}})
         else:
+            logger.error("swap proposal failed: %s", form.errors)
             return json_response({'status': 'error', 'errors': form.errors})
     else:
+        logger.error("%s didn't POST to propose_swap view", request.user)
         return json_response(
             {'status': 'error',
              'errors': {'method': 'Must POST with to_profile set'}})
@@ -225,17 +242,23 @@ def propose_swap(request):
 
 @login_required
 def update_profile(request):
+    logger.info("%s is updating their profile", request.user)
     needs_update = False
     initial = {}
     if request.method == "POST":
         form = UpdateProfileForm(data=request.POST)
         if form.is_valid():
             form.save(request.user)
+            logger.info("%s updated their profile", request.user)
             return HttpResponseRedirect(reverse('users:profile'))
+        else:
+            logger.error("%s profile update failed: %s",
+                         request.user, form.errors)
     else:
         try:
             profile = request.user.profile
         except Profile.DoesNotExist:
+            logger.info("%s's profile doesn't exist", request.user)
             needs_update = True
         else:
             needs_update = ProfileContext(profile).profile_needs_updating
@@ -253,6 +276,7 @@ def update_profile(request):
 
 
 def _send_reject_swap_email(user, match):
+    logger.info("sending swap rejection email: %s", match)
     message = EmailMultiAlternatives(
         from_email=u'noreply@email.voteswap.us',
         to=[match.from_profile.user.email],
@@ -272,12 +296,20 @@ def _send_reject_swap_email(user, match):
                 {'from_profile_ctx': from_profile_context,
                  'to_profile_ctx': to_profile_context})),
         'text/html')
-    message.send()
+    try:
+        message.send()
+    except Exception as e:
+        logger.exception(
+            ("Failed to send swap rejection email for match %s. "
+             "Errors: %s"),
+            match, e)
+        raise
 
 
 @login_required
 @transaction.atomic
 def reject_swap(request, ref_id):
+    logger.info("%s is rejecting their swap", request.user)
     if request.method == "POST":
         try:
             proposal = (
@@ -285,6 +317,8 @@ def reject_swap(request, ref_id):
                 .select_for_update()
                 .get(ref_id=ref_id))
         except PairProposal.DoesNotExist:
+            logger.error("%s tried to reject a swap (id #%s) they don't own",
+                         request.user, ref_id)
             return json_response(
                 {'status': 'error',
                  'errors': {'proposal': 'Invalid swap proposal ID'}})
@@ -297,17 +331,22 @@ def reject_swap(request, ref_id):
             _send_reject_swap_email(request.user, form.instance)
             return HttpResponseRedirect(reverse('users:profile'))
         else:
+            logger.error("swap rejection failed: %s", form.errors)
             return json_response({'status': 'error', 'errors': form.errors})
     else:
+        logger.error("%s didn't POST to reject_swap view", request.user)
         return json_response(
             {'status': 'error',
              'errors': {'method': 'Must POST with to_profile set'}})
 
 
 def _send_confirm_swap_email(user, match):
+    logger.info("sending swap confirmation emails: %s", match)
     for from_profile, to_profile in [
             (match.from_profile, match.to_profile),
             (match.to_profile, match.from_profile)]:
+        logger.info("  sending swap confirmation email from %s to %s",
+                    from_profile, to_profile)
         message = EmailMultiAlternatives(
             subject=u"Your VoteSwap with {user} is confirmed!".format(
                 user=from_profile.fb_name),
@@ -328,12 +367,20 @@ def _send_confirm_swap_email(user, match):
                     {'profile_ctx': profile_context,
                      'paired_profile_ctx': paired_profile_context})),
             'text/html')
-        message.send()
+        try:
+            message.send()
+        except Exception as e:
+            logger.exception(
+                ("Failed to send swap confirmation email for match %s. "
+                 "Errors: %s"),
+                match, e)
+            raise
 
 
 @login_required
 @transaction.atomic
 def confirm_swap(request, ref_id):
+    logger.info("%s is confirming their swap", request.user)
     if request.method == "POST":
         try:
             proposal = (
@@ -341,6 +388,8 @@ def confirm_swap(request, ref_id):
                 .select_for_update()
                 .get(ref_id=ref_id))
         except PairProposal.DoesNotExist:
+            logger.error("%s tried to confirm a swap (id #%s) they don't own",
+                         request.user, ref_id)
             return json_response(
                 {'status': 'error',
                  'errors': {'proposal': 'Invalid swap proposal ID'}})
@@ -354,9 +403,10 @@ def confirm_swap(request, ref_id):
             _send_confirm_swap_email(request.user, form.instance)
             return HttpResponseRedirect(reverse('users:profile'))
         else:
+            logger.error("swap confirmation failed: %s", form.errors)
             return json_response({'status': 'error', 'errors': form.errors})
     else:
+        logger.error("%s didn't POST to confirm_swap view", request.user)
         return json_response(
             {'status': 'error',
              'errors': {'method': 'Must POST with to_profile set'}})
-    PairProposal.objects

@@ -19,11 +19,13 @@ logger = logging.getLogger(__name__)
 
 
 def logout(request):
+    logger.info("%s logging out", request.user)
     auth_logout(request)
     return HttpResponseRedirect(reverse('index'))
 
 
 def signup(request):
+    logger.info("signup form")
     form = LandingPageForm()
     context = RequestContext(request, {'form': form})
     return render_to_response('sign_up.html',
@@ -32,19 +34,23 @@ def signup(request):
 
 def landing_page(request):
     if hasattr(request, 'user') and request.user.is_authenticated():
+        logger.info("%s redirected from landing page to profile", request.user)
         return HttpResponseRedirect(reverse('users:profile'))
 
     if request.method == "POST":
+        logger.info("posted to landing page")
         form = LandingPageForm(data=request.POST)
         if form.is_valid():
             # Save the data to session
             data = form.cleaned_data
             request.session['landing_page_form'] = data
+            logger.info("Saved data to session: %s", data)
             # redirect to FB login, with '?next' set to send the user to
             # confirm_signup
             fb_login_url = "{base}?next={next}".format(
                 base=reverse('social:begin', args=['facebook']),
                 next=reverse(confirm_signup))
+            logger.info("Redirecting landing page signup to facebook")
             return HttpResponseRedirect(fb_login_url)
     else:
         form = LandingPageForm()
@@ -66,6 +72,8 @@ def _add_facebook_friends_for_user(user, next_url=""):
         next_url: Given when iterating through pages of a response. If not set
             then the first page will be fetched.
     """
+    logger.info("Fetching facebook friends for %s, next_url is %s",
+                user, next_url)
     social_user = user.social_auth.get()
     if not next_url:
         url = ('https://graph.facebook.com/{uid}/'
@@ -78,7 +86,8 @@ def _add_facebook_friends_for_user(user, next_url=""):
     response = requests.get(url)
     try:
         data = response.json()
-    except Exception:
+    except Exception as e:
+        logger.exception("No json response in data: %s", e)
         data = []
     friend_profiles = []
     for friend in data['data']:
@@ -87,14 +96,18 @@ def _add_facebook_friends_for_user(user, next_url=""):
         friend_profiles.append(profile)
     user.profile.friends.add(*friend_profiles)
     if 'next' in data.get('paging', {}):
-        _add_facebook_friends_for_user(user, data['paging']['next'])
+        next_url = data['paging']['next']
+        logger.info("Found next in facebook response: %s", next_url)
+        _add_facebook_friends_for_user(user, next_url)
 
 
 @login_required
 def confirm_signup(request):
+    logger.info("Facebook login successful, creating profile")
     # This happens after logging in, now we can get their friends
     data = request.session.get('landing_page_form', None)
     if not data:
+        logger.error("No session data, redirect to signup page")
         return HttpResponseRedirect(reverse('signup'))
     logger.info("Data in confirm_signup is %s" % data)
 
@@ -104,6 +117,9 @@ def confirm_signup(request):
                 del request.session['landing_page_form']
             except KeyError:
                 pass
+            logger.info(("%s's profile already exists. They clicked join "
+                         "instead of login. Redirecting to their profile"),
+                        request.user)
             # Skip sign up, they probably clicked "Join" on accident
             return HttpResponseRedirect(reverse('users:profile'))
     except:
@@ -113,15 +129,21 @@ def confirm_signup(request):
     try:
         if form.is_valid():
             form.save(request.user)
+            logger.info("Created profile for user %s", request.user)
             _add_facebook_friends_for_user(request.user)
             return HttpResponseRedirect(reverse('users:profile'))
+        else:
+            logger.error("LandingPageForm invalid for user %s: %s",
+                         request.user, form.errors)
     except Exception as e:
+        logger.exception("Signup failed: %s", e)
         return HttpResponseServerError("Signup failed: %s" % e)
     finally:
         try:
             del request.session['landing_page_form']
         except KeyError:
             pass
+    logger.error("Sign up failed for unknown reasons. No extra data to report")
     return HttpResponseServerError("Unknown server error")
 
 
@@ -136,10 +158,12 @@ def match(request):
 
 
 def about(request):
+    logger.info("about page")
     context = RequestContext(request)
     return render_to_response('about.html', context_instance=context)
 
 
 def press(request):
+    logger.info("press page")
     context = RequestContext(request)
     return render_to_response('press.html', context_instance=context)

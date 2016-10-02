@@ -5,12 +5,15 @@ from django.conf import settings
 from django.db import models
 from django.db import transaction
 from django.db.models import Q
+import logging
 import us
 import uuid
 
 from polling.models import CANDIDATES_ADVOCATED
 
 STATES = [(state.name, state.name) for state in us.STATES]
+
+logger = logging.getLogger(__name__)
 
 
 class PairProposalManager(models.Manager):
@@ -88,6 +91,7 @@ class Profile(models.Model):
             if self.reason_decoded == '':
                 pass
         except:
+            logger.info("Encoding reason '%s'", self.reason)
             self.reason = base64.b64encode(self.reason.encode('utf-8'))
 
     def _all_friends(self, unpaired=False):
