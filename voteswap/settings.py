@@ -46,7 +46,10 @@ else:
 
 LOGIN_REDIRECT_URL = '/'
 
-ALLOWED_HOSTS = ['voteswap.us']
+ALLOWED_HOSTS = [
+    'voteswap.us',
+    '2016-10-01-1-dot-voteswap-142902.appspot.com',
+]
 
 ROOT_DIR = os.path.join(os.path.dirname(__file__), '..')
 APPS_DIR = os.path.join(ROOT_DIR, 'voteswap')
