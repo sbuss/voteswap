@@ -41,7 +41,7 @@ stop:
 	-docker rm voteswap-mysql
 
 test: deps setup
-	$(PYTHONPATH) python manage.py test
+	$(PYTHONPATH) python manage.py test --logging-clear-handlers voteswap users polling
 
 .PHONY: runserver
 runserver: deps
