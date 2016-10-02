@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import base64
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -9,6 +10,21 @@ from users.tests.factories import ProfileFactory
 
 
 class TestProfile(BaseUsersTest):
+    def test_profile_reason_emoji(self):
+        reason = u"💩"
+        reasonb64 = base64.b64encode(reason.encode('utf-8'))
+        profile = ProfileFactory.create()
+        profile.reason = reason
+        profile.clean()
+        profile.save()
+        self.assertEqual(profile.reason, reasonb64)
+        self.assertEqual(profile.reason_decoded, reason)
+        profile = Profile.objects.get(id=profile.id)
+        profile.clean()
+        profile.save()
+        self.assertEqual(profile.reason, reasonb64)
+        self.assertEqual(profile.reason_decoded, reason)
+
     def test_profile_reason_encoding(self):
         reason = 'foobar'
         reasonb64 = base64.b64encode(reason.encode('utf-8'))
