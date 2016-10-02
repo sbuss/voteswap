@@ -24,7 +24,8 @@ class ProfileFactory(factory.DjangoModelFactory):
     @factory.post_generation
     def fix_reason(self, create, extracted, **kwargs):
         if self.reason:
-            self.reason = base64.b64encode(self.reason.encode('utf-8'))
+            # Trigger encoding of reason
+            self.clean()
             self.save()
 
 
