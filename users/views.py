@@ -242,7 +242,7 @@ def update_profile(request):
             initial = {
                 'state': profile.state,
                 'preferred_candidate': profile.preferred_candidate,
-                'reason': profile.reason,
+                'reason': profile.reason_decoded,
                 'email': request.user.email,
             }
         form = UpdateProfileForm(initial=initial)
