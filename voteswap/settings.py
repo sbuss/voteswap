@@ -154,12 +154,22 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': CloudSettings.get('log_level').upper(),
             'propagate': True,
         },
         'voteswap': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': CloudSettings.get('log_level').upper(),
+            'propagate': True,
+        },
+        'users': {
+            'handlers': ['console'],
+            'level': CloudSettings.get('log_level').upper(),
+            'propagate': True,
+        },
+        'polling': {
+            'handlers': ['console'],
+            'level': CloudSettings.get('log_level').upper(),
             'propagate': True,
         },
     },
