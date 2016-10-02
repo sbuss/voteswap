@@ -410,4 +410,3 @@ def confirm_swap(request, ref_id):
         return json_response(
             {'status': 'error',
              'errors': {'method': 'Must POST with to_profile set'}})
-    PairProposal.objects
