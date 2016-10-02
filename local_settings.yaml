@@ -9,3 +9,4 @@ debug: "True"
 facebook_key: '329005557444514'
 facebook_secret: 'foobar'
 sendgrid_api_key: '1235098ersdfkjsd'
+log_level: 'DEBUG'

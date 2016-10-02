@@ -49,6 +49,7 @@ LOGIN_REDIRECT_URL = '/'
 ALLOWED_HOSTS = [
     'voteswap.us',
     '2016-10-01-1-dot-voteswap-142902.appspot.com',
+    '2016-10-02-dot-voteswap-142902.appspot.com',
 ]
 
 ROOT_DIR = os.path.join(os.path.dirname(__file__), '..')
@@ -144,21 +145,41 @@ else:
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[%(asctime)s][%(levelname)s::%(module)s] %(message)s',
+            'datefmt': '%d/%b/%Y %H:%M:%S',
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
     'handlers': {
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': CloudSettings.get('log_level').upper(),
             'propagate': True,
         },
         'voteswap': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': CloudSettings.get('log_level').upper(),
+            'propagate': True,
+        },
+        'users': {
+            'handlers': ['console'],
+            'level': CloudSettings.get('log_level').upper(),
+            'propagate': True,
+        },
+        'polling': {
+            'handlers': ['console'],
+            'level': CloudSettings.get('log_level').upper(),
             'propagate': True,
         },
     },
