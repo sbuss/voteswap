@@ -74,7 +74,7 @@ class Profile(models.Model):
     # requires us to JOIN against the users table when trying to get the
     # user's information we actually care about
     _paired_with = models.ManyToManyField(
-        'self', symmetrical=True)
+        'self', symmetrical=True, blank=True)
     friends = models.ManyToManyField('self', symmetrical=True)
 
     objects = ProfileManager()
