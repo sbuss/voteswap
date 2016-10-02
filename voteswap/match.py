@@ -1,4 +1,5 @@
 from django.db.models import Q
+import logging
 
 from polling.models import State
 from polling.models import CANDIDATE_CLINTON
@@ -9,6 +10,7 @@ from polling.models import CANDIDATES_MAIN
 from polling.models import CANDIDATES_THIRD_PARTY
 from users.models import PairProposal
 
+logger = logging.getLogger(__name__)
 
 COMPATIBLE_CANDIDATES = {
     CANDIDATE_JOHNSON: [CANDIDATE_CLINTON],
@@ -55,6 +57,10 @@ def _matches_for_swing_state_profile(
         profile, direct=True, foaf=True, exclude_pending=True):
     """Find the suitable matches for a swing state profile"""
     found_friends = set()
+    logger.info(
+        ("[swing] Getting matches for swing-state profile %s. "
+         "direct: %s, foaf: %s, exclude_pending: %s"),
+        profile, direct, foaf, exclude_pending)
 
     def _get_friends(for_profile):
         through = None if profile == for_profile else for_profile
@@ -78,9 +84,11 @@ def _matches_for_swing_state_profile(
     )
     matches = list()
     if direct:
+        logger.info("[swing] Adding direct friends")
         matches.extend(_order_matches_by_state_rank(
             _get_friends(profile), potential_states))
     if foaf:
+        logger.info("[swing] Adding foafs")
         foaf_friends = set()
         for friend in profile.friends.all():
             foaf_friends = foaf_friends.union(_get_friends(friend))
@@ -89,8 +97,10 @@ def _matches_for_swing_state_profile(
     matches = _exclude_matches(
         PairProposal.objects.rejected(), profile, matches)
     if exclude_pending:
+        logger.info("[swing] Excluding pending matches")
         matches = _exclude_matches(
             PairProposal.objects.pending(), profile, matches)
+    logger.info("[swing] Found %s matches for %s", len(matches), profile)
     return matches
 
 
@@ -98,6 +108,10 @@ def _matches_for_safe_state_profile(
         profile, direct=True, foaf=True, exclude_pending=True):
     """Find the suitable matches for a safe state profile"""
     found_friends = set()
+    logger.info(
+        ("[safe] Getting matches for safe-state profile %s. "
+         "direct: %s, foaf: %s, exclude_pending: %s"),
+        profile, direct, foaf, exclude_pending)
 
     def _get_friends(for_profile):
         through = None if profile == for_profile else for_profile
@@ -121,9 +135,11 @@ def _matches_for_safe_state_profile(
     )
     matches = list()
     if direct:
+        logger.info("[safe] Adding direct friends")
         matches.extend(_order_matches_by_state_rank(
             _get_friends(profile), potential_states))
     if foaf:
+        logger.info("[safe] Adding foafs")
         foaf_friends = set()
         for friend in profile.friends.all():
             foaf_friends = foaf_friends.union(_get_friends(friend))
@@ -132,8 +148,10 @@ def _matches_for_safe_state_profile(
     matches = _exclude_matches(
         PairProposal.objects.rejected(), profile, matches)
     if exclude_pending:
+        logger.info("[safe] Excluding pending matches")
         matches = _exclude_matches(
             PairProposal.objects.pending(), profile, matches)
+    logger.info("[safe] Found %s matches for %s", len(matches), profile)
     return matches
 
 
@@ -144,17 +162,29 @@ def get_friend_matches(profile, exclude_pending=True):
       * safe state <-> swing states
       * candidate != my candidate
     """
+    logger.info("Get friend matches for profile %s, exlude_pending: %s",
+                profile, exclude_pending)
     state = State.objects.get(name=profile.state)
     if state.is_swing:
+        logger.info("%s is a swing state", state.name)
         if profile.preferred_candidate in dict(CANDIDATES_MAIN):
             # The user shouldn't change their vote
+            logger.info(
+                ("%s shouldn't swap because they're a Clinton voter"
+                 "in a swing state"),
+                profile)
             return NoMatchNecessary()
         return _matches_for_swing_state_profile(
             profile, exclude_pending=exclude_pending)
     else:
+        logger.info("%s is a safe state", state.name)
         # In a safe state
         if profile.preferred_candidate in dict(CANDIDATES_THIRD_PARTY):
             # The user shouldn't change their vote
+            logger.info(
+                ("%s shouldn't swap because they're a third-party voter"
+                 "in a safe state"),
+                profile)
             return NoMatchNecessary()
         return _matches_for_safe_state_profile(
             profile, exclude_pending=exclude_pending)
