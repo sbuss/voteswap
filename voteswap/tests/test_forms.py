@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
@@ -137,3 +138,11 @@ class TestLandingPageForm(TestCase):
         user = get_user_model().objects.get(id=user.id)
         self.assertEqual(user.profile.id, profile.id)
         self.assertEqual(profile.friends.get(), friend.profile)
+
+    def test_emoji_reason(self):
+        poo = u"💩"
+        user = UserFactory.create(profile=None)
+        data = self._data(reason=poo)
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
