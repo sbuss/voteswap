@@ -1,9 +1,13 @@
 from django import forms
 from django.http.request import QueryDict
 from django.utils import timezone
+import logging
+
 from users.models import PairProposal
 from users.models import Profile
 from voteswap.forms import LandingPageForm
+
+logger = logging.getLogger(__name__)
 
 
 class PairProposalForm(forms.ModelForm):
@@ -38,6 +42,9 @@ class ConfirmPairProposalForm(forms.ModelForm):
         self.fields['to_profile'].queryset = from_profile.all_unpaired_friends
 
     def save(self):
+        logger.info("Saving ConfirmPairProposalForm. From: %s, To: %s",
+                    self.instance.from_profile,
+                    self.instance.to_profile)
         self.instance.from_profile.paired_with = self.instance.to_profile
         self.instance.date_confirmed = timezone.now()
         super(ConfirmPairProposalForm, self).save()
@@ -56,6 +63,9 @@ class RejectPairProposalForm(forms.ModelForm):
         self.fields['to_profile'].queryset = from_profile.all_unpaired_friends
 
     def save(self):
+        logger.info("Saving RejectPairProposalForm. From: %s, To: %s",
+                    self.instance.from_profile,
+                    self.instance.to_profile)
         self.instance.date_rejected = timezone.now()
         super(RejectPairProposalForm, self).save()
 
@@ -67,6 +77,7 @@ class UpdateProfileForm(LandingPageForm):
                    "swap your vote"))
 
     def save(self, user):
+        logger.info("Saving UpdateProfileForm for %s", user)
         super(UpdateProfileForm, self).save(user)
         user.email = self.cleaned_data['email']
         user.save()
