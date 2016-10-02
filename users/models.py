@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import base64
 from django.conf import settings
 from django.db import models
 from django.db import transaction
@@ -78,6 +79,9 @@ class Profile(models.Model):
 
     objects = ProfileManager()
 
+    def clean(self):
+        self.reason = base64.b64encode(self.reason.encode('utf-8'))
+
     def _all_friends(self, unpaired=False):
         # TODO Raw SQL query is faster
         direct_friend_ids = self.friends.all().values_list('id', flat=True)
@@ -93,6 +97,12 @@ class Profile(models.Model):
             return (Profile.objects
                     .filter(id__in=all_friend_ids)
                     .exclude(id=self.id))
+
+    @property
+    def reason_decoded(self):
+        if self.reason:
+            return base64.b64decode(self.reason).decode('utf-8')
+        return ''
 
     @property
     def all_friends(self):

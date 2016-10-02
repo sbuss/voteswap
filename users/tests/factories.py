@@ -1,3 +1,4 @@
+import base64
 import random
 
 from django.contrib.auth import get_user_model
@@ -19,6 +20,12 @@ class ProfileFactory(factory.DjangoModelFactory):
     @factory.lazy_attribute
     def preferred_candidate(self):
         return random.choice(CANDIDATES_ADVOCATED)[0]
+
+    @factory.post_generation
+    def fix_reason(self, create, extracted, **kwargs):
+        if self.reason:
+            self.reason = base64.b64encode(self.reason.encode('utf-8'))
+            self.save()
 
 
 class SocialAuthFactory(factory.DjangoModelFactory):

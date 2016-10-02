@@ -16,7 +16,8 @@ class TestProfileView(TestCase):
     def setUp(self):
         super(TestProfileView, self).setUp()
         self.request = RequestFactory()
-        self.user = UserFactory.create(profile__reason="#NeverTrump")
+        self.user = UserFactory.create(
+            profile__reason="#NeverTrump")
 
     def test_go_back(self):
         request = self.request.get(reverse('users:update_profile'))
@@ -32,7 +33,7 @@ class TestProfileView(TestCase):
         self.assertEqual(response.status_code, HTTP_OK)
         self.assertContains(response, self.user.profile.state)
         self.assertContains(response, self.user.profile.preferred_candidate)
-        self.assertContains(response, self.user.profile.reason)
+        self.assertContains(response, self.user.profile.reason_decoded)
         self.assertContains(response, self.user.email)
 
     def test_update(self):
@@ -51,7 +52,7 @@ class TestProfileView(TestCase):
         self.assertEqual(response.get('Location'), reverse('users:profile'))
         profile = Profile.objects.get(id=self.user.profile.id)
         self.assertEqual(profile.state, new_state.name)
-        self.assertEqual(profile.reason, new_reason)
+        self.assertEqual(profile.reason_decoded, new_reason)
         user = User.objects.get(id=self.user.id)
         self.assertEqual(user.email, new_email)
 

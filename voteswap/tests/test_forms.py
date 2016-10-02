@@ -67,7 +67,7 @@ class TestLandingPageForm(TestCase):
         self.assertEqual(user.profile.state, data['state'])
         self.assertEqual(user.profile.preferred_candidate,
                          data['preferred_candidate'])
-        self.assertEqual(user.profile.reason,
+        self.assertEqual(user.profile.reason_decoded,
                          data['reason'])
         self.assertNotEqual(user.profile.fb_id, '')
         self.assertEqual(user.profile.fb_id, user.social_auth.get().uid)
@@ -146,3 +146,4 @@ class TestLandingPageForm(TestCase):
         form = LandingPageForm(data=data)
         self.assertTrue(form.is_valid())
         form.save(user)
+        self.assertEqual(user.profile.reason_decoded, poo)
