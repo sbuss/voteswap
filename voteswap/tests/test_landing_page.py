@@ -24,6 +24,7 @@ class TestLandingPageView(TestCase):
     def test_login_redirect(self):
         request = self.request.get(reverse(landing_page))
         request.user = self.user
+        request.session = {}
         response = landing_page(request)
         self.assertEqual(response.status_code, HTTP_REDIRECT)
         self.assertTrue(response.has_header('Location'))
@@ -32,6 +33,7 @@ class TestLandingPageView(TestCase):
     def test_anonymous(self):
         request = self.request.get(reverse(landing_page))
         request.user = AnonymousUser()
+        request.session = {}
         response = landing_page(request)
         self.assertEqual(response.status_code, HTTP_OK)
         self.assertContains(response, 'Join with Facebook')

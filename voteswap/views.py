@@ -1,3 +1,4 @@
+from collections import namedtuple
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -5,7 +6,9 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponseServerError
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
+from django.utils import timezone
 import requests
+import time
 
 from polling.models import State
 from users.models import Profile
@@ -17,6 +20,33 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+SignUpInfo = namedtuple("SignUpInfo", ["timestamp", "referer", "ip"])
+
+
+def _attach_signup_info(request):
+    existing_info = request.session.get('signupinfo', None)
+    now = timezone.datetime.now()
+    # now = time.mktime(timezone.datetime.now().timetuple())
+    if existing_info:
+        existing_info = SignUpInfo(existing_info)
+        # If it's less than 1 hour old, do nothing
+        last_update = timezone.datetime.fromtimestamp(existing_info.timestamp)
+        if now - last_update < timezone.timedelta(hours=1):
+            return
+
+    def get_client_ip():
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+            return ip
+
+    request.session['signupinfo'] = SignUpInfo(
+        time.mktime(now.timetuple()),
+        request.META.get('HTTP_REFERER', ''),
+        get_client_ip())
+
 
 def logout(request):
     logger.info("%s logging out", request.user)
@@ -25,6 +55,7 @@ def logout(request):
 
 
 def signup(request):
+    _attach_signup_info(request)
     logger.info("signup form")
     form = LandingPageForm()
     context = RequestContext(request, {'form': form})
@@ -33,6 +64,7 @@ def signup(request):
 
 
 def landing_page(request):
+    _attach_signup_info(request)
     if hasattr(request, 'user') and request.user.is_authenticated():
         logger.info("%s redirected from landing page to profile", request.user)
         return HttpResponseRedirect(reverse('users:profile'))
@@ -158,12 +190,14 @@ def match(request):
 
 
 def about(request):
+    _attach_signup_info(request)
     logger.info("about page")
     context = RequestContext(request)
     return render_to_response('about.html', context_instance=context)
 
 
 def press(request):
+    _attach_signup_info(request)
     logger.info("press page")
     context = RequestContext(request)
     return render_to_response('press.html', context_instance=context)
