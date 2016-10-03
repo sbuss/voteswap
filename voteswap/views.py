@@ -13,6 +13,7 @@ import time
 
 from polling.models import State
 from users.models import Profile
+from users.models import SignUpLog
 from voteswap.match import get_friend_matches
 # from voteswap.match import NoMatchNecessary
 from voteswap.forms import LandingPageForm
@@ -161,6 +162,12 @@ def confirm_signup(request):
     try:
         if form.is_valid():
             form.save(request.user)
+            signupinfo = request.session.get('signupinfo')
+            if signupinfo:
+                SignUpLog.objects.create(
+                    user=request.user,
+                    referer=signupinfo.referer,
+                    ip=signupinfo.ip)
             logger.info("Created profile for user %s", request.user)
             _add_facebook_friends_for_user(request.user)
             return HttpResponseRedirect(reverse('users:profile'))

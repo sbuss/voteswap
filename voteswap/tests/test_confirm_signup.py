@@ -7,8 +7,10 @@ from mock import patch
 from polling.models import CANDIDATE_CLINTON
 from polling.tests.factories import StateFactory
 from users.models import Profile
+from users.models import SignUpLog
 from users.tests.factories import ProfileFactory
 from users.tests.factories import UserFactory
+from voteswap.views import _attach_signup_info
 from voteswap.views import confirm_signup
 from voteswap.tests.test_load_facebook_friends import \
     _load_mock_request_response
@@ -72,3 +74,20 @@ class TestConfirmSignup(TestCase):
         self.assertEqual(response.status_code, HTTP_REDIRECT)
         self.assertTrue(response.has_header('Location'))
         self.assertEqual(response.get('Location'), reverse('users:profile'))
+
+    def test_signupinfo(self, mock_request):
+        request = self.request.get(reverse(confirm_signup))
+        request.user = self.user
+        request.session = self.session
+        request.META = {
+            'HTTP_REFERER': 'foo-referer',
+            'REMOTE_ADDR': 'remote-addr',
+        }
+        _attach_signup_info(request)
+        self.assertEqual(SignUpLog.objects.count(), 0)
+        confirm_signup(request)
+        self.assertEqual(SignUpLog.objects.count(), 1)
+        sul = SignUpLog.objects.get()
+        self.assertEqual(sul.referer, 'foo-referer')
+        self.assertEqual(sul.ip, 'remote-addr')
+        self.assertEqual(sul.user, request.user)
