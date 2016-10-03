@@ -1,4 +1,5 @@
 from collections import namedtuple
+import datetime
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -24,14 +25,13 @@ SignUpInfo = namedtuple("SignUpInfo", ["timestamp", "referer", "ip"])
 
 
 def _attach_signup_info(request):
-    existing_info = request.session.get('signupinfo', None)
+    key = 'signupinfo'
+    existing_info = request.session.get(key, None)
     now = timezone.datetime.now()
-    # now = time.mktime(timezone.datetime.now().timetuple())
     if existing_info:
-        existing_info = SignUpInfo(existing_info)
         # If it's less than 1 hour old, do nothing
-        last_update = timezone.datetime.fromtimestamp(existing_info.timestamp)
-        if now - last_update < timezone.timedelta(hours=1):
+        last_update = datetime.datetime.fromtimestamp(existing_info.timestamp)
+        if now - last_update < datetime.timedelta(hours=1):
             return
 
     def get_client_ip():
@@ -40,10 +40,10 @@ def _attach_signup_info(request):
             ip = x_forwarded_for.split(',')[0]
         else:
             ip = request.META.get('REMOTE_ADDR')
-            return ip
+        return ip
 
-    request.session['signupinfo'] = SignUpInfo(
-        time.mktime(now.timetuple()),
+    request.session[key] = SignUpInfo(
+        int(time.mktime(now.timetuple())),
         request.META.get('HTTP_REFERER', ''),
         get_client_ip())
 
