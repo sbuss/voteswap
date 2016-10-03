@@ -31,6 +31,7 @@ def _attach_signup_info(request):
     now = timezone.datetime.now()
     if existing_info:
         # If it's less than 1 hour old, do nothing
+        existing_info = SignUpInfo(*existing_info)
         last_update = datetime.datetime.fromtimestamp(existing_info.timestamp)
         if now - last_update < datetime.timedelta(hours=1):
             return
