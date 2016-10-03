@@ -1,3 +1,5 @@
+from collections import namedtuple
+import datetime
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -5,10 +7,13 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponseServerError
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
+from django.utils import timezone
 import requests
+import time
 
 from polling.models import State
 from users.models import Profile
+from users.models import SignUpLog
 from voteswap.match import get_friend_matches
 # from voteswap.match import NoMatchNecessary
 from voteswap.forms import LandingPageForm
@@ -16,6 +21,32 @@ from voteswap.forms import LandingPageForm
 import logging
 
 logger = logging.getLogger(__name__)
+
+SignUpInfo = namedtuple("SignUpInfo", ["timestamp", "referer", "ip"])
+
+
+def _attach_signup_info(request):
+    key = 'signupinfo'
+    existing_info = request.session.get(key, None)
+    now = timezone.datetime.now()
+    if existing_info:
+        # If it's less than 1 hour old, do nothing
+        last_update = datetime.datetime.fromtimestamp(existing_info.timestamp)
+        if now - last_update < datetime.timedelta(hours=1):
+            return
+
+    def get_client_ip():
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+
+    request.session[key] = SignUpInfo(
+        int(time.mktime(now.timetuple())),
+        request.META.get('HTTP_REFERER', ''),
+        get_client_ip())
 
 
 def logout(request):
@@ -25,6 +56,7 @@ def logout(request):
 
 
 def signup(request):
+    _attach_signup_info(request)
     logger.info("signup form")
     form = LandingPageForm()
     context = RequestContext(request, {'form': form})
@@ -33,6 +65,7 @@ def signup(request):
 
 
 def landing_page(request):
+    _attach_signup_info(request)
     if hasattr(request, 'user') and request.user.is_authenticated():
         logger.info("%s redirected from landing page to profile", request.user)
         return HttpResponseRedirect(reverse('users:profile'))
@@ -129,6 +162,12 @@ def confirm_signup(request):
     try:
         if form.is_valid():
             form.save(request.user)
+            signupinfo = request.session.get('signupinfo')
+            if signupinfo:
+                SignUpLog.objects.create(
+                    user=request.user,
+                    referer=signupinfo.referer,
+                    ip=signupinfo.ip)
             logger.info("Created profile for user %s", request.user)
             _add_facebook_friends_for_user(request.user)
             return HttpResponseRedirect(reverse('users:profile'))
@@ -158,12 +197,14 @@ def match(request):
 
 
 def about(request):
+    _attach_signup_info(request)
     logger.info("about page")
     context = RequestContext(request)
     return render_to_response('about.html', context_instance=context)
 
 
 def press(request):
+    _attach_signup_info(request)
     logger.info("press page")
     context = RequestContext(request)
     return render_to_response('press.html', context_instance=context)

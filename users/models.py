@@ -64,6 +64,12 @@ class ProfileManager(models.Manager):
         return self.get_queryset().filter(_paired_with=None)
 
 
+class SignUpLog(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)
+    referer = models.CharField(max_length=255, null=True)
+    ip = models.CharField(max_length=255, null=True)
+
+
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True)
     # TODO: populate fb_name with facebook name

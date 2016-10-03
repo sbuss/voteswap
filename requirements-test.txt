@@ -1,2 +1,4 @@
 factory_boy
 mock
+django-nose
+ipdbplugin
