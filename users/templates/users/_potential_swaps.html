@@ -22,7 +22,10 @@
       </div>
       <div class="not-proposed-content">
         <p>{{ fm_ctx.proposal_string }}</p>
-        <button type="button" class="btn btn-success btn-lg js-propose-swap" data-profile-id="{{fm_ctx.friend_match.profile.id}}" data-name="{{ fm_ctx.name }}">Swap</button>
+        <button type="button"
+                class="btn btn-success btn-lg js-propose-swap"
+                data-profile-id="{{ fm_ctx.friend_match.profile.id }}"
+                data-name="{{ fm_ctx.name }}">Swap</button>
         <a class="btn btn-primary btn-social btn-facebook btn-lg"
            href="https://www.facebook.com/messages/{{ fm_ctx.friend_match.profile.fb_id }}">
           <span class="fa fa-facebook"></span> Message {{ fm_ctx.friend_match.profile.user.first_name }}
