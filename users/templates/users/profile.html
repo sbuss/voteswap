@@ -1,4 +1,14 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block extracss %}
+<link href="{% static 'jquery-confirm.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extrajs %}
+<script src="{% static 'jquery-confirm.min.js' %}"></script>
+{% endblock %}
+
 {% load state_face %}
 
 {% block main %}
