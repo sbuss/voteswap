@@ -45,4 +45,7 @@ urlpatterns = [
     url('^privacy/$',
         TemplateView.as_view(template_name='privacy-policy.html'),
         name='privacy'),
+    url('^tos/$',
+        TemplateView.as_view(template_name='terms-of-service.html'),
+        name='tos'),
 ]
