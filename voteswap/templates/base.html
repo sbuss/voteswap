@@ -51,7 +51,7 @@
           <ul class="nav navbar-nav navbar-right">
             {% if not user.is_authenticated %}
             <li>
-              <p class="navbar-btn">
+              <p class="navbar-btn" style="padding-right: 8px; padding-left: 8px;">
                 <a class="btn btn-primary btn-social btn-facebook"
                    href="{% url 'social:begin' 'facebook' %}?next={% url "users:profile" %}">
                   <span class="fa fa-facebook"></span> Log in with Facebook
