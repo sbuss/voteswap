@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
+from django.views.generic import TemplateView
 
 from voteswap.views import about
 from voteswap.views import confirm_signup
@@ -41,4 +42,10 @@ urlpatterns = [
     url('^signup/$', signup, name='signup'),
     # TODO: Remove this and fix the tests
     url('^match/$', match, name='match'),
+    url('^privacy/$',
+        TemplateView.as_view(template_name='privacy-policy.html'),
+        name='privacy'),
+    url('^tos/$',
+        TemplateView.as_view(template_name='terms-of-service.html'),
+        name='tos'),
 ]
