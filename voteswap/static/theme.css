@@ -26,9 +26,13 @@
 
 .landing-page__header-image {
   background: #000 url(/static/hillarycloseup.jpg) left top no-repeat;
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain;
+  background-size: contain;
   padding: 0;
   margin: 0 auto;
-  height: 70vw;
+  height: 30vw;
   max-height: 600px;
   /*max-width: 1440px;*/
   /*max-width: 1158px;*/
@@ -136,6 +140,7 @@ footer .navbar .navbar-collapse {
 @media all and (max-width: 1050px) {
   .landing-page__header-image {
     max-height: 500px;
+    min-height: 300px;
   }
 }
 @media all and (max-width: 830px) {
