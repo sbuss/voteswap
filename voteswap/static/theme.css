@@ -32,22 +32,44 @@
 .leader-image-container {
   height: auto;
   max-height: 600px;
+  max-width: 570px;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
 .leader-image {
   height: 100% !important;
   width: 100%;
+  min-height: 412px;
+  min-width: 391px;
   margin: 0 auto;
+  z-index: 999;
 }
 
 .leader {
   color: #fff;
   font-size: 3em;
+  background: transparent;
 }
 
 .leader i {
   text-decoration: underline;
   font-size: 0.8em;
+}
+
+.leader h1 {
+  font-size: 0.64em;
+  font-weight: bold;
+}
+
+.leader p {
+  font-size: 0.4em;
+  color: #ccc;
+}
+
+.leader .nader-gore {
+  font-size: 0.64em;
+  color: #fff;
 }
 
 .vertical-align {
@@ -173,6 +195,9 @@ footer .navbar .navbar-collapse {
     max-height: 500px;
     min-height: 300px;
   }
+  .leader {
+    font-size: 2.5em;
+  }
 }
 @media all and (max-width: 830px) {
   .landing-page__header-image {
@@ -180,6 +205,9 @@ footer .navbar .navbar-collapse {
   }
   .landing-page__header-text {
     font-size: 2.5em;
+  }
+  .leader {
+    font-size: 1em;
   }
   p {
     font-size: 1.5em;
@@ -195,12 +223,12 @@ footer .navbar .navbar-collapse {
   .landing-page__header-text {
     font-size: 2em;
   }
-}
-
-@media all and (max-width: 560px) {
   .jumbotron .vertical-align {
     display: block;
   }
+}
+
+@media all and (max-width: 560px) {
   .leader-image {
     max-width: 300px;
   }
