@@ -30,18 +30,29 @@
 }
 
 .leader-image-container {
-  height: 50vw;
+  height: auto;
   max-height: 600px;
 }
 
 .leader-image {
   height: 100% !important;
+  width: 100%;
   margin: 0 auto;
 }
 
 .leader {
   color: #fff;
   font-size: 3em;
+}
+
+.leader i {
+  text-decoration: underline;
+  font-size: 0.8em;
+}
+
+.vertical-align {
+  display: flex;
+  align-items: center;
 }
 
 .landing-page__header-image {
@@ -186,12 +197,33 @@ footer .navbar .navbar-collapse {
   }
 }
 
+@media all and (max-width: 560px) {
+  .jumbotron .vertical-align {
+    display: block;
+  }
+  .leader-image {
+    max-width: 300px;
+  }
+  .leader {
+    font-size: 2em;
+  }
+}
+
 @media all and (max-width: 425px) {
   .col-md-6.match-info,.match,.well {
     padding-left: 2px;
     padding-right: 2px;
     margin-right: 0px;
     margin-left: 0px;
+  }
+  .leader {
+    font-size: 2.2em;
+  }
+}
+
+@media all and (max-width: 324px) {
+  .leader {
+    font-size: 2em;
   }
 }
 
