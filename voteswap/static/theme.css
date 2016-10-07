@@ -20,14 +20,14 @@
   margin: 0 auto;
 }
 
+.jumbotron {
+  background: #000;
+}
+
 .landing-page__header-image {
-  background: #738ace url(/static/clinton-wide.jpg) center top no-repeat;
+  background: #000 url(/static/hillarycloseup.jpg) left top no-repeat;
   padding: 0;
   margin: 0 auto;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
   height: 70vw;
   max-height: 600px;
   /*max-width: 1440px;*/
@@ -78,12 +78,18 @@ button.join-now, a.join-now {
   background-image: none;
   margin-bottom: 0px;
   border-radius: 0px;
-  background-color: #0A234E;
+  background-color: #fff;
+  color: #000;
   border: none;
 }
 
 .navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav>li>a  {
-  color: #fff;
+  color: #000;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 2em;
 }
 
 html {
