@@ -180,6 +180,10 @@ button.join-now, a.join-now {
   font-size: 2em;
 }
 
+.navbar-inverse .navbar-toggle .icon-bar {
+  background-color: black !important;
+}
+
 html {
   position: relative;
   min-height: 100%;
