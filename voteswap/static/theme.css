@@ -20,30 +20,76 @@
   margin: 0 auto;
 }
 
-.landing-page__header-image {
-  background: #738ace url(/static/clinton-wide.jpg) center top no-repeat;
-  padding: 0;
-  margin: 0 auto;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  height: 70vw;
-  max-height: 600px;
-  /*max-width: 1440px;*/
-  /*max-width: 1158px;*/
-  border-radius: 0px;
+.jumbotron {
+  background: #000;
+  padding: 0px;
+  margin-bottom: 10px;
 }
 
-.landing-page__header-text {
-  font: bold 2em sans-serif;
+.jumbotron .row {
+  padding: 0px;
+}
+
+.header-image {
+  background: #000 url('/static/hillarycloseup.jpg') bottom left no-repeat;
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain;
+  background-size: contain;
+  padding: 0;
+  margin: 0 auto;
+  height: 30vw;
+  max-height: 400px;
+}
+
+.leader {
   color: #fff;
-  background: #000;
-  display: block;
-  border-radius: 0px;
-  width: 100%;
-  margin: 0px;
   font-size: 3em;
+  background: transparent;
+  width: 750px;
+  margin-left: 30%;
+  margin-top: 2%;
+}
+
+.leader i {
+  text-decoration: underline;
+  font-size: 0.8em;
+}
+
+.leader h1 {
+  font-size: 0.8em;
+  font-weight: bold;
+  padding: 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin: 0;
+}
+
+.leader h2 {
+  font-size: 0.64em;
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
+}
+
+.leader p {
+  font-size: 0.4em;
+  color: #fcfcfc;
+}
+
+.leader p.leader-description {
+  width: 80%;
+}
+
+.leader .nader-gore {
+  font-size: 0.64em;
+  color: #fff;
+  padding: 0;
+}
+
+.vertical-align {
+  display: flex;
+  align-items: center;
 }
 
 .container-full > div > h1,h2,h3,h4,h5 {
@@ -54,12 +100,22 @@ p {
   font-size: 1.5em;
 }
 
+.landing-body h1 {
+  margin-top: 10px;
+  font-size: 1.8em;
+}
+
+.landing-body p {
+  font-size: 1.3em;
+}
+
 .row {
   padding: 10px;
 }
 
 .join-now {
-  padding: 30px;
+  padding-top: 0;
+  margin: 0 auto;
 }
 
 button.join-now, a.join-now {
@@ -78,12 +134,22 @@ button.join-now, a.join-now {
   background-image: none;
   margin-bottom: 0px;
   border-radius: 0px;
-  background-color: #0A234E;
+  background-color: #fff;
+  color: #000;
   border: none;
 }
 
 .navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav>li>a  {
-  color: #fff;
+  color: #000;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 2em;
+}
+
+.navbar-inverse .navbar-toggle .icon-bar {
+  background-color: black !important;
 }
 
 html {
@@ -102,7 +168,8 @@ body {
   width: 100%;
   /* Set the fixed height of the footer here */
   height: 150px;
-  background-color: #f5f5f5;
+  color: #fff;
+  background-color: #000;
 }
 
 .footer p {
@@ -122,27 +189,115 @@ footer .navbar .navbar-nav {
   margin-bottom: 0;
 }
 
+footer .navbar a {
+  color: #fff;
+}
+
 footer .navbar .navbar-collapse {
   text-align: center;
 }
 
 /* Media overrides */
+@media all and (max-width: 1240px) {
+  /*.leader {
+    font-size: 2.5em;
+    width: 650px;
+    margin-left: 30vw;
+  }*/
+  .leader {
+    width: auto;
+  }
+  .leader p.leader-description {
+    width: 600px;
+  }
+  p.nader-gore {
+    width: 400px;
+  }
+}
 @media all and (max-width: 1050px) {
-  .landing-page__header-image {
+  .header-image {
     max-height: 500px;
+    min-height: 300px;
+  }
+}
+@media all and (max-width: 930px) {
+  .leader {
+    font-size: 2em;
+    width: 500px;
+    margin-left: 250px;
+    margin-top: 10px;
+  }
+  .leader h1 {
+    margin-top: 0;
+    padding-top: 10px;
+  }
+  .leader p.leader-description {
+    font-size: 0.5em;
+    width: 100%;
+  }
+  p.nader-gore {
+    width: 100%;
   }
 }
 @media all and (max-width: 830px) {
-  .landing-page__header-image {
+  .header-image {
     max-height: 400px;
   }
   .landing-page__header-text {
     font-size: 2.5em;
   }
-  p {
-    font-size: 1.5em;
+}
+@media all and (max-width: 768px) {
+  .header-image {
+    background-height: 250px;
+  }
+  .leader {
+    margin-top: 0px;
+    margin-left: 250px;
+  }
+  .leader h1 {
+    margin-top: 0;
+    padding-top: 10px;
+  }
+  .leader p.leader-description {
+    font-size: 0.5em;
+    width: 100%
   }
 }
+@media all and (max-width: 750px) {
+  .leader {
+    width: 60%;
+  }
+  p.nader-gore {
+    width: 300px;
+  }
+}
+@media all and (max-width: 638px) {
+  .leader {
+    margin: 0 auto;
+    /*margin-top: 200px;*/
+    padding: 30px;
+    width: 100%;
+    font-size: 2em;
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 100%;
+  }
+  .leader p {
+    color: #fcfcfc;
+  }
+  .header-image {
+    max-height: none;
+    min-height: 400px;
+    height: 50vh;
+    background: #000 url('/static/hillarycloseup.jpg') center bottom no-repeat;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+    /*min-height: 200px;*/
+  }
+}
+
 @media all and (max-width: 670px) {
   .col-md-6.match-info,.match,.well {
     padding-left: 5px;
@@ -153,6 +308,15 @@ footer .navbar .navbar-collapse {
   .landing-page__header-text {
     font-size: 2em;
   }
+  .jumbotron .vertical-align {
+    display: block;
+  }
+}
+
+@media all and (max-width: 560px) {
+  .leader {
+    font-size: 2em;
+  }
 }
 
 @media all and (max-width: 425px) {
@@ -161,6 +325,17 @@ footer .navbar .navbar-collapse {
     padding-right: 2px;
     margin-right: 0px;
     margin-left: 0px;
+  }
+  .leader {
+    font-size: 2.2em;
+    padding: 20px;
+  }
+}
+
+@media all and (max-width: 324px) {
+  .leader {
+    font-size: 2em;
+    padding: 10px;
   }
 }
 

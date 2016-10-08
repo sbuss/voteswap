@@ -1,37 +1,38 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
+{% load staticfiles %}
 
 {% block main %}
-<div class="jumbotron landing-page__header-image">
+<div class="jumbotron">
+  <div class="row clearfix">
+    <div class="not-fullscreen header-image">
+      <div class="leader">
+        <h1>Vote your conscience <i>and</i> <b>Stop Trump</b></h1>
+        <h2 id="make-your-vote-count">Make your vote count</h2>
+        <p class='leader-description'>
+          Voting for Gary Johnson or Jill Stein in {{ swing_states }} will
+          split the vote and help Trump win.
+        </p>
+        <p class='leader-description'>
+          We match third party voters in in swing states with Clinton voters
+          in safe states. Johnson &amp; Stein get the same number of votes, and
+          Trump loses.
+        </p>
+        <p class='nader-gore'>
+          Don't split the vote like we did with Nader and Al Gore in 2000.
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="landing-page__header-text col-sm-12">
+<!--<div class="landing-page__header-text col-sm-12">
   <div class="not-fullscreen">
   Vote your conscience <i>and</i> stop Trump
   </div>
-</div>
-<div class="not-fullscreen">
+  </div>-->
+<div class="not-fullscreen landing-body">
   <div class="row">
-    <div class="col-md-8">
-      <h1 id="make-your-vote-count">Make your vote count</h1>
-      <p>
-        Third party voters have all the power this election. Voting for Gary
-        Johnson or Jill Stein in {{ swing_states }} will split the vote and
-        make Clinton lose.
-      </p>
-      <p>
-        Don't let Trump win, swap your vote! <b>Gary Johnson and Jill Stein
-        voters in in swing states</b> are matched with <b>Clinton voters in
-        safe states</b>. Johnson &amp; Stein get the same number of votes, and
-        Trump loses. Don't split the vote like we did with Nader and Al Gore in
-        2000.
-      </p>
-      <p>
-        <a class="fb-feed-btn btn btn-primary btn-social btn-facebook">
-          <span class="fa fa-facebook"></span> Share on facebook
-        </a>
-      </p>
-    </div>
-    <div id="join" class="col-md-4 join-now">
+    <div id="join" class="col-sm-4 join-now col-sm-push-8">
       <form class="form" method="POST" action="{% url "landing_page" %}">
         {% csrf_token %}
         {% bootstrap_form form size='large' %}
@@ -40,15 +41,33 @@
         {% endbuttons %}
       </form>
     </div>
-  </div>
-
-  {% include "_how_does_it_work.html" %}
-
-  {% include "_dont_fuck_it_up.html" %}
-
-  <div class="row">
-    <div class="col-md-8 col-md-offset-2">
-      <a role="button" class="btn btn-primary join-now" href="{% url "signup" %}">Join now!</a>
+    <div class="col-sm-8 col-sm-pull-4">
+      <h1>How does it work?</h1>
+      <p>
+      When you join Vote Swap, you'll be matched with a friend in your Facebook
+      network. Friends in swing states that want to vote Stein or Johnson will
+      swap votes with friends in safe states that want to vote Clinton. This
+      lets third parties get votes without giving away the presidency to Trump.
+      </p>
+      <h1>Let's not screw this up</h1>
+      <p>
+      George W. Bush won the 2000 election by winning Florida by 537 votes.
+      If just a small fraction of the 97,421 Ralph Nader voters in Florida
+      had vote swapped, Al Gore would have won.
+      </p>
+      <p>
+      This is the most important election in decades. We can either let a
+      bigoted, racist, xenophobic, unstable little dictator destroy our
+      country. Or we can come together and elect someone with decades of
+      experience in domestic and foreign policy, who listens to advice and has
+      a calm, clear head. She may not be your favorite candidate, but she won't
+      screw up the country. So do your part and don't screw it up either.
+      </p>
+      <!--<p>
+        <a class="fb-feed-btn btn btn-primary btn-social btn-facebook">
+          <span class="fa fa-facebook"></span> Share on facebook
+        </a>
+        </p>-->
     </div>
   </div>
 </div>
