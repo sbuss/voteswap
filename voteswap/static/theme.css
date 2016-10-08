@@ -62,8 +62,9 @@
   color: #fff;
   font-size: 3em;
   background: transparent;
-  width: 60vw;
-  margin-left: 30vw;
+  width: 750px;
+  margin-left: 35vw;
+  margin-top: 2%;
 }
 
 .leader i {
@@ -92,9 +93,14 @@
   color: #ccc;
 }
 
+.leader p.leader-description {
+  width: 80%;
+}
+
 .leader .nader-gore {
   font-size: 0.64em;
   color: #fff;
+  padding: 0;
 }
 
 .vertical-align {
@@ -218,6 +224,8 @@ footer .navbar .navbar-collapse {
 @media all and (max-width: 1240px) {
   .leader {
     font-size: 2.5em;
+    width: 650px;
+    margin-left: 30vw;
   }
 }
 @media all and (max-width: 1050px) {
@@ -225,13 +233,13 @@ footer .navbar .navbar-collapse {
     max-height: 500px;
     min-height: 300px;
   }
-  .leader {
-    font-size: 2.5em;
-  }
 }
-@media all and (max-width: 1024px) {
+@media all and (max-width: 930px) {
   .leader {
-    width: 65vw;
+    font-size: 2em;
+    width: 500px;
+    margin-left: 250px;
+    margin-top: 10px;
   }
 }
 @media all and (max-width: 830px) {
@@ -246,8 +254,15 @@ footer .navbar .navbar-collapse {
   .header-image {
     background-height: 250px;
   }
+  .leader {
+    margin-left: 250px;
+  }
 }
-
+@media all and (max-width: 750px) {
+  .leader {
+    width: 60%;
+  }
+}
 @media all and (max-width: 638px) {
   .leader {
     margin: 0 auto;
