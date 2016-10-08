@@ -250,11 +250,20 @@ footer .navbar .navbar-collapse {
 
 @media all and (max-width: 638px) {
   .leader {
-    margin-top: 250px;
+    margin: 0 auto;
+    margin-top: 200px;
+    padding: 30px;
+    width: 100%;
     float: left;
+    font-size: 3em;
   }
   .header-image {
-    background-height: 250px;
+    background: #000 url('/static/hillarycloseup.jpg') bottom center no-repeat;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+    min-height: 200px;
   }
 }
 
@@ -274,9 +283,6 @@ footer .navbar .navbar-collapse {
 }
 
 @media all and (max-width: 560px) {
-  .leader-image {
-    max-width: 300px;
-  }
   .leader {
     font-size: 2em;
   }
@@ -291,6 +297,7 @@ footer .navbar .navbar-collapse {
   }
   .leader {
     font-size: 2.2em;
+    margin-left: 10px;
   }
 }
 
