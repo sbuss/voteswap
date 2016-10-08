@@ -37,6 +37,18 @@
   overflow: hidden;
 }
 
+.header-image {
+  background: #000 url('/static/hillarycloseup.jpg') bottom left no-repeat;
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain;
+  background-size: contain;
+  padding: 0;
+  margin: 0 auto;
+  height: 30vw;
+  max-height: 600px;
+}
+
 .leader-image {
   height: 100% !important;
   width: 100%;
@@ -50,6 +62,8 @@
   color: #fff;
   font-size: 3em;
   background: transparent;
+  width: 60vw;
+  margin-left: 30vw;
 }
 
 .leader i {
@@ -58,8 +72,19 @@
 }
 
 .leader h1 {
+  font-size: 0.8em;
+  font-weight: bold;
+  padding: 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin: 0;
+}
+
+.leader h2 {
   font-size: 0.64em;
   font-weight: bold;
+  padding: 0;
+  margin: 0;
 }
 
 .leader p {
@@ -190,8 +215,13 @@ footer .navbar .navbar-collapse {
 }
 
 /* Media overrides */
+@media all and (max-width: 1240px) {
+  .leader {
+    font-size: 2.5em;
+  }
+}
 @media all and (max-width: 1050px) {
-  .landing-page__header-image {
+  .header-image {
     max-height: 500px;
     min-height: 300px;
   }
@@ -199,20 +229,44 @@ footer .navbar .navbar-collapse {
     font-size: 2.5em;
   }
 }
+@media all and (max-width: 1024px) {
+  .leader {
+    width: 65vw;
+  }
+}
 @media all and (max-width: 830px) {
-  .landing-page__header-image {
+  .header-image {
     max-height: 400px;
   }
   .landing-page__header-text {
     font-size: 2.5em;
   }
-  .leader {
-    font-size: 1em;
-  }
-  p {
-    font-size: 1.5em;
+}
+@media all and (max-width: 768px) {
+  .header-image {
+    background-height: 250px;
   }
 }
+
+@media all and (max-width: 638px) {
+  .leader {
+    margin: 0 auto;
+    margin-top: 200px;
+    padding: 30px;
+    width: 100%;
+    float: left;
+    font-size: 3em;
+  }
+  .header-image {
+    background: #000 url('/static/hillarycloseup.jpg') bottom center no-repeat;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+    min-height: 200px;
+  }
+}
+
 @media all and (max-width: 670px) {
   .col-md-6.match-info,.match,.well {
     padding-left: 5px;
@@ -229,9 +283,6 @@ footer .navbar .navbar-collapse {
 }
 
 @media all and (max-width: 560px) {
-  .leader-image {
-    max-width: 300px;
-  }
   .leader {
     font-size: 2em;
   }
@@ -246,6 +297,7 @@ footer .navbar .navbar-collapse {
   }
   .leader {
     font-size: 2.2em;
+    margin-left: 10px;
   }
 }
 
