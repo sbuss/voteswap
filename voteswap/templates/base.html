@@ -32,7 +32,7 @@
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar{% if not landing_page %} navbar-inverse{% endif %}">
       <div class="container-full">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
