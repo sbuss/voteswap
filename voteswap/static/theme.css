@@ -29,14 +29,6 @@
   padding: 0px;
 }
 
-.leader-image-container {
-  height: auto;
-  max-height: 600px;
-  max-width: 570px;
-  margin: 0 auto;
-  overflow: hidden;
-}
-
 .header-image {
   background: #000 url('/static/hillarycloseup.jpg') bottom left no-repeat;
   -webkit-background-size: contain;
@@ -47,15 +39,6 @@
   margin: 0 auto;
   height: 30vw;
   max-height: 400px;
-}
-
-.leader-image {
-  height: 100% !important;
-  width: 100%;
-  min-height: 412px;
-  min-width: 391px;
-  margin: 0 auto;
-  z-index: 999;
 }
 
 .leader {
