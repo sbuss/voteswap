@@ -26,7 +26,7 @@ from users.models import PairProposal
 from users.models import Profile
 from voteswap.match import get_friend_matches
 
-CANDIDATES_THIRD = [CANDIDATE_JOHNSON, CANDIDATE_STEIN]
+CANDIDATES_THIRD = (CANDIDATE_JOHNSON, CANDIDATE_STEIN)
 
 logger = logging.getLogger(__name__)
 
