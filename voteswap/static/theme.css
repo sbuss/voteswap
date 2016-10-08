@@ -108,32 +108,6 @@
   align-items: center;
 }
 
-.landing-page__header-image {
-  background: #000 url(/static/hillarycloseup.jpg) left top no-repeat;
-  -webkit-background-size: contain;
-  -moz-background-size: contain;
-  -o-background-size: contain;
-  background-size: contain;
-  padding: 0;
-  margin: 0 auto;
-  height: 30vw;
-  max-height: 600px;
-  /*max-width: 1440px;*/
-  /*max-width: 1158px;*/
-  border-radius: 0px;
-}
-
-.landing-page__header-text {
-  font: bold 2em sans-serif;
-  color: #fff;
-  background: #000;
-  display: block;
-  border-radius: 0px;
-  width: 100%;
-  margin: 0px;
-  font-size: 3em;
-}
-
 .container-full > div > h1,h2,h3,h4,h5 {
   padding-left: 10px;
 }
