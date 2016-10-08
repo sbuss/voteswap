@@ -104,7 +104,7 @@ p {
 }
 
 .join-now {
-  padding: 30px;
+  padding-top: 0;
 }
 
 button.join-now, a.join-now {
