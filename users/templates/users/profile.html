@@ -13,6 +13,7 @@
 
 {% block main %}
 
+<div class="not-fullscreen">
 <div class="row">
 
   {% if not user.email %}
@@ -52,10 +53,10 @@
       {% include "users/_sidebar.html" %}
     </div>
   {% else %}
-    <div class="profile-sidebar col-md-3">
+    <div class="col-md-12">
       {% include "users/_sidebar.html" %}
     </div>
-    <div class="col-md-9">
+    <div class="col-md-12">
     {% if profile.preferred_candidate and profile.state %}
     {% if profile_context.needs_match %}
       {% if profile_context.pending_matches or profile_context.good_potential_matches %}
@@ -106,5 +107,6 @@
     </div>
   {% endif %}
 </div> <!-- /row -->
+</div> <!-- /not-fullscreen -->
 {% endblock %}
 
