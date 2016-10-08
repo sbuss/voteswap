@@ -4,14 +4,11 @@
 
 {% block main %}
 <div class="jumbotron">
-  <div class="not-fullscreen">
-    <div class="row vertical-align">
-      <div class="col-sm-5 leader-image-container">
-        <img class='img-responsive leader-image' src="{% static 'hillarycloseup.jpg' %}">
-      </div>
-      <div class="col-md-6 leader pull-right">
-        Vote your conscience <i>and</i> <b>Stop Trump</b>
-        <h1 id="make-your-vote-count">Make your vote count</h1>
+  <div class="row clearfix">
+    <div class="not-fullscreen header-image clearfix">
+      <div class="leader clearfix">
+        <h1>Vote your conscience <i>and</i> <b>Stop Trump</b></h1>
+        <h2 id="make-your-vote-count">Make your vote count</h2>
         <p>
           Voting for Gary Johnson or Jill Stein in {{ swing_states }} will
           split the vote and help Trump win.
