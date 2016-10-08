@@ -188,10 +188,19 @@ footer .navbar .navbar-collapse {
 
 /* Media overrides */
 @media all and (max-width: 1240px) {
-  .leader {
+  /*.leader {
     font-size: 2.5em;
     width: 650px;
     margin-left: 30vw;
+  }*/
+  .leader {
+    width: auto;
+  }
+  .leader p.leader-description {
+    width: 600px;
+  }
+  p.nader-gore {
+    width: 400px;
   }
 }
 @media all and (max-width: 1050px) {
@@ -213,7 +222,10 @@ footer .navbar .navbar-collapse {
   }
   .leader p.leader-description {
     font-size: 0.5em;
-    width: 100%
+    width: 100%;
+  }
+  p.nader-gore {
+    width: 100%;
   }
 }
 @media all and (max-width: 830px) {
@@ -244,6 +256,9 @@ footer .navbar .navbar-collapse {
 @media all and (max-width: 750px) {
   .leader {
     width: 60%;
+  }
+  p.nader-gore {
+    width: 300px;
   }
 }
 @media all and (max-width: 638px) {
