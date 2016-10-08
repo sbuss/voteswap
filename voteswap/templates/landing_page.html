@@ -33,13 +33,12 @@
 <div class="not-fullscreen">
   <div class="row">
     <div class="col-md-8">
-      <p>
-        Don't let Trump win, swap your vote!        </p>
-      <p>
+      {% include "_how_does_it_work.html" %}
+      <!--<p>
         <a class="fb-feed-btn btn btn-primary btn-social btn-facebook">
           <span class="fa fa-facebook"></span> Share on facebook
         </a>
-      </p>
+        </p>-->
     </div>
     <div id="join" class="col-md-4 join-now">
       <form class="form" method="POST" action="{% url "landing_page" %}">
@@ -52,7 +51,6 @@
     </div>
   </div>
 
-  {% include "_how_does_it_work.html" %}
 
   {% include "_dont_fuck_it_up.html" %}
 
