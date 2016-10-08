@@ -93,7 +93,8 @@ def landing_page(request):
     swing_states[-1] = "or %s" % swing_states[-1]
     swing_states = ', '.join(swing_states)
     context = RequestContext(
-        request, {'form': form, 'swing_states': swing_states})
+        request,
+        {'form': form, 'swing_states': swing_states, 'landing_page': True})
     return render_to_response('landing_page.html',
                               context_instance=context)
 

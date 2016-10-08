@@ -130,27 +130,23 @@ button.join-now, a.join-now {
   height: 100px;
 }
 
-.navbar-inverse {
+.navbar {
   background-image: none;
   margin-bottom: 0px;
   border-radius: 0px;
-  background-color: #fff;
-  color: #000;
-  border: none;
-  border-bottom: solid 2px #000;
 }
 
-.navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav>li>a  {
+nav.navbar div.navbar-header a {
   color: #000;
+}
+
+nav.navbar-inverse div.navbar-header a {
+  color: #fff;
 }
 
 .navbar-brand {
   font-weight: bold;
   font-size: 2em;
-}
-
-.navbar-inverse .navbar-toggle .icon-bar {
-  background-color: black !important;
 }
 
 html {
