@@ -1,38 +1,47 @@
 {% load state_face %}
 {% for fm_ctx in profile_context.good_potential_matches %}
-<div class="match col-sm-12 col-lg-6 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
+{% if forloop.counter|divisibleby:2 %}
+<div class="row no-gutter">
+{% endif %}
+<div class="match col-md-6 swap-option js-swap-option {% if fm_ctx.has_been_proposed_to %}proposed{% endif %}">
   <div class="well clearfix">
-    <div class="match-image col-sm-6 text-center">
-      <img class="match img-responsive pull-center"
-           src="https://graph.facebook.com/v2.7/{{ fm_ctx.friend_match.profile.fb_id }}/picture?type=square&width=200&height=200"
-           alt="{{ fm_ctx.name }}'s image"/>
-      <h2><a href="https://facebook.com/{{ fm_ctx.friend_match.profile.fb_id }}">{{ fm_ctx.name }}</a></h2>
-      <h3>{% if not fm_ctx.friend_match.is_direct %}via <a href="https://facebook.com/{{ fm_ctx.friend_match.through.fb_id }}">{{ fm_ctx.friend_match.through.user.get_full_name }}</a>{% else %}&nbsp;{% endif %}</h3>
+    <div class="row no-gutter">
+      <div class="match-image col-sm-6 text-center">
+        <img class="match img-responsive pull-center"
+             src="https://graph.facebook.com/v2.7/{{ fm_ctx.friend_match.profile.fb_id }}/picture?type=square&width=200&height=200"
+             alt="{{ fm_ctx.name }}'s image"/>
+        <h2><a href="https://facebook.com/{{ fm_ctx.friend_match.profile.fb_id }}">{{ fm_ctx.name }}</a></h2>
+        <h3>{% if not fm_ctx.friend_match.is_direct %}via <a href="https://facebook.com/{{ fm_ctx.friend_match.through.fb_id }}">{{ fm_ctx.friend_match.through.user.get_full_name }}</a>{% else %}&nbsp;{% endif %}</h3>
+      </div>
+      <div class='col-sm-6'>
+        {% include "users/_swap_icon_table.html" with my_state=profile.state my_candidate=profile.preferred_candidate match_state=fm_ctx.friend_match.profile.state match_candidate=fm_ctx.friend_match.profile.preferred_candidate %}
+      </div>
     </div>
-    <div class="col-md-6 match-info">
-      <p style="font-size:4em" class="text-center">
-        <span class="stateface">{{ profile.state|stateface }}</span><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg><span class="stateface">{{ fm_ctx.friend_match.profile.state|stateface }}</span>
-      </p>
-      <div class="proposed-content">
-        <p>You have proposed to {{ fm_ctx.friend_match.profile.fb_name }}.</p>
-        <a class="btn btn-primary btn-social btn-facebook"
-           href="https://www.facebook.com/messages/{{ fm_ctx.friend_match.profile.fb_id }}">
-          <span class="fa fa-facebook"></span> Message
-        </a>
+    <div class="row no-gutter">
+      <div class="col-sm-12 match-info">
+        <div class="proposed-content">
+          <p>You have proposed to {{ fm_ctx.friend_match.profile.fb_name }}.</p>
+          <a class="btn btn-primary btn-social btn-facebook"
+             href="https://www.facebook.com/messages/{{ fm_ctx.friend_match.profile.fb_id }}">
+            <span class="fa fa-facebook"></span> Message
+          </a>
+        </div>
+        <div class="not-proposed-content text-center">
+          <button type="button"
+                  class="btn btn-success btn-lg js-propose-swap"
+                  data-profile-id="{{ fm_ctx.friend_match.profile.id }}"
+                  data-name="{{ fm_ctx.name }}">Swap</button>
+          <a class="btn btn-primary btn-social btn-facebook btn-lg"
+             href="https://www.facebook.com/messages/{{ fm_ctx.friend_match.profile.fb_id }}">
+            <span class="fa fa-facebook"></span> Message {{ fm_ctx.friend_match.profile.user.first_name }}
+          </a>
+        </div>
+        <br />
       </div>
-      <div class="not-proposed-content">
-        <p>{{ fm_ctx.proposal_string }}</p>
-        <button type="button"
-                class="btn btn-success btn-lg js-propose-swap"
-                data-profile-id="{{ fm_ctx.friend_match.profile.id }}"
-                data-name="{{ fm_ctx.name }}">Swap</button>
-        <a class="btn btn-primary btn-social btn-facebook btn-lg"
-           href="https://www.facebook.com/messages/{{ fm_ctx.friend_match.profile.fb_id }}">
-          <span class="fa fa-facebook"></span> Message {{ fm_ctx.friend_match.profile.user.first_name }}
-        </a>
-      </div>
-      <br />
     </div>
   </div>
 </div>
+{% if forloop.counter|divisibleby:2 %}
+</div>
+{% endif %}
 {% endfor %}

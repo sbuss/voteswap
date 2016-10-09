@@ -1,0 +1,27 @@
+{% load state_face %}
+<table>
+  <tr>
+    <td>
+      <span style="font-size: 4em" class="stateface">{{ match_state|stateface }}</span>
+    </td>
+    <td>
+      Will vote for {{ my_candidate }} in {{ match_state }}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z" transform="rotate(90, 12, 12)"/></svg>
+    </td>
+    <td>
+      <span class='text-muted'>in exchange for</span>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <span style="font-size:4em" class="stateface">{{ my_state|stateface }}</span>
+    </td>
+    <td>
+      Your vote for {{ match_candidate }} in {{ my_state }}.
+    </td>
+  </tr>
+</table>
