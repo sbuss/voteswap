@@ -53,6 +53,7 @@ ALLOWED_HOSTS = [
     '2016-10-05-dot-voteswap-142902.appspot.com',
     '2016-10-05-1-dot-voteswap-142902.appspot.com',
     '2016-10-08-dot-voteswap-142902.appspot.com',
+    '2016-10-09-dot-voteswap-142902.appspot.com',
 ]
 
 ROOT_DIR = os.path.join(os.path.dirname(__file__), '..')
