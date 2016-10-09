@@ -1,7 +1,6 @@
 $(function() {
   $(".js-propose-swap").click(function() {
     var $button = $(this);
-    debugger;
     var userId = $button.data().profileId;
     var name = $button.data().name;
     $.confirm({

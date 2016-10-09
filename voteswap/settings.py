@@ -227,7 +227,8 @@ USE_TZ = True
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'vendor_static'),
-    os.path.join(BASE_DIR, 'voteswap', 'static')
+    os.path.join(BASE_DIR, 'voteswap', 'static'),
+    os.path.join(BASE_DIR, 'social', 'exported'),
 ]
 
 STATIC_ROOT = 'static'
