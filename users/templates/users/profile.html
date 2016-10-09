@@ -61,14 +61,14 @@
       {% if profile_context.pending_matches or profile_context.good_potential_matches %}
         {% if profile_context.pending_matches %}
         <div class="row">
-          <h1 class="clearfix">Pending swaps</h1>
+          <h1 class='col-md-12'>Pending swaps</h1>
           {% include "users/_pending_swaps.html" %}
         </div>
         {% endif %}
 
         {% if profile_context.good_potential_matches %}
         <div class="row">
-          <h1 class="clearfix">Potential swaps</h1>
+          <h1 class='col-md-12'>Potential swaps</h1>
           {% include "users/_potential_swaps.html" %}
         </div>
         {% endif %}
@@ -76,13 +76,13 @@
     {% endif %}
     {% endif %}
       <div class="row">
-        {% if profile_context.pending_matches or profile_context.good_potential_matches %}
-        <h1 class="clearfix">No more suitable matches</h1>
-        {% else %}
-        <h1 class="clearfix">No suitable matches</h1>
-        {% endif %}
-
         <div class="col-md-12 match" id='calltoaction-unpaired'>
+          {% if profile_context.pending_matches or profile_context.good_potential_matches %}
+          <h1 class="clearfix">No more suitable matches</h1>
+          {% else %}
+          <h1 class="clearfix">No suitable matches</h1>
+          {% endif %}
+
           <p>
             VoteSwap can only connect you to your facebook friends and
             friends-of-friends, but not enough of your friends have signed up
