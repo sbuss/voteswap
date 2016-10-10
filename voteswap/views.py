@@ -34,6 +34,8 @@ def _attach_signup_info(request):
         existing_info = SignUpInfo(*existing_info)
         last_update = datetime.datetime.fromtimestamp(existing_info.timestamp)
         if now - last_update < datetime.timedelta(hours=1):
+            # re-set it on the session because at this point it's just a list
+            request.session[key] = existing_info
             return
 
     def get_client_ip():
@@ -57,7 +59,10 @@ def logout(request):
 
 
 def signup(request):
-    _attach_signup_info(request)
+    try:
+        _attach_signup_info(request)
+    except:
+        pass
     logger.info("signup form")
     form = LandingPageForm()
     context = RequestContext(request, {'form': form})
@@ -66,7 +71,10 @@ def signup(request):
 
 
 def landing_page(request):
-    _attach_signup_info(request)
+    try:
+        _attach_signup_info(request)
+    except:
+        pass
     if hasattr(request, 'user') and request.user.is_authenticated():
         logger.info("%s redirected from landing page to profile", request.user)
         return HttpResponseRedirect(reverse('users:profile'))
@@ -138,6 +146,10 @@ def _add_facebook_friends_for_user(user, next_url=""):
 
 @login_required
 def confirm_signup(request):
+    try:
+        _attach_signup_info(request)
+    except:
+        pass
     logger.info("Facebook login successful, creating profile")
     # This happens after logging in, now we can get their friends
     data = request.session.get('landing_page_form', None)
@@ -164,12 +176,16 @@ def confirm_signup(request):
     try:
         if form.is_valid():
             form.save(request.user)
-            signupinfo = request.session.get('signupinfo')
-            if signupinfo:
-                SignUpLog.objects.create(
-                    user=request.user,
-                    referer=signupinfo.referer,
-                    ip=signupinfo.ip)
+            try:
+                signupinfo = request.session.get('signupinfo')
+                if signupinfo:
+                    SignUpLog.objects.create(
+                        user=request.user,
+                        referer=signupinfo.referer,
+                        ip=signupinfo.ip)
+            except Exception as e:
+                logger.exception("Failed to use signupinfo")
+                pass
             logger.info("Created profile for user %s", request.user)
             _add_facebook_friends_for_user(request.user)
             return HttpResponseRedirect(reverse('users:profile'))
@@ -199,14 +215,20 @@ def match(request):
 
 
 def about(request):
-    _attach_signup_info(request)
+    try:
+        _attach_signup_info(request)
+    except:
+        pass
     logger.info("about page")
     context = RequestContext(request)
     return render_to_response('about.html', context_instance=context)
 
 
 def press(request):
-    _attach_signup_info(request)
+    try:
+        _attach_signup_info(request)
+    except:
+        pass
     logger.info("press page")
     context = RequestContext(request)
     return render_to_response('press.html', context_instance=context)
