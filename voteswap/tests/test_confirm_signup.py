@@ -2,7 +2,9 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory
 from django.test import TestCase
+from django.utils import timezone
 from mock import patch
+import time
 
 from polling.models import CANDIDATE_CLINTON
 from polling.tests.factories import StateFactory
@@ -84,6 +86,28 @@ class TestConfirmSignup(TestCase):
             'REMOTE_ADDR': 'remote-addr',
         }
         _attach_signup_info(request)
+        self.assertEqual(SignUpLog.objects.count(), 0)
+        confirm_signup(request)
+        self.assertEqual(SignUpLog.objects.count(), 1)
+        sul = SignUpLog.objects.get()
+        self.assertEqual(sul.referer, 'foo-referer')
+        self.assertEqual(sul.ip, 'remote-addr')
+        self.assertEqual(sul.user, request.user)
+
+    def test_signupinfo_post(self, mock_request):
+        request = self.request.post(reverse(confirm_signup))
+        request.user = self.user
+        request.session = self.session
+        request.META = {
+            'HTTP_REFERER': 'foo-referer',
+            'REMOTE_ADDR': 'remote-addr',
+        }
+        request.session['signupinfo'] = [
+            int(time.mktime(timezone.datetime.now().timetuple())),
+            'foo-referer',
+            'remote-addr'
+        ]
+        # _attach_signup_info(request)
         self.assertEqual(SignUpLog.objects.count(), 0)
         confirm_signup(request)
         self.assertEqual(SignUpLog.objects.count(), 1)
