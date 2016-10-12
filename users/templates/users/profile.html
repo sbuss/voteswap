@@ -14,18 +14,16 @@
 {% block main %}
 
 <div class="not-fullscreen">
-  <div class="row">
-    <!-- 1 -->
-    {% if not user.email %}
+  {% if not user.email %}
+    <div class="row">
       <div class="col-sm-12 alert alert-danger text-center" role="alert">
         <p>Please <a class='btn btn-primary' role='button' href="{%url "users:update_profile" %}">update your email</a>
         so we can send you match notifications and a reminder to vote on
         Tuesday, November 8th.</p>
       </div>
-    {% endif %}
-    {% include "users/_sidebar.html" %}
-    <!-- /1 -->
-  </div>
+    </div>
+  {% endif %}
+  {% include "users/_sidebar.html" %}
 
   {% if profile.paired_with %}
     {% include "users/_paired_profile.html" %}
