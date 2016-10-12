@@ -2,8 +2,8 @@
 {% load state_face %}
 <div class="row">
 <div class="col-md-8 col-md-offset-2">
-  <h1 class='clearfix'>Share with your friends</h1>
-  <div class="pull-left" style="padding: 10px;">
+  <h1>Your vote matters</h1>
+  <div class="pull-left" style="padding-right: 10px; margin-top: -10px;">
     <span class="stateface" style="font-size:5em">{{ profile.state|stateface }}</span>
   </div>
   <p>
@@ -31,6 +31,9 @@
     </p>
     {% endif %}
   {% endif %}
+</div>
+<div class="col-md-8 col-md-offset-2">
+  <h1 class='clearfix'>Share with your friends</h1>
     <p class='calltoaction-unpaired'>
       {% with num_friends=profile.friends.count %}
       {% if not num_friends %}
