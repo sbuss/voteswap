@@ -84,6 +84,22 @@ class ProfileContext(object):
         return ((self.state.is_swing or self.state.leans) and
                 self.profile.preferred_candidate in CANDIDATES_THIRD)
 
+    @property
+    def is_3p_in_swing(self):
+        return self.state.is_swing and self.third_party
+
+    @property
+    def is_3p_in_safe(self):
+        return not self.state.is_swing and self.third_party
+
+    @property
+    def is_major_in_swing(self):
+        return self.state.is_swing and not self.third_party
+
+    @property
+    def is_major_in_safe(self):
+        return not self.state.is_swing and not self.third_party
+
     def has_proposed_to_friend(self, friend):
         return friend.id in self.pair_proposal_friend_ids
 
