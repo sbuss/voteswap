@@ -3,27 +3,31 @@
   {% if profile_context.pending_matches or profile_context.good_potential_matches %}
     {% if profile_context.pending_matches %}
     <div class="row">
-      <h1 class='col-md-12'>Pending swaps</h1>
+      <h1 class='col-md-8 col-md-offset-2'>Pending swaps</h1>
       {% include "users/_pending_swaps.html" %}
     </div>
     {% endif %}
 
     {% if profile_context.good_potential_matches %}
     <div class="row">
-      <h1 class='col-md-12'>Potential swaps</h1>
+      <h1 class='col-md-8 col-md-offset-2'>Potential swaps</h1>
       {% include "users/_potential_swaps.html" %}
     </div>
     {% endif %}
     <div class="row">
-      <h1 class='col-md-12'>No more suitable matches</h1>
-      <p>There aren't any more friends in your network we can match you with.
-      Share VoteSwap on Facebook to keep building our network!</p>
+      <h1 class='col-md-8 col-md-offset-2'>No more suitable matches</h1>
+      <div class='col-md-8 col-md-offset-2'>
+        <p>There aren't any more friends in your network we can match you with.
+        Share VoteSwap on Facebook to keep building our network!</p>
+      </div>
     </div>
   {% else %}
     <div class="row">
-      <h1 class='col-md-12'>No suitable matches</h1>
-      <p>There aren't any good matches among your friends. Share VoteSwap on
-      Facebook to keep building our network!</p>
+      <h1 class='col-md-8 col-md-offset-2'>No suitable matches</h1>
+      <div class='col-md-8 col-md-offset-2'>
+        <p>There aren't any good matches among your friends. Share VoteSwap on
+        Facebook to keep building our network!</p>
+      </div>
     </div>
   {% endif %}
 {% endif %}
