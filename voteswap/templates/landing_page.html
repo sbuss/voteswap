@@ -53,11 +53,14 @@
   <div class="row">
     <div id="join" class="col-sm-4 join-now col-sm-push-8">
       <form class="form" method="POST" action="{% url "landing_page" %}">
-        {% csrf_token %}
-        {% bootstrap_form form size='large' %}
-        {% buttons %}
-          <button type="submit" class="btn btn-primary btn-social btn-facebook btn-lg"><span class="fa fa-facebook"></span> Join with Facebook</button>
-        {% endbuttons %}
+        <fieldset>
+          <legend>Join to swap your vote</legend>
+          {% csrf_token %}
+          {% bootstrap_form form size='large' %}
+          {% buttons %}
+            <button type="submit" class="btn btn-primary btn-social btn-facebook btn-lg"><span class="fa fa-facebook"></span> Join with Facebook</button>
+          {% endbuttons %}
+        </fieldset>
       </form>
     </div>
     <div class="col-sm-8 col-sm-pull-4">
