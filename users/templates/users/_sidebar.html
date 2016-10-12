@@ -91,11 +91,10 @@
         </blockquote>
     </p>
     <p>
-      {% if not profile_context.state.is_swing %}
       Find frends in swing states like 
       {% for state in swing_states %}{% if not forloop.first %}, {% if forloop.last %} or {% endif %}{% endif %}<a href="{{ state|fb_link }}">{{ state }}</a>{% endfor %}
-      {% else %}
-      Find friends in safe states like
+      {% if not profile_context.state.is_swing %}
+      and friends in safe states like
       {% for state in safe_states %}{% if not forloop.first %}, {% if forloop.last %} or {% endif %}{% endif %}<a href="{{ state|fb_link }}">{{ state }}</a>{% endfor %}
       {% endif %}
       and post VoteSwap on their walls or send them a Facebook message.
