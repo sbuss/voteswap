@@ -1,5 +1,7 @@
+{% load state_fb_search %}
 {% load state_face %}
-<div class="col-md-8">
+<div class="col-md-8 col-md-offset-2">
+  <h1 class='clearfix'>Share with your friends</h1>
   <div class="pull-left" style="padding: 10px;">
     <span class="stateface" style="font-size:5em">{{ profile.state|stateface }}</span>
   </div>
@@ -13,8 +15,7 @@
       extremely dangerous.  You'll take votes away from Hillary Clinton and let
       Trump win the presidency.
     {% endif %}
-    Trump is an unstable, racist, xenophobic, little dictator that
-    can't be allowed to win. You should swap your vote with
+    You should swap your vote with
     {{ profile_context.paired_candidate }} voters in
     {{ profile_context.paired_state_type }} states.
   </p>
@@ -29,17 +30,41 @@
     </p>
     {% endif %}
   {% endif %}
-</div>
-<div class='col-md-4'>
-  <p>
-    Help spread the word and build out our network.
-  </p>
-  <p>
-    <a class="fb-feed-btn btn btn-primary btn-social btn-facebook">
-      <span class="fa fa-facebook"></span> Share on facebook
-    </a>
-    <a class="fb-send-btn btn btn-primary btn-social btn-facebook">
-      <span class="fa fa-facebook"></span> Send to specific friends
-    </a>
-  </p>
+    <p class='calltoaction-unpaired'>
+      {% with num_friends=profile.friends.count %}
+      {% if not num_friends %}
+      Sadly, <b>*none* of your friends</b>
+      {% else %}
+      Only <b>{{ num_friends }} of your friends</b>
+      {% endif %} have joined VoteSwap.
+      {% endwith %}
+      VoteSwap can only connect you to your facebook friends and
+      friends-of-friends, but not enough of your friends have signed up
+      for us to find a great match for you.
+    </p>
+    <p>
+      Since you live in a {{ profile_context.state_type }}, your best strategy
+      is to <b>share VoteSwap with your friends in {{ profile_context.paired_state_type }} states</b>.
+      Sharing VoteSwap on facebook will reach the most people, but sending
+      direct messages to your friends in {{ profile_context.paired_state_type }} 
+      states is probably more effective.
+    </p>
+    <p>
+      {% if not profile_context.state.is_swing %}
+      Find frends in swing states like 
+      {% for state in swing_states %}{% if not forloop.first %}, {% if forloop.last %} or {% endif %}{% endif %}<a href="{{ state|fb_link }}">{{ state }}</a>{% endfor %}
+      {% else %}
+      Find friends in safe states like
+      {% for state in safe_states %}{% if not forloop.first %}, {% if forloop.last %} or {% endif %}{% endif %}<a href="{{ state|fb_link }}">{{ state }}</a>{% endfor %}
+      {% endif %}
+      and post VoteSwap on their walls or send them a Facebook message.
+    </p>
+    <p>
+      <a class="fb-send-btn btn btn-primary btn-social btn-facebook">
+        <span class="fa fa-facebook"></span> Share via Facebook message
+      </a>
+      <a class="fb-feed-btn btn btn-primary btn-social btn-facebook">
+        <span class="fa fa-facebook"></span> Share on facebook
+      </a>
+    </p>
 </div>
