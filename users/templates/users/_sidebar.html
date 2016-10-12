@@ -1,35 +1,39 @@
 {% load state_fb_search %}
 {% load state_face %}
-<div class="col-md-8 col-md-offset-2">
-  <h1 class='clearfix'>Share with your friends</h1>
-  <div class="pull-left" style="padding: 10px;">
-    <span class="stateface" style="font-size:5em">{{ profile.state|stateface }}</span>
-  </div>
-  <p>
-    Hello, {{ profile.fb_name }}. You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}, a {{ profile_context.state_type }}.
-  </p>
-  {% if profile_context.needs_match %}
-  <p>
-    {% if profile_context.kingmaker %}
-      Voting for {{ profile.preferred_candidate }} in {{ profile.state }} is
-      extremely dangerous.  You'll take votes away from Hillary Clinton and let
-      Trump win the presidency.
-    {% endif %}
-    You should swap your vote with
-    {{ profile_context.paired_candidate }} voters in
-    {{ profile_context.paired_state_type }} states.
-  </p>
-  {% else %}
-    {% if profile_context.third_party %}
-    <p>You don't have any good pairings. Go ahead and vote for {{ profile.preferred_candidate }}.</p>
-    {% else %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <h1>Your vote matters</h1>
+    <div class="pull-left" style="padding-right: 10px; margin-top: -10px;">
+      <span class="stateface" style="font-size:5em">{{ profile.state|stateface }}</span>
+    </div>
     <p>
-      Your vote <b>is extremely important</b>, so you <b>shouldn't swap</b>.
-      Be sure to vote for {{ profile.preferred_candidate }} on election day,
-      November 8th!
+      Hello, {{ profile.fb_name }}. You're a {{ profile.preferred_candidate }} voter in {{ profile.state }}, a {{ profile_context.state_type }}.
     </p>
+    {% if profile_context.needs_match %}
+    <p>
+      {% if profile_context.kingmaker %}
+        Voting for {{ profile.preferred_candidate }} in {{ profile.state }} is
+        extremely dangerous.  You'll take votes away from Hillary Clinton and let
+        Trump win the presidency.
+      {% endif %}
+      You should swap your vote with
+      {{ profile_context.paired_candidate }} voters in
+      {{ profile_context.paired_state_type }} states.
+    </p>
+    {% else %}
+      {% if profile_context.third_party %}
+      <p>You don't have any good pairings. Go ahead and vote for {{ profile.preferred_candidate }}.</p>
+      {% else %}
+      <p>
+        Your vote <b>is extremely important</b>, so you <b>shouldn't swap</b>.
+        Be sure to vote for {{ profile.preferred_candidate }} on election day,
+        November 8th!
+      </p>
+      {% endif %}
     {% endif %}
-  {% endif %}
+  </div>
+  <div class="col-md-8 col-md-offset-2">
+    <h1 class='clearfix'>Share with your friends</h1>
     <p class='calltoaction-unpaired'>
       {% with num_friends=profile.friends.count %}
       {% if not num_friends %}
@@ -38,23 +42,59 @@
       Only <b>{{ num_friends }} of your friends</b>
       {% endif %} have joined VoteSwap.
       {% endwith %}
-      VoteSwap can only connect you to your facebook friends and
+      VoteSwap can only connect you to your Facebook friends and
       friends-of-friends, but not enough of your friends have signed up
       for us to find a great match for you.
     </p>
     <p>
       Since you live in a {{ profile_context.state_type }}, your best strategy
       is to <b>share VoteSwap with your friends in {{ profile_context.paired_state_type }} states</b>.
-      Sharing VoteSwap on facebook will reach the most people, but sending
+      Sharing VoteSwap on Facebook will reach the most people, but sending
       direct messages to your friends in {{ profile_context.paired_state_type }} 
-      states is probably more effective.
+      states is probably more effective. Here are suggested messages to send:
     </p>
     <p>
-      {% if not profile_context.state.is_swing %}
+      To your friends in safe states:
+      {% if profile_context.is_3p_in_swing %}
+        <blockquote>
+          I want to vote for a third party in {{ profile.state }}, but I also
+          don't want Trump to win. You should join
+          <a href="https://voteswap.us">https://voteswap.us</a> and swap votes
+          with me. I'll vote Clinton in {{ profile.state }} if you vote
+          {{ profile.preferred_candidate }} in your state.
+        </blockquote>
+      {% else %}
+        <blockquote>
+          Do you want to prevent Trump from winning but also think third
+          parties should be a viable choice? Join
+          <a href="https://voteswap.us">https://voteswap.us</a> and swap your
+          Clinton vote in your safe state with a third-party voter in a swing
+          state. Third parties will get more votes, and Clinton will win the
+          important swing states so Trump will lose.
+        </blockquote>
+      {% endif %}
+    </p>
+    <p>
+      To your friends in swing states:
+        <blockquote>
+          You live in an important swing state, where voting for a third party
+          might split the vote and make Trump win (remember Al Gore?).
+          The best way for third parties to get representation without electing
+          Trump is to join <a href="https://voteswap.us">https://voteswap.us</a>
+          and help connect third-party voters with Clinton voters in safe
+          states. VoteSwap pairs up swing-state and safe-state voters so they
+          can swap votes. Clinton will win the swing states, third parties get
+          more votes (and more federal funding), and Trump loses. Even if
+          you're already voting for Clinton, the more people that join the
+          better our chances are of pairing up voters and saving our country
+          from Trump.
+        </blockquote>
+    </p>
+    <p>
       Find frends in swing states like 
       {% for state in swing_states %}{% if not forloop.first %}, {% if forloop.last %} or {% endif %}{% endif %}<a href="{{ state|fb_link }}">{{ state }}</a>{% endfor %}
-      {% else %}
-      Find friends in safe states like
+      {% if not profile_context.state.is_swing %}
+      and friends in safe states like
       {% for state in safe_states %}{% if not forloop.first %}, {% if forloop.last %} or {% endif %}{% endif %}<a href="{{ state|fb_link }}">{{ state }}</a>{% endfor %}
       {% endif %}
       and post VoteSwap on their walls or send them a Facebook message.
@@ -64,7 +104,8 @@
         <span class="fa fa-facebook"></span> Share via Facebook message
       </a>
       <a class="fb-feed-btn btn btn-primary btn-social btn-facebook">
-        <span class="fa fa-facebook"></span> Share on facebook
+        <span class="fa fa-facebook"></span> Share on Facebook
       </a>
     </p>
+  </div>
 </div>
