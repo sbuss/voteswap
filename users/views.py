@@ -167,12 +167,18 @@ def profile(request):
         logger.info("%s must update their profile", user)
         return HttpResponseRedirect(reverse('users:update_profile'))
 
+    swing_states = list(State.objects.exclude(tipping_point_rank=-1).order_by(
+        'tipping_point_rank').values_list('name', flat=True))[:6]
+    safe_states = list(State.objects.exclude(safe_rank=-1).order_by(
+        'safe_rank').values_list('name', flat=True))[:12]
     context = RequestContext(
         request,
         {
             'user': request.user,
             'profile': user.profile,
             'profile_context': profile_ctx,
+            'swing_states': swing_states,
+            'safe_states': safe_states,
         }
     )
     return render_to_response('users/profile.html',
