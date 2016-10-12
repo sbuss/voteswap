@@ -1,32 +1,58 @@
 {% load state_face %}
 {% load humanize %}
-<div class="row no-gutter">
-<div class="col-md-12">
-  <div class="well match clearfix">
+<div class="row">
+  <div class="col-md-12">
+    <h1>You're paired</h1>
     <div class="row no-gutter">
-      <div class="match-image col-sm-6 text-center">
-        <img class="match img-responsive pull-center"
-             src="https://graph.facebook.com/v2.7/{{ profile.paired_with.fb_id }}/picture?type=square&width=200&height=200"
-             alt="{{ pending_match_ctx.matched_profile.fb_name }}'s image"/>
-        <h2><a href="https://facebook.com/{{ profile.paired_with.fb_id }}">{{ profile.paired_with.fb_name }}</a></h2>
-      </div>
-      <div class='col-sm-6'>
-        {% include "users/_swap_icon_table.html" with my_state=profile.state my_candidate=profile.preferred_candidate match_state=profile.paired_with.state match_candidate=profile.paired_with.preferred_candidate %}
+    <div class="col-md-12">
+      <div class="well match clearfix">
+        <div class="row no-gutter">
+          <div class="match-image col-sm-6 text-center">
+            <img class="match img-responsive pull-center"
+                 src="https://graph.facebook.com/v2.7/{{ profile.paired_with.fb_id }}/picture?type=square&width=200&height=200"
+                 alt="{{ pending_match_ctx.matched_profile.fb_name }}'s image"/>
+            <h2><a href="https://facebook.com/{{ profile.paired_with.fb_id }}">{{ profile.paired_with.fb_name }}</a></h2>
+          </div>
+          <div class='col-sm-6'>
+            {% include "users/_swap_icon_table.html" with my_state=profile.state my_candidate=profile.preferred_candidate match_state=profile.paired_with.state match_candidate=profile.paired_with.preferred_candidate %}
+          </div>
+        </div>
+        <div class="row no-gutter">
+          <div class="col-md-12 match-info">
+            <p>
+            You pledged to swap your vote with <a href="https://facebook.com/{{ profile.paried_with.fb_id }}">{{ profile.paired_with.fb_name }}</a>.
+            Keep in touch with them on <a href="https://facebook.com/{{ profile.paried_with.fb_id }}">facebook</a>.
+            </p>
+            <p>
+            Remember that it is illegal to trade your vote for money or other personal
+            gain. All vote swaps are voluntary and must be done without compensation.
+            As long as you keep that in mind, you're free and clear!
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="row no-gutter">
-      <div class="col-md-12 match-info">
-        <p>
-        You pledged to swap your vote with <a href="https://facebook.com/{{ profile.paried_with.fb_id }}">{{ profile.paired_with.fb_name }}</a>.
-        Keep in touch with them on <a href="https://facebook.com/{{ profile.paried_with.fb_id }}">facebook</a>.
-        </p>
-        <p>
-        Remember that it is illegal to trade your vote for money or other personal
-        gain. All vote swaps are voluntary and must be done without compensation.
-        As long as you keep that in mind, you're free and clear!
-        </p>
-      </div>
     </div>
   </div>
 </div>
+<div class="row">
+  <div class="col-md-12 match" id='calltoaction-paired'>
+    <h2 class="clearfix">Help grow VoteSwap!</h2>
+    <p>
+      Please help grow VoteSwap! Users are only matched with friends and
+      friends-of-friends, so even though you're matched, you can still
+      be a connecting point between hundreds of people.
+      {% with num_friends=profile.friends.count %}
+      {% if not num_friends %}
+        Sadly, *none* of your friends have joined VoteSwap.
+      {% else %}
+        Only {{ num_friends }} of your friends have joined VoteSwap.
+      {% endif %}
+      Get more friends on VoteSwap by sharing us on Facebook.<br />
+      <a class="fb-feed-btn btn btn-primary btn-social btn-facebook">
+        <span class="fa fa-facebook"></span> Share on facebook
+      </a>
+      {% endwith %}
+    </p>
+  </div>
 </div>
