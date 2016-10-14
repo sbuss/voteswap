@@ -233,6 +233,9 @@ footer .navbar .navbar-collapse {
   }
 }
 @media all and (max-width: 930px) {
+  .header-image {
+    max-width: 780px;
+  }
   .leader {
     font-size: 2em;
     width: 500px;
