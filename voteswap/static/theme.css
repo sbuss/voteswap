@@ -16,7 +16,7 @@
 }
 
 .not-fullscreen {
-  max-width: 1440px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -40,7 +40,7 @@
   margin: 0 auto;
   height: 30vw;
   max-height: 400px;
-  max-width: 1100px;
+  max-width: 1200px;
   /* For some reason, the border is required to avoid a gap above the picture */
   border: solid 1px #000;
 }
