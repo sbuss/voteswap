@@ -32,7 +32,9 @@ which requires the following copyright notice:
 
 
 
-Parts of this project are also copyrighted by google, which requires this notice:
+appengine_config.py is copyrighted by google (via
+https://github.com/GoogleCloudPlatform/appengine-django-skeleton), which requires
+this notice:
 
     Copyright 2015 Google Inc.
 
