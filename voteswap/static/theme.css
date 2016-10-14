@@ -156,6 +156,14 @@ nav.navbar-inverse div.navbar-header a {
   color: #fff;
 }
 
+nav.navbar span.icon-bar {
+  background-color: #000 !important;
+}
+
+nav.navbar-inverse span.icon-bar {
+  background-color: #fff !important;
+}
+
 .navbar-brand {
   font-weight: bold;
   font-size: 2em;
