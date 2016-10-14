@@ -227,6 +227,7 @@ footer .navbar .navbar-collapse {
   .header-image {
     max-height: 500px;
     min-height: 300px;
+    max-width: 900px;
   }
   .header-image h1 {
     padding-top: 0px;
