@@ -66,7 +66,7 @@
 }
 
 .leader h2 {
-  font-size: 0.64em;
+  font-size: 0.55em;
   font-weight: bold;
   padding: 0;
   margin: 0;
@@ -101,16 +101,16 @@
 }
 
 p {
-  font-size: 1.5em;
+  font-size: 1.2em;
 }
 
 .landing-body h1 {
   margin-top: 10px;
-  font-size: 1.8em;
+  font-size: 1.5em;
 }
 
 .landing-body p {
-  font-size: 1.3em;
+  font-size: 1.2em;
 }
 
 .row {
