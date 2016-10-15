@@ -1,0 +1,9 @@
+{% if not user.email %}
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2 alert alert-danger text-center" role="alert">
+      <p>Please <a class='btn btn-primary' role='button' href="{%url "users:update_profile" %}">update your email</a>
+      so we can send you match notifications and a reminder to vote on
+      Tuesday, November 8th.</p>
+    </div>
+  </div>
+{% endif %}
