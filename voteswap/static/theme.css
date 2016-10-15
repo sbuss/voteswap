@@ -270,6 +270,13 @@ footer .navbar .navbar-collapse {
     padding-top: 0px;
   }
 }
+
+@media all and (max-width: 934px) {
+  .join-now > form > fieldset > legend {
+    font-size: 1.2em;
+  }
+}
+
 @media all and (max-width: 930px) {
   .header-image {
     max-width: 780px;
@@ -310,6 +317,9 @@ footer .navbar .navbar-collapse {
   .leader p.leader-description {
     font-size: 0.5em;
     width: 100%
+  }
+  .join-now > form > fieldset > legend {
+    font-size: 1.5em;
   }
 }
 @media all and (max-width: 750px) {
