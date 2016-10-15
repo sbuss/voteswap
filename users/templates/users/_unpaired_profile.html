@@ -1,5 +1,5 @@
+{% load state_face %}
 {% if profile.preferred_candidate and profile.state %}
-{% if profile_context.needs_match %}
   {% if profile_context.pending_matches or profile_context.good_potential_matches %}
     {% if profile_context.pending_matches %}
     <div class="row">
@@ -14,33 +14,44 @@
       {% include "users/_potential_swaps.html" %}
     </div>
     {% endif %}
-    <div class="row">
-      <h1 class='col-md-8 col-md-offset-2'>Expected to see more matches?</h1>
-      <div class='col-md-8 col-md-offset-2'>
-        <p>
-          There aren't any more friends in your network we can match you with.
-          <a href="{% url 'users:share' %}">Share VoteSwap with your friends</a>
-          to keep building our network!
-        </p>
-        <p>
-          <a href="{% url 'users:share' %}" class='btn btn-primary btn-lg' role='button'>Share Now</a>
-        </p>
-      </div>
-    </div>
-  {% else %}
-    <div class="row">
-      <h1 class='col-md-8 col-md-offset-2'>Expected to see friends to swap votes with?</h1>
-      <div class='col-md-8 col-md-offset-2'>
-        <p>
-          There aren't any good matches among your friends.
-          <a href="{% url 'users:share' %}">Share VoteSwap with your friends</a>
-          to keep building our network!
-        </p>
-        <p>
-          <a href="{% url 'users:share' %}" class='btn btn-primary btn-lg' role='button'>Share Now</a>
-        </p>
-      </div>
-    </div>
   {% endif %}
-{% endif %}
+  <div class="row">
+    {% if profile_context.any_matches %}
+    <h3 class='col-md-8 col-md-offset-2'>Expected to see more matches?</h3>
+    {% else %}
+    <h3 class='col-md-8 col-md-offset-2'>Expected to see friends to swap votes with?</h3>
+    {% endif %}
+    <div class='col-md-8 col-md-offset-2'>
+      <p>
+        There aren't any {% if profile_context.any_matches %}more {% endif %}friends in your network we can match you with.
+        VoteSwap only matches you with your facebook friends and friends-of-friends,
+        so to get {% if profile_context.any_matches %}more {% endif %}matches
+        you need to
+        <a href="{% url 'users:share' %}">share VoteSwap with your friends</a>.
+      </p>
+      <div class='row no-gutter'>
+        <div class='col-sm-6'>
+          <h4>Share with your friends in swing states</h3>
+          <div class='list-group share-states'>
+            {% for state in swing_states %}
+            <a class='list-group-item' role='button'><span class="stateface">{{ state|stateface }}</span> {{ state }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        <div class='col-sm-6'>
+          <h4>Share with your friends in safe states</h3>
+          <div class='list-group share-states'>
+            {% for state in safe_states %}
+            <a class='list-group-item' role='button'><span class="stateface">{{ state|stateface }}</span> {{ state }}</a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class='col-md-8 col-md-offset-2'>
+      <p>
+        <a href="{% url 'users:share' %}" class='btn btn-primary btn-lg' role='button'>Share Now</a>
+      </p>
+    </div>
+  </div>
 {% endif %}

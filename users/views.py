@@ -103,6 +103,10 @@ class ProfileContext(object):
     def has_proposed_to_friend(self, friend):
         return friend.id in self.pair_proposal_friend_ids
 
+    @property
+    def any_matches(self):
+        return bool(self.pending_matches or self.good_potential_matches)
+
     @cached_property
     def pending_matches(self):
         pending_matches = PairProposal.objects.pending().filter(
