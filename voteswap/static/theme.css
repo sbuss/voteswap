@@ -50,7 +50,7 @@
   font-size: 3em;
   background: transparent;
   width: 750px;
-  margin-left: 30%;
+  margin-left: 33%;
   margin-top: 2%;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .leader h1 {
-  font-size: 0.8em;
+  font-size: 1em;
   font-weight: bold;
   padding: 0;
   padding-top: 20px;
@@ -69,25 +69,21 @@
 }
 
 .leader h2 {
-  font-size: 0.55em;
+  font-size: 0.64em;
   font-weight: bold;
   padding: 0;
   margin: 0;
+  padding-bottom: 15px;
 }
 
 .leader p {
-  font-size: 0.4em;
+  font-size: 0.5em;
   color: #fcfcfc;
 }
 
 .leader p.leader-description {
+  padding-top: 8px;
   width: 80%;
-}
-
-.leader .nader-gore {
-  font-size: 0.64em;
-  color: #fff;
-  padding: 0;
 }
 
 .leader-content-below {
@@ -97,10 +93,6 @@
 .vertical-align {
   display: flex;
   align-items: center;
-}
-
-.container-full > div > h1,h2,h3,h4,h5 {
-  padding-left: 10px;
 }
 
 p {
@@ -125,11 +117,6 @@ p {
   margin: 0 auto;
 }
 
-.btn-facebook, .fa-facebook {
-  background: #000;
-  color: #fff;
-}
-
 button.join-now, a.join-now {
   background-image: none;
   background-color: #0A234E;
@@ -142,6 +129,35 @@ button.join-now, a.join-now {
   height: 100px;
 }
 
+.join-now > form > fieldset > legend {
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #34519f;
+  padding-top: 20px;
+}
+
+h2 {
+  font-weight: bold;
+  text-transform: uppercase;
+  size: 21px;
+  color: #34519f;
+}
+
+.leader h2 {
+  color: #fff;
+  text-transform: none;
+}
+
+h3 {
+  font-weight: normal;
+  size: 21px;
+  color: #34519f;
+  padding: none;
+  margin: none;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
 .navbar {
   background-image: none;
   margin-bottom: 0px;
@@ -149,7 +165,7 @@ button.join-now, a.join-now {
 }
 
 nav.navbar div.navbar-header a {
-  color: #000;
+  color: #34519f;
 }
 
 nav.navbar-inverse div.navbar-header a {
@@ -227,8 +243,11 @@ footer .navbar .navbar-collapse {
   .leader p.leader-description {
     width: 600px;
   }
-  p.nader-gore {
-    width: 400px;
+}
+@media all and (max-width: 1120px) {
+  .leader {
+    font-size: 2.8em;
+    margin-left: 30vw;
   }
 }
 @media all and (max-width: 1050px) {
@@ -237,10 +256,22 @@ footer .navbar .navbar-collapse {
     min-height: 300px;
     max-width: 900px;
   }
+  .leader {
+    padding-top: 40px;
+    font-size: 2.2em;
+    margin-left: 28vw;
+  }
   .header-image h1 {
     padding-top: 0px;
   }
 }
+
+@media all and (max-width: 934px) {
+  .join-now > form > fieldset > legend {
+    font-size: 1.2em;
+  }
+}
+
 @media all and (max-width: 930px) {
   .header-image {
     max-width: 780px;
@@ -257,9 +288,6 @@ footer .navbar .navbar-collapse {
   }
   .leader p.leader-description {
     font-size: 0.5em;
-    width: 100%;
-  }
-  p.nader-gore {
     width: 100%;
   }
 }
@@ -285,36 +313,18 @@ footer .navbar .navbar-collapse {
     font-size: 0.5em;
     width: 100%
   }
+  .join-now > form > fieldset > legend {
+    font-size: 1.5em;
+  }
+  .join-now textarea {
+    height: 100px;
+  }
 }
 @media all and (max-width: 750px) {
   .leader {
     width: 60%;
-    padding-top: 0;
+    padding-top: 15px;
     margin-top: 0;
-  }
-  p.nader-gore {
-    width: 300px;
-  }
-}
-@media all and (max-width: 638px) {
-  .leader {
-    font-size: 3em;
-    margin-left: 30vw;
-    width: auto;
-    padding-top: 6%;
-  }
-  .leader-content-top {
-    display: none;
-  }
-  .leader-content-below {
-    display: inline;
-  }
-  p.nader-gore {
-    width: 100%;
-  }
-  .header-image {
-    min-height: 0;
-    height: 30vw;
   }
 }
 
@@ -333,6 +343,39 @@ footer .navbar .navbar-collapse {
   }
 }
 
+@media all and (max-width: 638px) {
+  .leader {
+    font-size: 2.5em;
+    margin-left: 30vw;
+    width: auto;
+    padding-top: 6%;
+  }
+  .leader-content-top {
+    display: none;
+  }
+  .leader-content-below {
+    display: inline;
+  }
+  .header-image {
+    min-height: 0;
+    height: 30vw;
+  }
+}
+
+@media all and (max-width: 520px) {
+  .leader {
+    font-size: 2em;
+    padding-top: 6%;
+  }
+}
+
+@media all and (max-width: 500px) {
+  .leader {
+    font-size: 2em;
+    padding-top: 4%;
+  }
+}
+
 @media all and (max-width: 425px) {
   .col-md-6.match-info,.match,.well {
     padding-left: 2px;
@@ -342,23 +385,16 @@ footer .navbar .navbar-collapse {
   }
 }
 
-@media all and (max-width: 500px) {
-  .leader {
-    font-size: 2.5em;
-    padding-top: 4%;
-  }
-}
-
 @media all and (max-width: 412px) {
   .leader {
-    font-size: 2em;
+    font-size: 1.6em;
     padding-top: 4%;
   }
 }
 
 @media all and (max-width: 328px) {
   .leader {
-    font-size: 1.8em;
+    font-size: 1.5em;
     padding-top: 4%;
   }
 }
@@ -380,7 +416,7 @@ div.profile-sidebar p {
 div.match-image {
 }
 
-div.match-image h2, h3 {
+div.match-image h2, div.match-image h3 {
   margin: 0;
   padding: 0;
 }

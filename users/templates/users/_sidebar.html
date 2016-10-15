@@ -92,16 +92,16 @@
     </p>
     <p>
       Find frends in swing states like 
-      {% for state in swing_states %}{% if not forloop.first %}, {% if forloop.last %} or {% endif %}{% endif %}<a href="{{ state|fb_link }}">{{ state }}</a>{% endfor %}
+      {% for state in swing_states %}{% if not forloop.first %}, {% if forloop.last %} or {% endif %}{% endif %}<a target="_blank" href="{{ state|fb_link }}">{{ state }}</a>{% endfor %}
       {% if not profile_context.state.is_swing %}
       and friends in safe states like
-      {% for state in safe_states %}{% if not forloop.first %}, {% if forloop.last %} or {% endif %}{% endif %}<a href="{{ state|fb_link }}">{{ state }}</a>{% endfor %}
+      {% for state in safe_states %}{% if not forloop.first %}, {% if forloop.last %} or {% endif %}{% endif %}<a target="_blank" href="{{ state|fb_link }}">{{ state }}</a>{% endfor %}
       {% endif %}
       and post VoteSwap on their walls or send them a Facebook message.
     </p>
     <p>
       <a class="fb-send-btn btn btn-primary btn-social btn-facebook">
-        <span class="fa fa-facebook"></span> Share via Facebook message
+        <span class="fa fa-facebook"></span> Send a Facebook message
       </a>
       <a class="fb-feed-btn btn btn-primary btn-social btn-facebook">
         <span class="fa fa-facebook"></span> Share on Facebook

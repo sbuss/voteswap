@@ -13,7 +13,7 @@ class LandingPageForm(forms.Form):
         choices=STATES, label="Your state")
     preferred_candidate = forms.ChoiceField(
         choices=CANDIDATES_ADVOCATED,
-        label="Who do you want to vote for")
+        label="Who do you want to vote for?")
     reason = forms.CharField(
         widget=forms.Textarea(
             {'placeholder': "Because #NeverTrump"}),
