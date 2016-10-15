@@ -432,3 +432,26 @@ def confirm_swap(request, ref_id):
         return json_response(
             {'status': 'error',
              'errors': {'method': 'Must POST with to_profile set'}})
+
+
+@login_required
+def share(request):
+    user = request.user
+    logger.info("%s viewing share page", user)
+    profile_ctx = ProfileContext(user.profile)
+    swing_states = list(State.objects.exclude(tipping_point_rank=-1).order_by(
+        'tipping_point_rank').values_list('name', flat=True))[:6]
+    safe_states = list(State.objects.exclude(safe_rank=-1).order_by(
+        'safe_rank').values_list('name', flat=True))[:12]
+    context = RequestContext(
+        request,
+        {
+            'user': request.user,
+            'profile': user.profile,
+            'profile_context': profile_ctx,
+            'swing_states': swing_states,
+            'safe_states': safe_states,
+        }
+    )
+    return render_to_response('users/share.html',
+                              context_instance=context)

@@ -15,18 +15,30 @@
     </div>
     {% endif %}
     <div class="row">
-      <h1 class='col-md-8 col-md-offset-2'>No more suitable matches</h1>
+      <h1 class='col-md-8 col-md-offset-2'>Expected to see more matches?</h1>
       <div class='col-md-8 col-md-offset-2'>
-        <p>There aren't any more friends in your network we can match you with.
-        Share VoteSwap on Facebook to keep building our network!</p>
+        <p>
+          There aren't any more friends in your network we can match you with.
+          <a href="{% url 'users:share' %}">Share VoteSwap with your friends</a>
+          to keep building our network!
+        </p>
+        <p>
+          <a href="{% url 'users:share' %}" class='btn btn-primary btn-lg' role='button'>Share Now</a>
+        </p>
       </div>
     </div>
   {% else %}
     <div class="row">
-      <h1 class='col-md-8 col-md-offset-2'>No suitable matches</h1>
+      <h1 class='col-md-8 col-md-offset-2'>Expected to see friends to swap votes with?</h1>
       <div class='col-md-8 col-md-offset-2'>
-        <p>There aren't any good matches among your friends. Share VoteSwap on
-        Facebook to keep building our network!</p>
+        <p>
+          There aren't any good matches among your friends.
+          <a href="{% url 'users:share' %}">Share VoteSwap with your friends</a>
+          to keep building our network!
+        </p>
+        <p>
+          <a href="{% url 'users:share' %}" class='btn btn-primary btn-lg' role='button'>Share Now</a>
+        </p>
       </div>
     </div>
   {% endif %}
