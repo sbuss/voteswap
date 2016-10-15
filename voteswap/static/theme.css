@@ -101,10 +101,6 @@
   align-items: center;
 }
 
-.container-full > div > h1,h2,h3,h4,h5 {
-  padding-left: 10px;
-}
-
 p {
   font-size: 1.2em;
 }
@@ -142,6 +138,35 @@ button.join-now, a.join-now {
 
 .join-now > form > div > textarea {
   height: 100px;
+}
+
+.join-now > form > fieldset > legend {
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #34519f;
+  padding-top: 20px;
+}
+
+h2 {
+  font-weight: bold;
+  text-transform: uppercase;
+  size: 21px;
+  color: #34519f;
+}
+
+.leader h2 {
+  color: #fff;
+  text-transform: none;
+}
+
+h3 {
+  font-weight: normal;
+  size: 21px;
+  color: #34519f;
+  padding: none;
+  margin: none;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .navbar {
@@ -382,7 +407,7 @@ div.profile-sidebar p {
 div.match-image {
 }
 
-div.match-image h2, h3 {
+div.match-image h2, div.match-image h3 {
   margin: 0;
   padding: 0;
 }
