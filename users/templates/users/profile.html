@@ -15,10 +15,11 @@
 
 <div class="not-fullscreen">
   {% include "users/_need_email.html" %}
-  {% if profile.paired_with %}
-    {% include "users/_paired_profile.html" %}
+  {% if profile_context.needs_match %}
+    {% include "users/_needs_match.html" %}
   {% else %}
-    {% include "users/_unpaired_profile.html" %}
+    {# If the user is a major party voter in a swing state, or a third party voter in a safe state #}
+    {% include "users/_not_needs_match.html" %}
   {% endif %}
 </div> <!-- /not-fullscreen -->
 {% endblock %}

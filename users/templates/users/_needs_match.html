@@ -1,0 +1,5 @@
+{% if profile.paired_with %}
+  {% include "users/_paired_profile.html" %}
+{% else %}
+  {% include "users/_unpaired_profile.html" %}
+{% endif %}
