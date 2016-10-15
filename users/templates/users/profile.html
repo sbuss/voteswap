@@ -14,21 +14,12 @@
 {% block main %}
 
 <div class="not-fullscreen">
-  {% if not user.email %}
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2 alert alert-danger text-center" role="alert">
-        <p>Please <a class='btn btn-primary' role='button' href="{%url "users:update_profile" %}">update your email</a>
-        so we can send you match notifications and a reminder to vote on
-        Tuesday, November 8th.</p>
-      </div>
-    </div>
-  {% endif %}
-  {% include "users/_sidebar.html" %}
-
-  {% if profile.paired_with %}
-    {% include "users/_paired_profile.html" %}
+  {% include "users/_need_email.html" %}
+  {% if profile_context.needs_match %}
+    {% include "users/_needs_match.html" %}
   {% else %}
-    {% include "users/_unpaired_profile.html" %}
+    {# If the user is a major party voter in a swing state, or a third party voter in a safe state #}
+    {% include "users/_not_needs_match.html" %}
   {% endif %}
 </div> <!-- /not-fullscreen -->
 {% endblock %}

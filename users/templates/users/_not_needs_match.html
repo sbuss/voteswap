@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <h3>Your vote matters</h1>
+    {% if profile_context.third_party %}
+    <p>You don't have any good pairings. Go ahead and vote for {{ profile.preferred_candidate }}.</p>
+    {% else %}
+      <p>
+        Your vote <b>is extremely important</b>, so you <b>shouldn't swap</b>.
+        Be sure to vote for {{ profile.preferred_candidate }} on election day,
+        November 8th!
+      </p>
+    {% endif %}
+  </div>
+</div>
+<div class="row">
+  <div class='col-md-8 col-md-offset-2'>
+    <h3>Share with your friends</h1>
+    <p>
+      VoteSwap works best with more people to match up.
+      <a href="{% url 'users:share' %}">Share VoteSwap with your friends</a>
+      to keep building our network!
+    </p>
+    <p>
+      <a href="{% url 'users:share' %}" class='btn btn-primary btn-lg' role='button'>Share Now</a>
+    </p>
+  </div>
+</div>
+
