@@ -117,11 +117,6 @@ p {
   margin: 0 auto;
 }
 
-.btn-facebook, .fa-facebook {
-  background: #000;
-  color: #fff;
-}
-
 button.join-now, a.join-now {
   background-image: none;
   background-color: #0A234E;
