@@ -70,7 +70,7 @@ def signup(request):
                               context_instance=context)
 
 
-def landing_page(request):
+def landing_page(request, gary=False):
     try:
         _attach_signup_info(request)
     except:
@@ -105,7 +105,7 @@ def landing_page(request):
         {'form': form,
          'swing_states': swing_states,
          'landing_page': True,
-         'gary': 'gary' in request.GET})
+         'gary': gary or ('gary' in request.GET)})
     return render_to_response('landing_page.html',
                               context_instance=context)
 
