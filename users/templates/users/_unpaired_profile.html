@@ -34,7 +34,7 @@
           <h4>Share with your friends in swing states</h3>
           <div class='list-group share-states'>
             {% for state in swing_states %}
-            <a class='list-group-item' role='button'><span class="stateface">{{ state|stateface }}</span> {{ state }}</a>
+            <a href="{% url 'users:share_state' state=state %}" class='list-group-item' role='button'><span class="stateface">{{ state|stateface }}</span> {{ state }}</a>
             {% endfor %}
           </div>
         </div>
@@ -42,7 +42,7 @@
           <h4>Share with your friends in safe states</h3>
           <div class='list-group share-states'>
             {% for state in safe_states %}
-            <a class='list-group-item' role='button'><span class="stateface">{{ state|stateface }}</span> {{ state }}</a>
+            <a href="{% url 'users:share_state' state=state %}" class='list-group-item' role='button'><span class="stateface">{{ state|stateface }}</span> {{ state }}</a>
             {% endfor %}
           </div>
         </div>
