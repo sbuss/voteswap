@@ -6,6 +6,10 @@
   /*max-width: 1158px;*/
 }
 
+h1, h2, h3, h4, h5, h6 {
+  color: #34519f;
+}
+
 .no-gutter {
   padding-left:0;
 }
@@ -140,7 +144,6 @@ h2 {
   font-weight: bold;
   text-transform: uppercase;
   size: 21px;
-  color: #34519f;
 }
 
 .leader h2 {
@@ -151,11 +154,14 @@ h2 {
 h3 {
   font-weight: normal;
   size: 21px;
-  color: #34519f;
   padding: none;
   margin: none;
   margin-top: 20px;
   margin-bottom: 10px;
+}
+
+h4 {
+  font-size: 1.4em;
 }
 
 .navbar {
@@ -442,4 +448,13 @@ div.match-info p {
 
 .proposed .not-proposed-content {
   display: none;
+}
+
+.share-states {
+  font-size: 1.5em;
+}
+
+.share-states .stateface {
+  width: 1.5em;
+  display: inline-block;
 }
