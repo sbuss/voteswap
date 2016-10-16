@@ -25,10 +25,10 @@
       Copy this suggested message
       {% if state.is_swing %}
         <blockquote>
-          You live in an important swing state, where third parties might split
+          {{ state.name }} is an important swing state, where third parties might split
           the vote and make Trump win (remember Al Gore?). If you want a third
           party candidate to get votes while making sure Trump loses,
-          join <a href="https://voteswap.us">https://voteswap.us</a>
+          join <a href="https://voteswap.us">https://voteswap.us</a>.
           VoteSwap pairs up swing-state and safe-state voters so they
           can swap votes. Clinton will win the swing states, third parties get
           more votes (and more federal funding), and Trump loses. Even if
@@ -43,15 +43,15 @@
             don't want Trump to win. You should join
             <a href="https://voteswap.us">https://voteswap.us</a> and swap votes
             with me. I'll vote Clinton in {{ profile.state }} if you vote
-            {{ profile.preferred_candidate }} in your state.
+            {{ profile.preferred_candidate }} in {{ state.name }}.
           </blockquote>
         {% else %}
           <blockquote>
             Do you want to prevent Trump from winning but also think third
             parties should be a viable choice? Join
             <a href="https://voteswap.us">https://voteswap.us</a> and swap your
-            Clinton vote in your safe state with a third-party voter in a swing
-            state. Third parties will get more votes, and Clinton will win the
+            Clinton vote in {{ state.name }} with a third-party voter in a swing
+            state. Third parties will get more votes and Clinton will win the
             important swing states so Trump will lose.
           </blockquote>
         {% endif %}
