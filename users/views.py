@@ -459,3 +459,22 @@ def share(request):
     )
     return render_to_response('users/share.html',
                               context_instance=context)
+
+
+@login_required
+def share_state(request, state):
+    user = request.user
+    logger.info("%s viewing share_state page", user)
+    profile_ctx = ProfileContext(user.profile)
+    state = State.objects.get(name=state)
+    context = RequestContext(
+        request,
+        {
+            'user': request.user,
+            'profile': user.profile,
+            'profile_context': profile_ctx,
+            'state': state,
+        }
+    )
+    return render_to_response('users/share_state.html',
+                              context_instance=context)

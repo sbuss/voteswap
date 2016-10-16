@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load state_fb_search %}
+{% load staticfiles %}
+
+{% block main %}
+
+<div class="not-fullscreen">
+  {% include "users/_need_email.html" %}
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2"> <!-- share -->
+      <h3>Share with friends in {{ state.name }}</h3>
+      <p>
+      {% if state.is_swing %}
+      {{ state.name }} is the #{{ state.tipping_point_rank }} most important
+      swing state. Getting a couple hundred extra votes for Clinton here has
+      a strong chance of changing the outcome of the election.
+      {% else %}
+      {{ state.name }} is the #{{ state.safe_rank }} safest state for {{ state.safe_for }}.
+      Getting friends in these states to swap votes with swing-state voters is
+      a great strategy.
+      {% endif %}
+      </p>
+      <h3>Step One</h3>
+      <p>
+      Copy this suggested message
+      {% if state.is_swing %}
+        <blockquote>
+          You live in an important swing state, where third parties might split
+          the vote and make Trump win (remember Al Gore?). If you want a third
+          party candidate to get votes while making sure Trump loses,
+          join <a href="https://voteswap.us">https://voteswap.us</a>
+          VoteSwap pairs up swing-state and safe-state voters so they
+          can swap votes. Clinton will win the swing states, third parties get
+          more votes (and more federal funding), and Trump loses. Even if
+          you're already voting for Clinton, the more people that join the
+          better our chances are of pairing up voters and saving our country
+          from Trump.
+        </blockquote>
+      {% else %}
+        {% if profile_context.is_3p_in_swing %}
+          <blockquote>
+            I want to vote for a third party in {{ profile.state }}, but I also
+            don't want Trump to win. You should join
+            <a href="https://voteswap.us">https://voteswap.us</a> and swap votes
+            with me. I'll vote Clinton in {{ profile.state }} if you vote
+            {{ profile.preferred_candidate }} in your state.
+          </blockquote>
+        {% else %}
+          <blockquote>
+            Do you want to prevent Trump from winning but also think third
+            parties should be a viable choice? Join
+            <a href="https://voteswap.us">https://voteswap.us</a> and swap your
+            Clinton vote in your safe state with a third-party voter in a swing
+            state. Third parties will get more votes, and Clinton will win the
+            important swing states so Trump will lose.
+          </blockquote>
+        {% endif %}
+      {% endif %}
+      </p>
+      <h3>Step Two</h3>
+      <p>
+      Click this button and send each of your friends a message:
+      <a class="btn btn-primary btn-social btn-facebook"
+         target="_blank"
+         href="{{ state.name|fb_link }}">
+        <span class="fa fa-facebook"></span> Find friends in {{ state.name }}
+      </a>
+      </p>
+      <p>
+      You can send them a message by clicking on the icon in the top-right of
+      each result:
+      <img style='margin-top: 10px;'
+           class='center-block img img-responsive'
+           src="{% static 'how-to-send-a-message.png' %}"
+           alt="how to send a message" />
+      </p>
+      <h3>Step Three</h3>
+      <p>
+      Once your friends have joined, send them a swap request from your
+      <a href="{% url 'users:profile' %}">matches page</a>. Then on November
+      8th, vote and save America from Trump!
+      </p>
+    </div>
+  </div> <!-- /row -->
+</div> <!-- /not-fullscreen -->
+{% endblock %}
