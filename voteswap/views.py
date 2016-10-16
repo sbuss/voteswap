@@ -55,7 +55,7 @@ def _attach_signup_info(request):
 def logout(request):
     logger.info("%s logging out", request.user)
     auth_logout(request)
-    return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('landing_page'))
 
 
 def signup(request):
