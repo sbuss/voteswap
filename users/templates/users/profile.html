@@ -41,7 +41,7 @@
       </p>
       <div class='row no-gutter'>
         <div class='col-sm-6'>
-          <h4>Share with your friends in swing states</h3>
+          <h4>Share with your friends in swing states</h4>
           <div class='list-group share-states'>
             {% for state in swing_states %}
             <a href="{% url 'users:share_state' state=state %}" class='list-group-item' role='button'><span class="stateface">{{ state|stateface }}</span> {{ state }}</a>
@@ -49,7 +49,7 @@
           </div>
         </div>
         <div class='col-sm-6'>
-          <h4>Share with your friends in safe states</h3>
+          <h4>Share with your friends in safe states</h4>
           <div class='list-group share-states'>
             {% for state in safe_states %}
             <a href="{% url 'users:share_state' state=state %}" class='list-group-item' role='button'><span class="stateface">{{ state|stateface }}</span> {{ state }}</a>
@@ -58,10 +58,21 @@
         </div>
       </div>
     </div>
+    <h3 class='col-md-8 col-md-offset-2'>Share to your wall</h3>
     <div class='col-md-8 col-md-offset-2'>
-      <p>
-        <a href="{% url 'users:share' %}" class='btn btn-primary btn-lg' role='button'>Share Now</a>
-      </p>
+      <div class="media">
+        <div class="media-body">
+          <p>
+            If you don't want to send your friends direct messages, you can also
+            help by sharing VoteSwap on your wall.
+          </p>
+        </div>
+        <div class="media-right">
+          <a class="fb-feed-btn btn btn-primary btn-social btn-facebook">
+            <span class="media-object fa fa-facebook"></span> Share now on Facebook
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </div> <!-- /not-fullscreen -->
