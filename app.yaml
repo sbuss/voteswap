@@ -19,7 +19,7 @@
 runtime: python27
 api_version: 1
 threadsafe: yes
-version: 2016-10-15
+version: 2016-10-16
 
 handlers:
 - url: /static
