@@ -19,6 +19,10 @@ class LandingPageForm(forms.Form):
             {'placeholder': "Because #NeverTrump"}),
         required=False,
         label="Why do you want to swap?")
+    allow_random = forms.BooleanField(
+        required=False,
+        initial=True,
+        label="OK to match me with people I don't know")
 
     def save(self, user):
         """Create a Profile for the given user
@@ -67,6 +71,7 @@ class LandingPageForm(forms.Form):
         profile.state = self.cleaned_data['state']
         profile.preferred_candidate = self.cleaned_data['preferred_candidate']
         profile.reason = self.cleaned_data.get('reason', '')
+        profile.allow_random = self.cleaned_data['allow_random']
         profile.active = True
         logger.info("Set profile fields. Cleaning")
         profile.full_clean()

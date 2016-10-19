@@ -79,6 +79,7 @@ class Profile(models.Model):
     preferred_candidate = models.CharField(
         max_length=255, choices=CANDIDATES_ADVOCATED, null=True)
     reason = models.TextField(null=True, blank=True)  # Why a user is swapping
+    allow_random = models.BooleanField(default=False)
     # Pairing with a User might be more technically correct, but then that
     # requires us to JOIN against the users table when trying to get the
     # user's information we actually care about

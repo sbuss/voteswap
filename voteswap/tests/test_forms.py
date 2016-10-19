@@ -147,3 +147,35 @@ class TestLandingPageForm(TestCase):
         self.assertTrue(form.is_valid())
         form.save(user)
         self.assertEqual(user.profile.reason_decoded, poo)
+
+    def test_no_allow_random(self):
+        user = UserFactory.create(profile=None)
+        data = self._data(allow_random=0)
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
+        self.assertEqual(user.profile.allow_random, False)
+
+        user = UserFactory.create(profile=None)
+        data = self._data()
+        if 'allow_random' in data:
+            del data['allow_random']
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
+        self.assertEqual(user.profile.allow_random, False)
+
+    def test_allow_random(self):
+        user = UserFactory.create(profile=None)
+        data = self._data(allow_random=1)
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
+        self.assertEqual(user.profile.allow_random, True)
+
+        user = UserFactory.create(profile=None)
+        data = self._data(allow_random=True)
+        form = LandingPageForm(data=data)
+        self.assertTrue(form.is_valid())
+        form.save(user)
+        self.assertEqual(user.profile.allow_random, True)
