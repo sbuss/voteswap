@@ -10,8 +10,8 @@
         <img class="match img-responsive pull-center"
              src="https://graph.facebook.com/v2.7/{{ fm_ctx.friend_match.profile.fb_id }}/picture?type=square&width=200&height=200"
              alt="{{ fm_ctx.name }}'s image"/>
-        <h2><a href="https://facebook.com/{{ fm_ctx.friend_match.profile.fb_id }}">{{ fm_ctx.name }}</a></h2>
-        <h3>{% if not fm_ctx.friend_match.is_direct %}via <a href="https://facebook.com/{{ fm_ctx.friend_match.through.fb_id }}">{{ fm_ctx.friend_match.through.user.get_full_name }}</a>{% else %}&nbsp;{% endif %}</h3>
+        <h2><a target="_blank" href="https://facebook.com/{{ fm_ctx.friend_match.profile.fb_id }}">{{ fm_ctx.name }}</a></h2>
+        <h3>{% if not fm_ctx.friend_match.is_direct %}via <a target="_blank" href="https://facebook.com/{{ fm_ctx.friend_match.through.fb_id }}">{{ fm_ctx.friend_match.through.user.get_full_name }}</a>{% else %}&nbsp;{% endif %}</h3>
       </div>
       <div class='col-sm-6'>
         {% include "users/_swap_icon_table.html" with my_state=profile.state my_candidate=profile.preferred_candidate match_state=fm_ctx.friend_match.profile.state match_candidate=fm_ctx.friend_match.profile.preferred_candidate %}
@@ -22,6 +22,7 @@
         <div class="proposed-content">
           <p>You have proposed to {{ fm_ctx.friend_match.profile.fb_name }}.</p>
           <a class="btn btn-primary btn-social btn-facebook"
+             target="_blank"
              href="https://www.facebook.com/messages/{{ fm_ctx.friend_match.profile.fb_id }}">
             <span class="fa fa-facebook"></span> Message
           </a>
@@ -32,6 +33,7 @@
                   data-profile-id="{{ fm_ctx.friend_match.profile.id }}"
                   data-name="{{ fm_ctx.name }}">Propose Swap</button>
           <a class="btn btn-primary btn-social btn-facebook btn-lg"
+             target="_blank"
              href="https://www.facebook.com/messages/{{ fm_ctx.friend_match.profile.fb_id }}">
             <span class="fa fa-facebook"></span> Message {{ fm_ctx.friend_match.profile.user.first_name }}
           </a>

@@ -11,7 +11,7 @@
         <img class="match img-responsive pull-center"
              src="https://graph.facebook.com/v2.7/{{ pending_match_ctx.matched_profile.fb_id }}/picture?type=square&width=200&height=200"
              alt="{{ pending_match_ctx.matched_profile.fb_name }}'s image"/>
-        <h2><a href="https://facebook.com/{{ pending_match_ctx.matched_profile.fb_id }}">{{ pending_match_ctx.matched_profile.fb_name }}</a></h2>
+        <h2><a target="_blank" href="https://facebook.com/{{ pending_match_ctx.matched_profile.fb_id }}">{{ pending_match_ctx.matched_profile.fb_name }}</a></h2>
       </div>
       <div class='col-sm-6'>
         {% include "users/_swap_icon_table.html" with my_state=profile.state my_candidate=profile.preferred_candidate match_state=pending_match_ctx.matched_profile.state match_candidate=pending_match_ctx.matched_profile.preferred_candidate %}
@@ -24,6 +24,7 @@
         <p>You proposed a swap to {{ pending_match_ctx.matched_profile.fb_name }} {{ pending_match_ctx.match.date_proposed|naturaltime }}. We're still waiting to hear back from them.</p>
         <p>
           <a class="btn btn-primary btn-social btn-facebook btn-lg"
+             target="_blank"
              href="https://www.facebook.com/messages/{{ pending_match_ctx.matched_profile.fb_id }}">
             <span class="fa fa-facebook"></span> Message {{ pending_match_ctx.matched_profile.user.first_name }}
           </a>
@@ -32,6 +33,7 @@
         <p>{{ pending_match_ctx.matched_profile.fb_name }} proposed a swap to you {{ pending_match_ctx.match.date_proposed|naturaltime }}.</p>
         <p>
           <a class="btn btn-primary btn-social btn-facebook btn-lg"
+             target="_blank"
              href="https://www.facebook.com/messages/{{ pending_match_ctx.matched_profile.fb_id }}">
             <span class="fa fa-facebook"></span> Message {{ pending_match_ctx.matched_profile.user.first_name }}
           </a>
