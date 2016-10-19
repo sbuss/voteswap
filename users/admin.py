@@ -6,7 +6,8 @@ from users.models import Profile
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = (
-        'user', 'fb_name', 'state', 'preferred_candidate', 'is_paired')
+        'user', 'fb_name', 'state', 'preferred_candidate', 'allow_random',
+        'is_paired')
 
 
 class PairProposalAdmin(admin.ModelAdmin):
