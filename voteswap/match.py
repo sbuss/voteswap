@@ -108,7 +108,7 @@ def _matches_for_swing_state_profile(
     if profile.allow_random:
         matches.extend(
             _order_matches_by_state_rank(
-                _random_matches(profile, found_friends),
+                _random_matches(profile, found_friends, potential_states),
                 potential_states))
     matches = _exclude_matches(
         PairProposal.objects.rejected(), profile, matches)
@@ -164,7 +164,7 @@ def _matches_for_safe_state_profile(
     if profile.allow_random:
         matches.extend(
             _order_matches_by_state_rank(
-                _random_matches(profile, found_friends),
+                _random_matches(profile, found_friends, potential_states),
                 potential_states))
     matches = _exclude_matches(
         PairProposal.objects.rejected(), profile, matches)
