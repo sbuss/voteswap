@@ -16,7 +16,9 @@ class TestProfileView(TestCase):
     def setUp(self):
         super(TestProfileView, self).setUp()
         self.request = RequestFactory()
+        self.state = StateFactory.create()
         self.user = UserFactory.create(
+            profile__state=self.state.name,
             profile__reason="#NeverTrump")
 
     def test_go_back(self):
