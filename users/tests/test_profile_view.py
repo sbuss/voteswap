@@ -46,17 +46,6 @@ class TestProfileView(TestCase):
         self.assertEqual(response.get('Location'),
                          reverse('users:update_profile'))
 
-    def test_voter_in_state(self):
-        request = self.request.get(reverse('users:profile'))
-        request.user = self.user
-        response = profile(request)
-        self.assertEqual(response.status_code, HTTP_OK)
-        self.assertContains(
-            response,
-            "You're a {candidate} voter in {state}".format(
-                candidate=self.user.profile.preferred_candidate,
-                state=self.user.profile.state))
-
     def test_paired_call_to_action(self):
         friend_state = StateFactory(safe_rank=1)
         friend = UserFactory.create(profile__state=friend_state.name)
@@ -65,22 +54,22 @@ class TestProfileView(TestCase):
         request = self.request.get(reverse('users:profile'))
         request.user = self.user
         response = profile(request)
-        self.assertContains(response, 'calltoaction-paired')
+        self.assertContains(response, 'You pledged to swap your vote')
 
     def test_no_friends_call_to_action(self):
         request = self.request.get(reverse('users:profile'))
         request.user = self.user
         response = profile(request)
-        self.assertContains(response, 'calltoaction-unpaired')
-        self.assertContains(response, 'No suitable matches')
-        self.assertContains(response, '*none* of your friends')
+        # self.assertContains(response, 'calltoaction-unpaired')
+        self.assertContains(response, 'Expected to see friends to swap votes with?')
+        self.assertContains(response, 'There aren\'t any friends')
         # Also when we add a friend, it shouldn't change
         friend = UserFactory.create(profile__state=self.user.profile.state)
         self.user.profile.friends.add(friend.profile)
         response = profile(request)
-        self.assertContains(response, 'calltoaction-unpaired')
-        self.assertContains(response, 'No suitable matches')
-        self.assertContains(response, '1 of your friends')
+        # self.assertContains(response, 'calltoaction-unpaired')
+        self.assertContains(response, 'Expected to see friends to swap votes with?')
+        self.assertContains(response, 'There aren\'t any friends')
 
     def test_some_matches_call_to_action(self):
         friend_state = StateFactory(tipping_point_rank=1)
@@ -91,6 +80,6 @@ class TestProfileView(TestCase):
         request = self.request.get(reverse('users:profile'))
         request.user = self.user
         response = profile(request)
-        self.assertContains(response, 'calltoaction-unpaired')
-        self.assertContains(response, 'No more suitable matches')
-        self.assertContains(response, '1 of your friends')
+        # self.assertContains(response, 'calltoaction-unpaired')
+        self.assertContains(response, 'Expected to see more matches?')
+        self.assertContains(response, 'There aren\'t any more friends')
