@@ -36,19 +36,29 @@
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="630">
     <meta property="og:image:height" content="331">
-    <meta property="og:description" content="Want to vote for Gary Johnson, but worried about Trump winning your state? Use https://voteswap.us to swap your vote. Gary Johnson gets more votes, Clinton wins swing states, and you defeat Trump.">
-    <meta property="og:url" content="https://voteswap.us/gary-johnson/">
     {% else %}
     <meta property="og:image" content="https://voteswap.us{% static 'simple-share.png' %}">
     <meta property="og:image:secure_url" content="https://voteswap.us{% static 'simple-share.png' %}">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    {% endif %}
+
+    {% if gary %}
+    <meta property="og:description" content="Want to vote for Gary Johnson, but worried about Trump winning your state? Use https://voteswap.us to swap your vote. Gary Johnson gets more votes, Clinton wins swing states, and you defeat Trump.">
+    <meta property="og:url" content="https://voteswap.us/gary-johnson/">
+    {% else %}
     <meta property="og:description" content="Want to vote a third party, but don't want Trump to win? Use https://voteswap.us to swap third-party votes in swing states with a Clinton votes in safe states. Johnson and Stein get more votes and you defeat Trump.">
-    <meta property="og:url" content="https://voteswap.us">
+      {% if occupy %}
+      <meta property="og:url" content="https://voteswap.us/occupy/">
+      {% else %}
+      <meta property="og:url" content="https://voteswap.us">
+      {% endif %}
     {% endif %}
     <meta property="og:title" content="Vote your conscience and Stop Trump">
     <meta property="fb:app_id" content="329005557444514">
+
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@sbuss">
     <meta name="twitter:title" content="Swap your vote to stop Trump">
@@ -58,6 +68,7 @@
     {% else %}
     <meta name="twitter:image" content="https://voteswap.us{% static 'swap-your-vote-hillary-gary.png' %}">
     {% endif %}
+
   </head>
   <body>
     <nav class="navbar{% if not landing_page %} navbar-inverse{% endif %}">
