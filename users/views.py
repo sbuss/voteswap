@@ -117,7 +117,7 @@ class ProfileContext(object):
     @cached_property
     def good_potential_matches(self):
         return [FriendMatchContext(fm, self)
-                for fm in get_friend_matches(self.profile)]
+                for fm in get_friend_matches(self.profile)][:10]
 
 
 class PendingMatchContext(object):
