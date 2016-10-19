@@ -39,19 +39,19 @@ class _TestSafeStateMatchBase(TestCase):
             friend = UserFactory.create(profile__state=state.name)
             self.user.profile.friends.add(friend.profile)
         # Create friends in swing states
-        swing_state_1 = StateFactory.create(tipping_point_rank=1)
+        self.swing_state_1 = StateFactory.create(tipping_point_rank=1)
         swing_user_1 = UserFactory.create(
-            profile__state=swing_state_1.name,
+            profile__state=self.swing_state_1.name,
             profile__preferred_candidate=CANDIDATE_JOHNSON)
         self.user.profile.friends.add(swing_user_1.profile)
-        swing_state_2 = StateFactory.create(tipping_point_rank=2)
+        self.swing_state_2 = StateFactory.create(tipping_point_rank=2)
         swing_user_2 = UserFactory.create(
-            profile__state=swing_state_2.name,
+            profile__state=self.swing_state_2.name,
             profile__preferred_candidate=CANDIDATE_STEIN)
         self.user.profile.friends.add(swing_user_2.profile)
-        swing_state_3 = StateFactory.create(tipping_point_rank=3)
+        self.swing_state_3 = StateFactory.create(tipping_point_rank=3)
         swing_user_3 = UserFactory.create(
-            profile__state=swing_state_3.name,
+            profile__state=self.swing_state_3.name,
             profile__preferred_candidate=candidate)
         self.user.profile.friends.add(swing_user_3.profile)
         # The ordering of expected_matches matters, it's ordered by state rank
@@ -119,6 +119,7 @@ class _TestSwingStateMatchBase(TestCase):
         # The ordering of expected matches is by state safe_rank
         self.expected_matches = []
         safe_rank = 1
+        self.safe_states = []
         for (preferred_candidate, safe_for) in [
                 (CANDIDATE_CLINTON, CANDIDATE_CLINTON),
                 (CANDIDATE_TRUMP, CANDIDATE_CLINTON),
@@ -128,6 +129,7 @@ class _TestSwingStateMatchBase(TestCase):
                 state = StateFactory.create(
                     safe_for=safe_for,
                     safe_rank=safe_rank)
+                self.safe_states.append(state)
                 friend = UserFactory.create(
                     profile__state=state.name,
                     profile__preferred_candidate=preferred_candidate)
@@ -337,3 +339,65 @@ class TestExclude(TestCase):
         self.assertEqual(
             set(_profiles(get_friend_matches(self.user.profile))),
             set())
+
+
+class TestAllowRandomSafeState(_TestSafeStateMatchBase):
+    def setUp(self):
+        super(TestAllowRandomSafeState, self).setUp()
+        # Add some allow_random_users
+        random_user_1 = UserFactory.create(
+            profile__state=self.swing_state_1.name,
+            profile__preferred_candidate=CANDIDATE_JOHNSON,
+            profile__allow_random=True)
+        random_user_2 = UserFactory.create(
+            profile__state=self.swing_state_2.name,
+            profile__preferred_candidate=CANDIDATE_JOHNSON,
+            profile__allow_random=True)
+        self.expected_no_random = self.expected_matches
+        self.expected_with_random = self.expected_matches + [
+            random_user_1.profile, random_user_2.profile]
+
+    def test_no_random_matches_when_false(self):
+        self.user.profile.allow_random = False
+        self.user.profile.save()
+        matches = _matches_for_safe_state_profile(self.user.profile)
+        self.assertEqual(len(matches), 2)
+        self.assertEqual(_profiles(matches), self.expected_no_random)
+
+    def test_include_random_matches_when_true(self):
+        self.user.profile.allow_random = True
+        self.user.profile.save()
+        matches = _matches_for_safe_state_profile(self.user.profile)
+        self.assertEqual(len(matches), 4)
+        self.assertEqual(_profiles(matches), self.expected_with_random)
+
+
+class TestAllowRandomSwingState(_TestSwingStateMatchBase):
+    def setUp(self):
+        super(TestAllowRandomSwingState, self).setUp()
+        # Add some allow_random_users
+        random_user_1 = UserFactory.create(
+            profile__state=self.safe_states[0].name,
+            profile__preferred_candidate=CANDIDATE_CLINTON,
+            profile__allow_random=True)
+        random_user_2 = UserFactory.create(
+            profile__state=self.safe_states[1].name,
+            profile__preferred_candidate=CANDIDATE_CLINTON,
+            profile__allow_random=True)
+        self.expected_no_random = self.expected_matches
+        self.expected_with_random = self.expected_matches + [
+            random_user_1.profile, random_user_2.profile]
+
+    def test_no_random_matches_when_false(self):
+        self.user.profile.allow_random = False
+        self.user.profile.save()
+        matches = _matches_for_swing_state_profile(self.user.profile)
+        self.assertEqual(len(matches), 4)
+        self.assertEqual(_profiles(matches), self.expected_no_random)
+
+    def test_include_random_matches_when_true(self):
+        self.user.profile.allow_random = True
+        self.user.profile.save()
+        matches = _matches_for_swing_state_profile(self.user.profile)
+        self.assertEqual(len(matches), 6)
+        self.assertEqual(_profiles(matches), self.expected_with_random)

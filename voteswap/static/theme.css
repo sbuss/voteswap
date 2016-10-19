@@ -140,6 +140,13 @@ button.join-now, a.join-now {
   padding-top: 20px;
 }
 
+.join-now > form div.checkbox {
+  font-size: 1em;
+  height: auto;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
 h2 {
   font-weight: bold;
   text-transform: uppercase;

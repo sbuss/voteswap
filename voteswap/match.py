@@ -9,6 +9,7 @@ from polling.models import CANDIDATE_NONE
 from polling.models import CANDIDATES_MAIN
 from polling.models import CANDIDATES_THIRD_PARTY
 from users.models import PairProposal
+from users.models import Profile
 
 logger = logging.getLogger(__name__)
 
@@ -20,9 +21,10 @@ COMPATIBLE_CANDIDATES = {
 
 
 class FriendMatch(object):
-    def __init__(self, profile, through=None):
+    def __init__(self, profile, through=None, is_random=False):
         self.profile = profile
         self.through = through
+        self.is_random = is_random
 
     @property
     def is_direct(self):
@@ -51,6 +53,15 @@ def _exclude_matches(proposal_qs, profile, matches):
         return [match for match in matches
                 if match.profile not in exclude_matches]
     return matches
+
+
+def _random_matches(profile, found_friends, potential_states):
+    matches = Profile.objects.exclude(
+        id__in=[profile.id]+[ff.id for ff in found_friends]).filter(
+            allow_random=True,
+            state__in=potential_states,
+            preferred_candidate__in=COMPATIBLE_CANDIDATES[profile.preferred_candidate])  # NOQA
+    return [FriendMatch(prof, is_random=True) for prof in matches]
 
 
 def _matches_for_swing_state_profile(
@@ -94,6 +105,11 @@ def _matches_for_swing_state_profile(
             foaf_friends = foaf_friends.union(_get_friends(friend))
         matches.extend(_order_matches_by_state_rank(
             foaf_friends, potential_states))
+    if profile.allow_random:
+        matches.extend(
+            _order_matches_by_state_rank(
+                _random_matches(profile, found_friends, potential_states),
+                potential_states))
     matches = _exclude_matches(
         PairProposal.objects.rejected(), profile, matches)
     if exclude_pending:
@@ -145,6 +161,11 @@ def _matches_for_safe_state_profile(
             foaf_friends = foaf_friends.union(_get_friends(friend))
         matches.extend(_order_matches_by_state_rank(
             foaf_friends, potential_states))
+    if profile.allow_random:
+        matches.extend(
+            _order_matches_by_state_rank(
+                _random_matches(profile, found_friends, potential_states),
+                potential_states))
     matches = _exclude_matches(
         PairProposal.objects.rejected(), profile, matches)
     if exclude_pending:

@@ -293,6 +293,7 @@ def update_profile(request):
                 'preferred_candidate': profile.preferred_candidate,
                 'reason': profile.reason_decoded,
                 'email': request.user.email,
+                'allow_random': profile.allow_random,
             }
         form = UpdateProfileForm(initial=initial)
     context = RequestContext(
