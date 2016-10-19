@@ -53,7 +53,11 @@
     <meta name="twitter:site" content="@sbuss">
     <meta name="twitter:title" content="Swap your vote to stop Trump">
     <meta name="twitter:description" content="Want to vote a third party, but don't want Trump to win? Swap your vote! Johnson & Stein get more votes, and Trump loses.">
+    {% if ows %}
+    <meta name="twitter:image" content="https://voteswap.us{% static 'simple-share.png' %}">
+    {% else %}
     <meta name="twitter:image" content="https://voteswap.us{% static 'swap-your-vote-hillary-gary.png' %}">
+    {% endif %}
   </head>
   <body>
     <nav class="navbar{% if not landing_page %} navbar-inverse{% endif %}">
