@@ -71,3 +71,34 @@ class TestProfileView(TestCase):
         self.assertEqual(response.status_code, HTTP_OK)
         self.assertContains(response, "error")
         self.assertContains(response, "This field is required")
+
+    def test_set_allow_random(self):
+        data = {'preferred_candidate': self.user.profile.preferred_candidate,
+                'state': self.user.profile.state,
+                'reason': self.user.profile.reason,
+                'email': self.user.email,
+                'allow_random': 'on'}
+        request = self.request.post(reverse('users:update_profile'), data=data)
+        request.user = self.user
+        response = update_profile(request)
+        self.assertEqual(response.status_code, HTTP_REDIRECT)
+        self.assertTrue(response.has_header('Location'))
+        self.assertEqual(response.get('Location'), reverse('users:profile'))
+        profile = Profile.objects.get(id=self.user.profile.id)
+        self.assertTrue(profile.allow_random)
+
+    def test_unset_allow_random(self):
+        data = {'preferred_candidate': self.user.profile.preferred_candidate,
+                'state': self.user.profile.state,
+                'reason': self.user.profile.reason,
+                'email': self.user.email}
+        self.user.profile.allow_random = True
+        self.user.profile.save()
+        request = self.request.post(reverse('users:update_profile'), data=data)
+        request.user = self.user
+        response = update_profile(request)
+        self.assertEqual(response.status_code, HTTP_REDIRECT)
+        self.assertTrue(response.has_header('Location'))
+        self.assertEqual(response.get('Location'), reverse('users:profile'))
+        profile = Profile.objects.get(id=self.user.profile.id)
+        self.assertFalse(profile.allow_random)
