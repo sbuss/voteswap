@@ -34,6 +34,7 @@ urlpatterns = [
     url('^$', landing_page, name='landing_page'),
     url('^gary-johnson/$', landing_page, {'gary': True}, name='landing_page'),
     url('^ows/$', landing_page, {'ows': True}, name='landing_page'),
+    url('^occupy/$', landing_page, {'occupy': True}, name='landing_page'),
     url('^logout/$', logout, name='logout'),
     url('^about/$', about, name='about'),
     url('^press/$', press, name='press'),
