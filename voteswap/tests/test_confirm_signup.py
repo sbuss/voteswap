@@ -57,7 +57,9 @@ class TestConfirmSignup(TestCase):
         self.assertEqual(user.profile.state, self.state.name)
         self.assertEqual(response.status_code, HTTP_REDIRECT)
         self.assertTrue(response.has_header('Location'))
-        self.assertEqual(response.get('Location'), reverse('users:profile'))
+        self.assertEqual(response.get('Location'),
+                         reverse('users:new_profile'))
+        self.assertContains(response, 'CompleteRegistration')
 
     def test_existing_profile(self, mock_request):
         # This flow shouldn't happen, but in case it does, just merge the

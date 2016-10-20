@@ -82,3 +82,9 @@ class TestProfileView(TestCase):
         response = profile(request)
         self.assertContains(response, 'Expected to see more matches?')
         self.assertContains(response, 'There aren\'t any more friends')
+
+    def test_complete_registration_pixel(self):
+        request = self.request.get(reverse('users:new_profile'))
+        request.user = self.user
+        response = profile(request, new=True)
+        self.assertContains(response, 'CompleteRegistration')
