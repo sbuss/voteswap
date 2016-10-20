@@ -175,7 +175,7 @@ class FriendMatchContext(object):
 
 
 @login_required
-def profile(request):
+def profile(request, new=False):
     user = request.user
     logger.info("%s viewing their profile", user)
     try:
@@ -199,6 +199,7 @@ def profile(request):
             'profile_context': profile_ctx,
             'swing_states': swing_states,
             'safe_states': safe_states,
+            'new': new,
         }
     )
     return render_to_response('users/profile.html',

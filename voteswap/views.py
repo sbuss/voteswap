@@ -193,7 +193,7 @@ def confirm_signup(request):
                 pass
             logger.info("Created profile for user %s", request.user)
             _add_facebook_friends_for_user(request.user)
-            return HttpResponseRedirect(reverse('users:profile'))
+            return HttpResponseRedirect(reverse('users:new_profile'))
         else:
             logger.error("LandingPageForm invalid for user %s: %s",
                          request.user, form.errors)

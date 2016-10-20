@@ -10,6 +10,7 @@ from users.views import update_profile
 
 urlpatterns = [
     url('^profile/$', profile, name='profile'),
+    url('^profile/new/$', profile, {'new': True}, name='new_profile'),
     url('^swap/$', propose_swap, name='propose_swap'),
     url('^swap/confirm/(?P<ref_id>[^/]+)/$',
         confirm_swap, name='confirm_swap'),
