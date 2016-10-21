@@ -21,6 +21,7 @@ from django.views.generic import TemplateView
 from voteswap.views import about
 from voteswap.views import confirm_signup
 from voteswap.views import landing_page
+from voteswap.views import login
 from voteswap.views import logout
 from voteswap.views import press
 from voteswap.views import match
@@ -39,6 +40,7 @@ urlpatterns = [
         name='landing_page'),
     url('^occupy/$', landing_page, {'occupy': True}, name='landing_page'),
     url('^logout/$', logout, name='logout'),
+    url('^login/$', login, name='login'),
     url('^about/$', about, name='about'),
     url('^press/$', press, name='press'),
     url('^user/', include('users.urls', namespace='users')),

@@ -58,6 +58,15 @@ def logout(request):
     return HttpResponseRedirect(reverse('landing_page'))
 
 
+def login(request):
+    next_path = request.GET.get('next', reverse('users:profile'))
+    logger.info("Redirecting login to facebook, then %s", next_path)
+    fb_login_url = "{base}?next={next}".format(
+        base=reverse('social:begin', args=['facebook']),
+        next=next_path)
+    return HttpResponseRedirect(fb_login_url)
+
+
 def signup(request):
     try:
         _attach_signup_info(request)

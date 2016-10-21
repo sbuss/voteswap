@@ -45,6 +45,7 @@ else:
     EMAIL_BACKEND = 'voteswap.mail.backends.sendgrid.SendGridBackend'
 
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
 
 ALLOWED_HOSTS = [
     'voteswap.us',
