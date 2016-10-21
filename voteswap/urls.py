@@ -21,6 +21,7 @@ from django.views.generic import TemplateView
 from voteswap.views import about
 from voteswap.views import confirm_signup
 from voteswap.views import landing_page
+from voteswap.views import login
 from voteswap.views import logout
 from voteswap.views import press
 from voteswap.views import match
@@ -32,13 +33,14 @@ urlpatterns = [
     url('', include('social.apps.django_app.urls', namespace='social')),
     url('^home/$', landing_page, name='index'),
     url('^$', landing_page, name='landing_page'),
-    url('^gary-johnson/$', landing_page, {'gary': True}, name='landing_page'),
+    url('^gary-johnson/$', landing_page, {'gary': True}, name='gary'),
     url('^ows/$',
         landing_page,
         {'ows': True, 'occupy': True},
-        name='landing_page'),
-    url('^occupy/$', landing_page, {'occupy': True}, name='landing_page'),
+        name='ows'),
+    url('^occupy/$', landing_page, {'occupy': True}, name='occupy'),
     url('^logout/$', logout, name='logout'),
+    url('^login/$', login, name='login'),
     url('^about/$', about, name='about'),
     url('^press/$', press, name='press'),
     url('^user/', include('users.urls', namespace='users')),
