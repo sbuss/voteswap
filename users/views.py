@@ -247,7 +247,7 @@ def _send_swap_proposal_email(user, match):
         raise
 
 
-def _enable_random_match_email(user):
+def _send_random_match_email(user):
     logger.info("Sending random match email to %s", user)
     if not user.email:
         logger.error("User %s (%s) doesn't have an email", user, user.id)
