@@ -1,0 +1,14 @@
+Only 19 days until the election!
+
+Thanks for signing up for voteswap! We're only 19 days away from the election
+and, unfortunately, we're a little short on users. It looks like the original
+plan to only connect people with friends and friends-of-friends isn't going to
+work, so we've added an option to match people with random users.
+
+We respect your privacy, so this option is disabled by default. If you would
+like to swap with a random user, please go to https://voteswap.us{% url 'users:update_profile' %}
+and click the "OK to match me with people I don't know" checkbox.
+
+Only 40 people have signed up so far, so be sure to share voteswap with your
+friends while you're there! Clinton can still lose the election, and every vote
+helps!

@@ -247,6 +247,31 @@ def _send_swap_proposal_email(user, match):
         raise
 
 
+def _enable_random_match_email(user):
+    logger.info("Sending random match email to %s", user)
+    if not user.email:
+        logger.error("User %s (%s) doesn't have an email", user, user.id)
+        return
+    message = EmailMultiAlternatives(
+        from_email=u'noreply@email.voteswap.us',
+        to=[user.email],
+        subject=u"VoteSwap with a random user")
+    message.body = _format_email(
+        render_to_string('users/emails/random-matches.txt'))
+    message.attach_alternative(
+        _format_email(
+            render_to_string('users/emails/random-matches.html')),
+        'text/html')
+    try:
+        message.send()
+    except Exception as e:
+        logger.exception(
+            ("Failed to send random match email for user %s. "
+             "Errors: %s"),
+            user, e)
+        raise
+
+
 @login_required
 def propose_swap(request):
     logger.info("%s is propsing a swap", request.user)
