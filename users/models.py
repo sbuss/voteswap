@@ -109,10 +109,10 @@ class Profile(models.Model):
             Q(from_profile_id__in=direct_friend_ids)).values_list(
                 'to_profile_id', flat=True)
         if self.allow_random:
-            all_friend_ids = set(all_friend_ids.extend)
+            all_friend_ids = set(all_friend_ids)
             all_friend_ids |= set(
                 Profile.objects.filter(allow_random=True)
-                .values_list('to_profile_id', flat=True))
+                .values_list('id', flat=True))
         if unpaired:
             return (Profile.objects.unpaired()
                     .filter(id__in=all_friend_ids)
