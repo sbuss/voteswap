@@ -163,6 +163,18 @@ class TestConfirmPairProposalForm(_TestConfirmOrRejectPairProposalForm):
             data=data, instance=self.proposal)
         self.assertFalse(form.is_valid())
 
+    def test_random(self):
+        profile = ProfileFactory.create(allow_random=True)
+        rando = ProfileFactory.create(allow_random=True)
+        form = PairProposalForm(profile, data={'to_profile': rando.id})
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.proposal = profile.proposals_made.get()
+        form = ConfirmPairProposalForm(
+            data=self._data(), instance=self.proposal)
+        self.assertTrue(form.is_valid())
+        form.save()
+
 
 class TestRejectPairProposalForm(_TestConfirmOrRejectPairProposalForm):
     def _data(self):
@@ -187,3 +199,15 @@ class TestRejectPairProposalForm(_TestConfirmOrRejectPairProposalForm):
         self.assertEqual(
             list(PairProposal.objects.rejected()),
             [self.proposal])
+
+    def test_random(self):
+        profile = ProfileFactory.create(allow_random=True)
+        rando = ProfileFactory.create(allow_random=True)
+        form = PairProposalForm(profile, data={'to_profile': rando.id})
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.proposal = profile.proposals_made.get()
+        form = RejectPairProposalForm(
+            data=self._data(), instance=self.proposal)
+        self.assertTrue(form.is_valid())
+        form.save()
