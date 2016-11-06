@@ -101,6 +101,29 @@ class TestPairProposalForm(TestCase):
             set([friend, foaf]),
             set(profile.all_unpaired_friends))
 
+    def test_random(self):
+        profile = ProfileFactory.create(allow_random=True)
+        friend = ProfileFactory.create()
+        profile.friends.add(friend)
+        # Add a friend and make sure it's there
+        self.assertEqual(
+            friend,
+            profile.all_unpaired_friends.get())
+        rando = ProfileFactory.create(allow_random=True)
+        # The rando also accepts random friends, so it should show up as an
+        # unpaired friend
+        self.assertEqual(
+            set([friend, rando]),
+            set(profile.all_unpaired_friends))
+        form = PairProposalForm(profile, data={'to_profile': rando.id})
+        self.assertEqual(len(PairProposal.objects.all()), 0)
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertEqual(len(PairProposal.objects.all()), 1)
+        proposal = PairProposal.objects.get()
+        self.assertEqual(proposal.from_profile, profile)
+        self.assertEqual(proposal.to_profile, rando)
+
 
 class _TestConfirmOrRejectPairProposalForm(TestCase):
     def setUp(self):
