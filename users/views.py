@@ -283,7 +283,7 @@ def _send_bugfix_email(user):
     message = EmailMultiAlternatives(
         from_email=u'noreply@email.voteswap.us',
         to=[user.email],
-        subject=u"Urgent bugfix!")
+        subject=u"Urgent Voteswap bugfix! Come back and swap again!")
     message.body = _format_email(
         render_to_string('users/emails/bugfix-email.txt'))
     message.attach_alternative(
