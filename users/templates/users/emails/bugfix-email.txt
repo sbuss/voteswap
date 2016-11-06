@@ -1,0 +1,26 @@
+Urgent bugfix!
+==============
+
+Have you been frustrated that nobody is responding to your swap proposals?
+Well, it turns out that swapping with random users was a little broken. I
+received a few reports of swaps failing, and it turns out that trying to swap
+with a random user hit an untested corner case in my code, so it was failing. I
+have fixed this bug (and added more tests), but you all need to go back to 
+https://voteswap.us and try to swap again. It'll work this time!
+
+I feel pretty awful that this was failing silently, but there's still plenty of
+time to swap your vote before election day!
+
+Only 2 days until the election!
+===============================
+
+We're only two days away from election day! Membership of voteswap keeps
+growing, so if we can all swap we can help keep Trump out of the White House.
+If you haven't already, please enable swapping with random users to increase
+the chances of finding a swap before Tuesday by going to
+https://voteswap.us{% url 'users:update_profile' %} and clicking the
+"OK to match me with people I don't know" checkbox.
+
+Don't forget to share voteswap with your friends on facebook via
+https://voteswap.us{% url 'users:share' %}
+Clinton can still lose the election, and every vote helps!
