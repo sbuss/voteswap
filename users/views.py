@@ -328,6 +328,34 @@ def _send_fb_message_email(user):
         raise
 
 
+def _send_sad_email(user):
+    if not user:
+        logger.info("Skipping nonexistent user")
+        return
+    logger.info("Sending sad email to %s", user)
+    if not user.email:
+        logger.error("User %s (%s) doesn't have an email", user, user.id)
+        return
+    message = EmailMultiAlternatives(
+        from_email=u'noreply@email.voteswap.us',
+        to=[user.email],
+        subject=u"Thank you for your help")  # nopep8
+    message.body = _format_email(
+        render_to_string('users/emails/sad-email.txt'))
+    message.attach_alternative(
+        _format_email(
+            render_to_string('users/emails/sad-email.html')),
+        'text/html')
+    try:
+        message.send()
+    except Exception as e:
+        logger.exception(
+            ("Failed to send sad email for user %s. "
+             "Errors: %s"),
+            user, e)
+        raise
+
+
 @login_required
 def propose_swap(request):
     logger.info("%s is propsing a swap", request.user)
